@@ -22,7 +22,7 @@ $gridColumns =
 [
     ['class' => 'yii\grid\SerialColumn'],
 
-    
+
     [
         'attribute' => 'work_order_id',
         'format' => 'text',
@@ -36,7 +36,7 @@ $gridColumns =
 
             return $woNumber;
         },
-        
+
     ],
     'part_no',
     'serial_no',
@@ -95,7 +95,7 @@ $gridColumns =
 
         <section class="content">
                     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-        
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
@@ -105,7 +105,7 @@ $gridColumns =
 
                         <div class="col-sm-12 text-right export-menu">
                         <br>
-                        <?= Html::a('<i class=\'fa fa-plus\'></i> New Scrap', ['new'], ['class' => 'btn btn-default']) ?>
+                        <?php Html::a('<i class=\'fa fa-plus\'></i> New Scrap', ['new'], ['class' => 'btn btn-default']) ?>
                         </div>
                         <!-- /.box-header -->
 
