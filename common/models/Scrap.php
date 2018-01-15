@@ -36,7 +36,7 @@ class Scrap extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['work_order_id', 'created_by', 'updated_by', 'deleted'], 'integer'],
+            [['work_order_id','work_order_part_id', 'created_by', 'updated_by', 'deleted'], 'integer'],
             [['date', 'created', 'updated'], 'safe'],
             [['part_no', 'serial_no','batch_no'], 'string', 'max' => 45],
             [['description'], 'string', 'max' => 255],
@@ -52,6 +52,7 @@ class Scrap extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'work_order_id' => 'Work Order',
+            'work_order_part_id'=>'Work Part ID',
             'part_no' => 'Part No',
             'description' => 'Description',
             'serial_no' => 'Serial No',

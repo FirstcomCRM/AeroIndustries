@@ -37,7 +37,7 @@ class Quarantine extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [[ 'work_order_id', 'quantity', 'status','created_by','updated_by'], 'integer'],
+            [['work_order_id','work_order_part_id', 'quantity', 'status','created_by','updated_by'], 'integer'],
             [['date', 'created', 'updated'], 'safe'],
             [['part_no','serial_no', 'batch_no', 'lot_no'], 'string', 'max' => 45],
             [['desc', 'reason'], 'string', 'max' => 1000],
@@ -53,6 +53,7 @@ class Quarantine extends \yii\db\ActiveRecord
             'id' => 'ID',
             'part_no' => 'Part No',
             'work_order_id' => 'Work Order No',
+            'work_order_part_id'=>'Work Part ID',
             'serial_no' => 'Serial No',
             'batch_no' => 'Batch No',
             'lot_no' => 'Lot No',
