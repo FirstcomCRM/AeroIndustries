@@ -32,6 +32,7 @@ use common\models\Stock;
 use common\models\Unit;
 use common\models\FinalInspection;
 use common\models\Capability;
+use common\models\Quarantine;
 use yii\web\UploadedFile;
 /**
  * WorkOrderController implements the CRUD actions for WorkOrder model.
@@ -44,8 +45,8 @@ class WorkOrderController extends Controller
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'WorkOrder'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -58,7 +59,7 @@ class WorkOrderController extends Controller
                 $allow[$uGName] = true;
             }
 
-        }       
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -155,7 +156,7 @@ class WorkOrderController extends Controller
         $woAttachment = new WorkOrderAttachment();
         $workOrderPart = new WorkOrderPart();
         $staff = new WorkOrderStaff();
-       
+
         $data['model'] = $model;
         $data['woAttachment'] = $woAttachment;
         $data['workOrderPart'] = $workOrderPart;
@@ -170,7 +171,7 @@ class WorkOrderController extends Controller
                 WorkOrderPart::saveWo($workOrderPart,$workOrderId);
                 Yii::$app->getSession()->setFlash('success', 'Work Order Created!');
                 return $this->redirect(['preview', 'id' => $model->id]);
-        } 
+        }
         return $this->render('new', [
             'data' => $data
         ]);
@@ -183,7 +184,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionEdit($id)
-    {   
+    {
         $data = array();
         $model = $this->findModel($id);
         $workOrderPart = new WorkOrderPart();
@@ -226,7 +227,7 @@ class WorkOrderController extends Controller
             /* allow them to assign parts for fix later */
             Yii::$app->getSession()->setFlash('success', 'Work Order Created! Please fill up the bill of material');
             return $this->redirect(['index']);
-        } 
+        }
         return $this->render('edit', [
             'data' => $data,
         ]);
@@ -276,7 +277,7 @@ class WorkOrderController extends Controller
             $eworkOrderPart->created_by = Yii::$app->user->identity->id;
             $this->saveWoAttachment($woAttachment, $id,$work_order_part_id);
             $currentDateTime = date("Y-m-d H:i:s");
-            $eworkOrderPart->created = $currentDateTime; 
+            $eworkOrderPart->created = $currentDateTime;
             $eworkOrderPart->save();
 
             Yii::$app->getSession()->setFlash('success', 'Receiving Inspection Updated!');
@@ -306,7 +307,7 @@ class WorkOrderController extends Controller
         $data['woAttachment'] = $woAttachment;
         $data['currPreAtt'] = $currPreAtt;
         $data['currDisAtt'] = $currDisAtt;
-        
+
         $data['workPreliminary'] = $workPreliminary;
 
         if ( $eworkOrderPart->load(Yii::$app->request->post()) ) {
@@ -388,7 +389,7 @@ class WorkOrderController extends Controller
             'data' => $data,
         ]);
     }
- 
+
 /* saving function */
         public function saveWoAttachment($woAttachment,$workOrderId,$workOrderPartId){
             if ( $woAttachment->load(Yii::$app->request->post()) ) {
@@ -575,7 +576,7 @@ class WorkOrderController extends Controller
         }
         public function saveWorkStockRequisition($workOrderId){
             d(Yii::$app->request->post());exit;
-            if ( isset(Yii::$app->request->post()['used']) ){ 
+            if ( isset(Yii::$app->request->post()['used']) ){
                 $useds = Yii::$app->request->post()['used'];
                 foreach ( $useds as $wPUId => $used ) {
                     $WorkStockRequisition = WorkStockRequisition::getOneWorkStockRequisition($wPUId);
@@ -648,7 +649,7 @@ class WorkOrderController extends Controller
     }
     /**
      * remove wo attachment
-     * @param integer $id = work_order_attachment id 
+     * @param integer $id = work_order_attachment id
      * @return mixed
      */
     public function actionRemoveWoa($id)
@@ -671,7 +672,7 @@ class WorkOrderController extends Controller
     }
 
 /**
- * printing 
+ * printing
 */
     /**
      * print a single WorkOrder .
@@ -679,7 +680,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrint($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -690,7 +691,7 @@ class WorkOrderController extends Controller
 
         $workPreliminary = WorkPreliminary::getWorkPreliminary($id,$work_order_part_id);
         $hiddenDamage = WorkHiddenDamage::getWorkHiddenDamage($id,$work_order_part_id);
-       
+
         $att = WorkOrderAttachment::find()->where( ['work_order_id' => $id] )->andWhere( ['type' => 'hidden_damage'] )->all();
 
 
@@ -712,7 +713,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintReceiving($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -745,7 +746,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintDisposition($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -757,7 +758,7 @@ class WorkOrderController extends Controller
         $disAttachment = WorkOrderAttachment::getWorkOrderAttachmentD($id,$work_order_part_id);
         $workPreliminary = WorkPreliminary::getWorkPreliminary($id,$work_order_part_id);
         $hiddenDamage = WorkHiddenDamage::getWorkHiddenDamage($id,$work_order_part_id);
-        
+
         return $this->render('print-disposition', [
             'model' => $model,
             'supervisor' => $supervisor,
@@ -777,7 +778,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintTraveler($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print-traveler';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -786,7 +787,7 @@ class WorkOrderController extends Controller
 
         $value = $traveler->value;
         return $this->redirect('uploads/traveler/'.$value);
-        
+
         return $this->render('print-traveler', [
             'model' => $model,
             'traveler' => $traveler,
@@ -798,7 +799,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionRepairableSticker($id,$work_order_part_id)
-    {   
+    {
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
         return $this->render('repairable-sticker', [
@@ -813,7 +814,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintFinal($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -828,7 +829,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionFinalSticker($id,$work_order_part_id)
-    {   
+    {
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
         return $this->render('final-sticker', [
@@ -843,7 +844,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintCaa($id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         return $this->render('print-caa', [
@@ -857,7 +858,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintBom($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -875,7 +876,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionPrintMrf($id,$work_order_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
@@ -891,7 +892,7 @@ class WorkOrderController extends Controller
 
 /**
 *  ajax function
-*/    
+*/
 
     /* to enable ajax function */
     public function beforeAction($action) {
@@ -904,7 +905,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionGetTemplate()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $partNoTemp = Yii::$app->request->post()['partNoTemp'];
@@ -923,7 +924,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionGetDesc()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $partNoTemp = Yii::$app->request->post()['partNoTemp'];
@@ -944,7 +945,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionGetTechnician()
-    {   
+    {
         $this->layout = false;
         // if ( Yii::$app->request->post() ) {
             $staffTechnician = Staff::find()->where(['<>','status','inactive'])->all();
@@ -959,7 +960,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionAjaxGetfinal()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -979,7 +980,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionAddDiscrepancy()
-    {   
+    {
         $this->layout = false;
         return $this->render('add-discrepancy');
     }
@@ -988,7 +989,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionAddHdiscrepancy()
-    {   
+    {
         $this->layout = false;
         $getStaff = Staff::find()->where(['<>','status',0])->all();
         return $this->render('add-hdiscrepancy',['getStaff' => $getStaff]);
@@ -998,7 +999,7 @@ class WorkOrderController extends Controller
      * AJAX FUNCTION.
      */
     public function actionUpdateStatus()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $dataPost = Yii::$app->request->post();
@@ -1027,7 +1028,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionRequisition($id,$work_order_part_id)
-    {   
+    {
         $stockQuery = $this->getStockQuantity();
         $requisition = new WorkStockRequisition();
         $currRequisition = WorkStockRequisition::getWSRByWorkOrderPartId($work_order_part_id);
@@ -1043,23 +1044,23 @@ class WorkOrderController extends Controller
             'requisition' => $requisition,
             'currRequisition' => $currRequisition,
         ]);
-    } 
+    }
 
 
     public function getStockQuantity() {
 
         $dataUnit = ArrayHelper::map(Unit::find()->where(['status' => 'active'])->all(), 'id', 'unit');
         $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
-        
-        $sqlQuery = "  
-                    SELECT 
+
+        $sqlQuery = "
+                    SELECT
                         s.id,
                         s.part_id,
                         p.part_no
-                    FROM 
+                    FROM
                         stock s,
                         part p
-                    WHERE 
+                    WHERE
                         s.part_id = p.id AND
                         s.status = 'active'
                     GROUP by
@@ -1071,14 +1072,14 @@ class WorkOrderController extends Controller
         /* custom sql query for grand total only */
             foreach ( $stockQuery as $key => $sQ){
                 $partId = $sQ['part_id'];
-                $sqlQueryTotal = "  
-                            SELECT 
+                $sqlQueryTotal = "
+                            SELECT
                                 sum(quantity) sumsQ,
                                 unit_id
-                            FROM 
+                            FROM
                                 stock s
                             WHERE
-                                s.status = 'active' AND 
+                                s.status = 'active' AND
                                 s.part_id = $partId
                         ";
                 $stockQtyTotal = Yii::$app->db->createCommand($sqlQueryTotal)->queryOne();
@@ -1101,7 +1102,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionIssue($id,$work_order_part_id)
-    {   
+    {
         $stockQuery = $this->getStockQuantity();
         $req = new WorkStockRequisition();
         $requisition = WorkStockRequisition::getWSRByWorkOrderPartId($work_order_part_id);
@@ -1115,7 +1116,7 @@ class WorkOrderController extends Controller
             'stockQuery' => $stockQuery,
             'requisition' => $requisition,
         ]);
-    } 
+    }
 
 
 /**
@@ -1127,7 +1128,7 @@ class WorkOrderController extends Controller
      * @return mixed
      */
     public function actionReturn($id,$work_order_part_id)
-    {   
+    {
         $stockQuery = $this->getStockQuantity();
         $requisition = false;
         $req = new WorkStockRequisition();
@@ -1143,16 +1144,16 @@ class WorkOrderController extends Controller
             'stockQuery' => $stockQuery,
             'req' => $req,
         ]);
-    }  
+    }
 
 
     /**
      * save stock id
-     * 
+     *
      */
-    
+
     public function actionSaveStockid()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -1169,11 +1170,11 @@ class WorkOrderController extends Controller
 
     /**
      * save stock id
-     * 
+     *
      */
-    
+
     public function actionSearchPart()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -1188,7 +1189,7 @@ class WorkOrderController extends Controller
         ]);
     }
     public function actionAddPart()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -1198,6 +1199,20 @@ class WorkOrderController extends Controller
         }
     }
 
+    /**
+     * Move quarantined parts back to  the work order status, temporarily set status back to pending
+     * Parts created at quarantined table is deleted
+     */
+    public function actionRemoveQuarantined($work_order_part_id){
+        $part = WorkOrderPart::find()->where(['id'=>$work_order_part_id])->one();
+        $part->status = 'pending';
+        $part->save(false);
+        $qua =Quarantine::find()->where(['work_order_part_id'=>$work_order_part_id])->one();
+        $qua->delete();
+      //  $qua->save(false);
+        Yii::$app->getSession()->setFlash('success', 'Part removed from quarantined!');
+        return $this->redirect(['preview', 'id' => $part->work_order_id]);
+    }
+
 
 }
-
