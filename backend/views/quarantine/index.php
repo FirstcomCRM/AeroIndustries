@@ -16,7 +16,7 @@ use common\models\WorkOrder;
 use common\models\Setting;
 
 
-$gridColumns = 
+$gridColumns =
 
 [
     ['class' => 'yii\grid\SerialColumn'],
@@ -35,7 +35,7 @@ $gridColumns =
                     return $woNumber;
                 }
             },
-            
+
         ],
         'serial_no',
         'batch_no',
@@ -103,7 +103,7 @@ $gridColumns =
 
         <section class="content">
                     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-        
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
@@ -113,7 +113,7 @@ $gridColumns =
 
                         <div class="col-sm-12 text-right export-menu">
                         <br>
-                        <?= Html::a('<i class=\'fa fa-plus\'></i> New Quarantine', ['new'], ['class' => 'btn btn-default']) ?>
+                        <?php Html::a('<i class=\'fa fa-plus\'></i> New Quarantine', ['new'], ['class' => 'btn btn-default']) ?>
                         <?php
 
                                 // /*Renders a export dropdown menu*/
@@ -146,12 +146,12 @@ $gridColumns =
                         <!-- /.box-header -->
 
                         <div class="box-body">
-                            <?= 
+                            <?=
                                 GridView::widget([
                                     'dataProvider' => $dataProvider,
                                     'columns' => $gridColumns,
                                     // 'showFooter'=>true,
-                                ]); 
+                                ]);
                             ?>
 
                         </div>

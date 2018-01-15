@@ -34,6 +34,13 @@ if ( isset( $_GET['work_order_id'] ) ) {
     $workOrderId = $_GET['work_order_id'];
 }
 
+$data = WorkOrder::find()->where(['id'=>$model->work_order_id])->one();
+$woNumber = Setting::getWorkNo($data->work_type,$data->work_scope,$data->work_order_no);
+
+$work_array = [
+  $data->id=>$woNumber
+];
+
 ?>
 
 <div class="quarantine-form">
@@ -58,11 +65,11 @@ if ( isset( $_GET['work_order_id'] ) ) {
                         </div>
 
                         <div class="col-sm-12 col-xs-12">
-
+                            <?php //old variable in dropdownList is $dataWorkO ?>
                             <?= $form->field($model, 'work_order_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}</div>
                                 {hint}
-                                {error}'])->dropDownList($dataWorkO, ['options' => [$workOrderId => ['Selected'=>'selected']],'class' => 'select2']) ?>
+                                {error}'])->dropDownList($work_array, ['options' => [$workOrderId => ['Selected'=>'selected']],'class' => 'select2']) ?>
 
                         </div>
 
