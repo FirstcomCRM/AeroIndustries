@@ -13,6 +13,7 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\UserGroup;
 use common\models\UserPermission;
+use common\models\WorkOrderPart;
 
 /**
  * QuarantineController implements the CRUD actions for Quarantine model.
@@ -25,8 +26,8 @@ class QuarantineController extends Controller
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'Quarantine'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -39,7 +40,7 @@ class QuarantineController extends Controller
                 $allow[$uGName] = true;
             }
 
-        } 
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -119,13 +120,22 @@ class QuarantineController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionNew()
+    public function actionNew($work_order_part_id)
     {
         $model = new Quarantine();
-
+        $part = WorkOrderPart::find()->where(['id'=>$work_order_part_id])->one();
+        $model->work_order_id = $part->work_order_id;
+        $model->work_order_part_id = $work_order_part_id;
+        $model->part_no = $part->part_no;
+        $model->desc = $part->desc;
+        $model->quantity = $part->quantity;
+        $model->serial_no = $part->serial_no;
+        $model->batch_no = $part->batch_no;
+        $model->created = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->id;
         if ($model->load(Yii::$app->request->post()) ) {
-
-
+            $part->status='quarantined';
+            $part->save(false);
             $model->created_by = Yii::$app->user->identity->id;
             $currentDateTime = date("Y-m-d H:i:s");
             $model->created = $currentDateTime;
@@ -134,11 +144,11 @@ class QuarantineController extends Controller
             if ($model->save()) {
                 return $this->redirect(['preview', 'id' => $model->id]);
             }
-        } 
+        }
         return $this->render('new', [
             'model' => $model,
         ]);
-        
+
     }
 
     /**
@@ -161,11 +171,11 @@ class QuarantineController extends Controller
             if ($model->save()) {
                 return $this->redirect(['preview', 'id' => $model->id]);
             }
-        } 
+        }
         return $this->render('edit', [
             'model' => $model,
         ]);
-        
+
     }
 
     /**
