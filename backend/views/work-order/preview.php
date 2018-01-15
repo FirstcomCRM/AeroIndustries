@@ -60,7 +60,7 @@ use kartik\file\FileInput;
         <div class="col-sm-12 text-right">
                 <?php if ( $model->status == 'Completed' ) { ?>
                     <?php echo Html::a('<i class="fa fa-edit"></i> Generate DO', ['delivery-order/new', 'id' => $model->id], ['class' => 'btn btn-danger']) ?>
-                <?php } ?> 
+                <?php } ?>
 
                 <?php if ( $model->status != 'Completed' ) { ?>
                     <?php echo Html::a('<i class="fa fa-edit"></i> Update', ['edit', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -69,7 +69,7 @@ use kartik\file\FileInput;
                 <?php } ?>
 
                 <?php if ( $model->status !== 'cancelled' ) { ?>
-                
+
                 <?php } ?>
 
                 <?php if ( $model->deleted == '0' ) { ?>
@@ -79,7 +79,7 @@ use kartik\file\FileInput;
                             'confirm' => 'Are you sure you want to delete this work order?',
                         ],
                     ]) ?>
-                <?php } ?> 
+                <?php } ?>
 
                 <?= Html::a( 'Back', Url::to(['index']), array('class' => 'btn btn-default')) ?>
             <br>
@@ -96,7 +96,7 @@ use kartik\file\FileInput;
                           <h3 class="box-title"><?= Html::encode($woNumber) ?></h3>
                         </div>
 
-                        
+
                         <div class="box-body preview-po">
                             <div class="row">
                                 <div class="col-sm-6 col-xs-12">
@@ -140,11 +140,11 @@ use kartik\file\FileInput;
                                         <label>Work Order Creation Date</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?php 
+                                        <?php
                                             if ( $model->date ) {
                                             $exIssue = explode(' ',$model->date);
                                             $is = $exIssue[0];
-                                            
+
                                             $time = explode('-', $is);
                                             $monthNum = $time[1];
                                             $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -160,11 +160,11 @@ use kartik\file\FileInput;
                                         <label>Received Date:</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?php 
+                                        <?php
                                             if ( $model->received_date ) {
                                             $exIssue = explode(' ',$model->received_date);
                                             $is = $exIssue[0];
-                                            
+
                                             $time = explode('-', $is);
                                             $monthNum = $time[1];
                                             $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -182,11 +182,11 @@ use kartik\file\FileInput;
                                         <label>Approval Date :</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?php 
+                                        <?php
                                             if ( $model->approval_date ) {
                                             $exIssue = explode(' ',$model->approval_date);
                                             $is = $exIssue[0];
-                                            
+
                                             $time = explode('-', $is);
                                             $monthNum = $time[1];
                                             $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -202,11 +202,11 @@ use kartik\file\FileInput;
                                         <label>Date On Dock:</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?php 
+                                        <?php
                                             if ( $model->on_dock_date ) {
                                             $exIssue = explode(' ',$model->on_dock_date);
                                             $is = $exIssue[0];
-                                            
+
                                             $time = explode('-', $is);
                                             $monthNum = $time[1];
                                             $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -224,11 +224,11 @@ use kartik\file\FileInput;
                                         <label>Estimated Delivery Date:</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?php 
+                                        <?php
                                             if ( $model->needs_by_date ) {
                                             $exIssue = explode(' ',$model->needs_by_date);
                                             $is = $exIssue[0];
-                                            
+
                                             $time = explode('-', $is);
                                             $monthNum = $time[1];
                                             $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -239,7 +239,7 @@ use kartik\file\FileInput;
                                         <?php } ?>
                                     </div>
                                 </div>
-                               
+
                             </div>
                         </div>
 
@@ -253,6 +253,7 @@ use kartik\file\FileInput;
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
+                                  <th>id</th>
                                     <th>Part No</th>
                                     <th>Description</th>
                                     <th>Serial No.</th>
@@ -261,6 +262,7 @@ use kartik\file\FileInput;
                                     <th>Location</th>
                                     <th>Quantity</th>
                                     <th>Template</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -268,6 +270,7 @@ use kartik\file\FileInput;
                                 <?php if (!empty($workOrderParts) ) { ?>
                                     <?php foreach ( $workOrderParts as $wop ) : ?>
                                         <tr>
+                                            <td><?= $wop->id ?></td>
                                             <td><?= $wop->part_no ?></td>
                                             <td><?= $wop->desc ?></td>
                                             <td><?= $wop->serial_no ?></td>
@@ -276,6 +279,7 @@ use kartik\file\FileInput;
                                             <td><?= $wop->location_id ?></td>
                                             <td><?= $wop->quantity ?></td>
                                             <td><?= isset($wop->template_id)&&!empty($wop->template_id)?$dataTemplate[$wop->template_id]:'' ?></td>
+                                            <td><?= $wop->status ?></td>
                                             <td>
                                                 <div class="btn-group">
                                                   <button type="button" class="btn btn-success">Actions</button>
@@ -290,6 +294,16 @@ use kartik\file\FileInput;
                                                         <li><?= Html::a( 'Preliminary Inspection', Url::to(['preliminary-inspection', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Hidden Damage Inspection', Url::to(['hidden-damage', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Worksheet', Url::to(['work-sheet', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
+                                                        <?php if ($wop->status!= 'scrapped'): ?>
+                                                          <?php if ($wop->status =='quarantined'): ?>
+                                                            <li><?= Html::a( 'Move out of Quarantine', Url::to(['work-order/remove-quarantined','work_order_part_id' => $wop->id])) ?></li>
+                                                          <?php else: ?>
+                                                            <li><?= Html::a( 'Move to Quarantine', Url::to(['quarantine/new','work_order_part_id' => $wop->id])) ?></li>
+                                                          <?php endif; ?>
+                                                          <li><?= Html::a( 'Scrap Parts', Url::to(['scrap/new', 'work_order_part_id' => $wop->id])) ?></li>
+                                                        <?php endif; ?>
+
+
                                                       <?php } ?>
                                                         <li><?= Html::a( 'Generate ARC', Url::to(['work-order-arc/generate', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Set Requisition', Url::to(['work-order/requisition', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
@@ -348,11 +362,11 @@ use kartik\file\FileInput;
                         </table>
 
                     </div>
-               
-                  
+
+
 
                 <?php /* BOM */ ?>
-                
+
                     <?php if ( $WorkStockRequisition ) { ?>
                         <div class="box box-danger">
                             <div class="box-header with-border">
@@ -391,7 +405,7 @@ use kartik\file\FileInput;
                                         <?php } ?>
                                     </tbody>
                                 </table>
-                                
+
                             </div>
                         </div>
                     <?php } ?>
@@ -404,7 +418,7 @@ use kartik\file\FileInput;
 </div>
 
 
-<?php 
+<?php
 
 
         /*    'type',

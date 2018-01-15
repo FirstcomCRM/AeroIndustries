@@ -16,10 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
 use common\models\Setting;
 $dataWorkStatus = Setting::dataWorkStatus();
 
-$gridColumns = 
+$gridColumns =
 [
     [
-        'class' => 'yii\grid\CheckboxColumn', 
+        'class' => 'yii\grid\CheckboxColumn',
         'checkboxOptions' => [
             'class' => 'work-order-checkbox',
         ],
@@ -70,10 +70,10 @@ $gridColumns =
     // 'updated_by',
     // 'deleted',
 
-    
+
     [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{quarantine}{scrap}{preview}{cancel}',
+        'template' => '{preview}{cancel}',
         'buttons' => [
             'quarantine' => function ($url, $model) {
 
@@ -124,7 +124,7 @@ $gridColumns =
                                     'confirm' => 'Are you sure you want to cancel this work order?',
                                 ],
                     ]);
-                }   
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
@@ -139,7 +139,7 @@ $gridColumns =
             if ($action === 'preview') {
                 $url ='?r=work-order/preview&id='.$model->id;
                 return $url;
-            }   
+            }
             if ($action === 'approve' && $model->status != 'approved') {
                 $url ='?r=work-order/approve&id='.$model->id;
                 return $url;
@@ -175,11 +175,12 @@ $gridColumns =
 
 
 
-$exportColumns = 
+
+$exportColumns =
 // $gridColumns =
 [
     [
-        'class' => 'yii\grid\CheckboxColumn', 
+        'class' => 'yii\grid\CheckboxColumn',
         'checkboxOptions' => [
             'class' => 'work-order-checkbox',
         ],
@@ -232,7 +233,7 @@ $exportColumns =
     // 'updated_by',
     // 'deleted',
 
-    
+
     [
         'class' => 'yii\grid\ActionColumn',
         'template' => '{preview}{cancel}',
@@ -260,7 +261,7 @@ $exportColumns =
                                     'confirm' => 'Are you sure you want to cancel this work order?',
                                 ],
                     ]);
-                }   
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
@@ -275,7 +276,7 @@ $exportColumns =
             if ($action === 'preview') {
                 $url ='?r=work-order/preview&id='.$model->id;
                 return $url;
-            }   
+            }
             if ($action === 'approve' && $model->status != 'approved') {
                 $url ='?r=work-order/approve&id='.$model->id;
                 return $url;
@@ -307,7 +308,7 @@ $exportColumns =
 
         <section class="content">
                     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-        
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
@@ -350,11 +351,11 @@ $exportColumns =
                         <!-- /.box-header -->
 
                         <div class="box-body table-responsive">
-                            <?= 
+                            <?=
                                 GridView::widget([
                                     'dataProvider' => $dataProvider,
                                     'columns' => $gridColumns
-                                ]); 
+                                ]);
                             ?>
 
                         </div>
