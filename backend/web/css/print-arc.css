@@ -1,0 +1,353 @@
+html,
+body {
+    height: 100%;
+}
+.doc-border {
+    border: solid 1px;
+}
+
+.doc-box {
+    height: 80px;
+}
+
+
+@media print {
+    html, body { height: auto; 
+  -webkit-print-color-adjust: exact;}
+    @page { 
+        margin: 10mm 15mm; 
+    }
+    body * {  
+        visibility: hidden;
+    }
+    .print-area * {
+        visibility: visible;
+    }
+    .unused {
+        background-color: grey !important;
+        border: 1px #000 solid;
+    }
+    .td-bg{
+        background-color: #F2F2F2 !important;
+        color: #111;
+        padding: 5px;
+    }
+    .print-area {
+        /*margin: 100px 10px 0px 10px;*/
+    }
+    .print-footer {
+        position: absolute;
+        bottom: 150px;
+        width: 100%;
+    }
+    .bottom-border {
+        border-bottom: 1px solid #111;
+    }
+
+    .page-break { 
+        display: block; 
+        page-break-before: always; 
+    }
+
+    .quo-back {
+        margin-top: 250px;
+    }
+    .print:last-child {
+        page-break-after: auto;
+    }
+}
+.bottom-border {
+    border-bottom: 1px solid #111;
+}
+
+.td-bg{
+    background-color: #F2F2F2;
+    color: #111;
+    padding: 5px;
+}
+
+.td-label {
+    font-weight: 700;
+}
+
+.item th {
+    padding: 3px;
+}
+.item td {
+    padding: 10px;
+    /*border: 1px solid #ccc;*/
+}
+.cod-border {
+    border-top: dotted 1px;
+}
+
+.traveller-part-a td{
+    padding:5px;
+}
+
+.final-underline {
+    border-bottom: 1px solid #222;
+}
+.print-arc td{
+    padding: 8px;
+}
+.ins {
+    border-top: 0px;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-right: 0px;   
+}
+
+.unused {
+    background-color: grey !important;
+    border: 1px #000 solid;
+}
+
+.print-arc .td-small {
+    padding: 2px;
+    height: 10px;
+}
+
+.work-order-table td{
+    padding: 3px;
+    border-bottom: 1px #ccc solid;
+    font-size: 11px;
+    border-top: 1px #ccc solid;
+    border-left: 1px #ccc solid;
+    border-right: 1px #ccc solid;
+}
+
+.box .border-left{
+    border-left: 1px solid #111;
+}
+.box .border-right{
+    border-right: 1px #111 solid;
+}
+.box .border-top {
+    border-top: 1px #111 solid;
+}
+.box .border-bottom {
+    border-bottom: 1px #111 solid;
+}
+.box .border-all {
+    border-top: 1px #111 solid;
+    border-bottom: 1px #111 solid;
+    border-left: 1px solid #111;
+    border-right: 1px #111 solid;
+}
+
+.border-left{
+    border-left: 1px solid #111;
+}
+.border-right{
+    border-right: 1px #111 solid;
+}
+.border-top {
+    border-top: 1px #111 solid;
+}
+.border-bottom {
+    border-bottom: 1px #111 solid;
+}
+.border-all {
+    border-top: 1px #111 solid;
+    border-bottom: 1px #111 solid;
+    border-left: 1px solid #111;
+    border-right: 1px #111 solid;
+}
+.border-none {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0;
+    border-right: 0;
+}
+.border-right-none{
+    border-right: 0;
+}
+.border-left-none{
+    border-left: 0;
+}
+.border-top-none{
+    border-top: 0;
+}
+.border-bottom-none{
+    border-bottom: 0;
+}
+
+.quo-back td {
+    padding: 10px;
+    font-size: 11px;
+    text-align: justify;
+}
+
+.quo-back hr {
+    border-top: 1px solid #000;
+}
+.total-tr td {
+    padding: 0;
+}
+
+
+.po-table-footer {
+    font-size: 10px;
+}
+
+.pototal {
+    height: 5px;
+    font-size: 13px;
+
+}
+
+.posign {
+    padding-left: 28px;
+    padding-top: 40px;
+}
+
+.poterms {
+    margin-left: -20px;
+}
+
+.traveler-content {
+    margin: 20px;
+    font-size: 12px;
+}
+
+.traveler-content img{
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#traveler-content-table .border-all{
+    border-color: #ccc;
+}
+
+#traveler-content-table thead tr th{
+    padding: 5px;
+}
+
+.arc-remark-enclosed {
+    position: relative;
+    bottom: -23px;
+}
+
+.print-arc .background {
+    width: 100px;
+    height: 50px;
+    padding: 0; 
+    margin: 0
+}
+.line1 {
+    width: 565px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: 
+        translateY(0) 
+        translateX(-27px) 
+        rotate(21deg);
+    position: absolute;
+    top: 366px;
+}
+.line2 {
+    width: 566px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: 
+        translateY(0) 
+        translateX(-28px) 
+        rotate(-21deg);
+    position: absolute;
+    top: 365px;
+}
+.line3 {
+    width: 560px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: 
+        translateY(0) 
+        translateX(-27px) 
+        rotate(21deg);
+    position: absolute;
+    top: 366px;
+}
+.line4 {
+    width: 560px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: 
+        translateY(0) 
+        translateX(-28px) 
+        rotate(-21deg);
+    position: absolute;
+    top: 365px;
+}
+
+
+.line1-easa {
+    width: 540px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-18px) rotate(17deg);
+    position: absolute;
+    top: 339px;
+}
+.line2-easa {
+    width: 545px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-21px) rotate(-17deg);
+    position: absolute;
+    top: 341px;
+}
+
+
+.line3-easa {
+    width: 549px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-17px) rotate(16deg);
+    position: absolute;
+    top: 337px;
+}
+.line4-easa {
+    width: 546px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-14px) rotate(-17deg);
+    position: absolute;
+    top: 337px;
+}
+
+
+
+.line1-faa {
+    width: 540px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-18px) rotate(19deg);
+    position: absolute;
+    top: 352px;
+}
+.line2-faa {
+    width: 536px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-21px) rotate(-19deg);
+    position: absolute;
+    top: 350px;
+}
+.line3-faa {
+    width: 549px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-17px) rotate(18deg);
+    position: absolute;
+    top: 350px;
+}
+.line4-faa {
+    width: 560px;
+    border-bottom: 1px solid #555;
+    -webkit-transform: translateY(0) translateX(-20px) rotate(-18deg);
+    position: absolute;
+    top: 351px;
+}
+
+.print-coc {
+    font-size: 13px;
+}
+
+.coc-underline{
+    display:inline-block; 
+    width:150px; 
+    border-bottom: 1px solid #000;
+}
+.print-arc .minor-padding {
+    padding: 2px;
+}

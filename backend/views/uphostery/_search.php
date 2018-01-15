@@ -1,0 +1,117 @@
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+
+use common\models\Setting;
+
+/* @var $this yii\web\View */
+/* @var $model common\models\SearchUphostery */
+/* @var $form yii\widgets\ActiveForm */
+$dataUphosteryType = Setting::dataUphosteryType();
+$dataUphosteryScope = Setting::dataUphosteryScope();
+$dataUphosteryStatus = Setting::dataUphosteryStatus();
+?>
+
+<div class="uphostery-order-search">
+
+    <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Filter</h3>
+        </div>
+        <div class="box-body">
+                <?php $form = ActiveForm::begin([
+                    'action' => ['index'],
+                    'method' => 'get',
+                ]); ?>
+
+
+        
+            <div class="col-sm-2 col-xs-12">    
+                <?= $form->field($model, 'uphostery_type')->dropDownList($dataUphosteryType,['prompt' => 'All Uphostery Type'])->label(false) ?>
+            </div>  
+
+        
+            <div class="col-sm-2 col-xs-12">    
+                <?= $form->field($model, 'uphostery_scope')->dropDownList($dataUphosteryScope,['prompt' => 'All Uphostery Scope'])->label(false) ?>
+            </div>   
+
+            <div class='col-sm-2 col-xs-12'>    
+                <?= $form->field($model, 'uphostery_no')->textInput(['autocomplete' => 'off', 'placeholder' => 'Uphostery No.'])->label(false) ?>
+
+            </div>
+
+            <div class='col-sm-2 col-xs-12'>    
+                <?= $form->field($model, 'customer_name')->textInput(['autocomplete' => 'off', 'placeholder' => 'Customer Name'])->label(false) ?>
+
+            </div>
+            <div class='col-sm-2 col-xs-12'>    
+                <?php /* $form->field($model, 'part_no')->textInput(['autocomplete' => 'off', 'placeholder' => 'Part No.'])->label(false)*/ ?>
+
+            </div>
+
+            <div class='col-sm-2 col-xs-12'>    
+                <?= $form->field($model, 'customer_po_no')->textInput(['autocomplete' => 'off', 'placeholder' => 'Customer PO'])->label(false) ?>
+            </div>
+
+            <div class='col-sm-2 col-xs-12'>    
+                <?= $form->field($model, 'from_date')->textInput(['id' => 'datepicker', 'autocomplete' => 'off', 'placeholder' => 'From Date', 'readonly' => true])->label(false) ?>
+            </div>    
+
+            <div class='col-sm-2 col-xs-12'>    
+                <?= $form->field($model, 'to_date')->textInput(['id' => 'datepicker1', 'autocomplete' => 'off', 'placeholder' => 'To Date', 'readonly' => true])->label(false) ?>
+            </div>    
+
+            <div class='col-sm-2 col-xs-12'>    
+                <?= $form->field($model, 'status')->dropDownList($dataUphosteryStatus,['class' => 'select2'])->label(false) ?>
+            </div>    
+            
+    <?php // echo $form->field($model, 'date') ?>
+
+    <?php // echo $form->field($model, 'part_no') ?>
+
+    <?php // echo $form->field($model, 'received_date') ?>
+
+    <?php // echo $form->field($model, 'qc_notes') ?>
+
+    <?php // echo $form->field($model, 'inspection') ?>
+
+    <?php // echo $form->field($model, 'corrective') ?>
+
+    <?php // echo $form->field($model, 'disposition_note') ?>
+
+    <?php // echo $form->field($model, 'hidden_damage') ?>
+
+    <?php // echo $form->field($model, 'inspector') ?>
+
+    <?php // echo $form->field($model, 'supervisor') ?>
+
+    <?php // echo $form->field($model, 'arc_remark') ?>
+
+    <?php // echo $form->field($model, 'created') ?>
+
+    <?php // echo $form->field($model, 'created_by') ?>
+
+    <?php // echo $form->field($model, 'updated') ?>
+
+    <?php // echo $form->field($model, 'updated_by') ?>
+
+    <?php // echo $form->field($model, 'approved') ?>
+
+    <?php // echo $form->field($model, 'deleted') ?>
+
+        <div class="col-sm-12 text-right">
+            <div class="form-group">
+                <?= Html::submitButton('<i class=\"fa fa-search\"></i> Search', ['class' => 'btn btn-primary']) ?>
+                <?= Html::a( 'Reset', Url::to(['index']), array('class' => 'btn btn-default')) ?>
+                
+            </div>
+        </div>
+
+        <?php ActiveForm::end(); ?>
+        </div>
+    </div>
+
+</div>

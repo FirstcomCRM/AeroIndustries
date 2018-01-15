@@ -1,0 +1,375 @@
+html,
+body {
+    height: 100%;
+}
+
+.wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+    content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view td {
+    white-space: nowrap;
+}
+
+.grid-view .filters input,
+.grid-view .filters select {
+    min-width: 50px;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav > li > form {
+    padding: 8px;
+}
+
+@media(max-width:768px) {
+	.nav li > form {
+	    padding: 3px;
+	}
+}
+
+.nav > li > form > button:hover {
+    text-decoration: none;
+}
+
+.select2-container .select2-selection--single {
+    height: 32px;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 0px;
+}
+
+.box-body  .select2 {
+    width: 100% !important;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.uncapitalize {
+    text-transform: none;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.shorten-text {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#datepicker1, #datepicker2, #datepicker3. #datepicker4 {
+    cursor: pointer;
+}
+
+.po-table table {
+    width: 100%;
+}
+
+.po-table .po-table-header {
+    background: #eee;
+    line-height: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.po-table table thead th{
+    background: #eee;
+    line-height: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.do-table table {
+    width: 100%;
+}
+
+.do-table thead {
+    background: #eee;
+    line-height: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.do-table table thead th{
+    background: #eee;
+    line-height: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.wo-table table {
+    width: 100%;
+}
+
+.wo-table table thead th{
+    background: #eee;
+    line-height: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.wo-table table tbody tr td {
+    padding: 10px;
+}
+
+.quo-table {
+    width: 100%;
+}
+
+
+.quo-table tbody td{
+    vertical-align: top;
+}
+.quo-table tbody td .form-group{
+    margin: 3px;
+}
+
+
+.box .border-left{
+    border-left: 1px solid #111;
+}
+.box .border-right{
+    border-right: 1px #111 solid;
+}
+.box .border-top {
+    border-top: 1px #111 solid;
+}
+.box .border-bottom {
+    border-bottom: 1px #111 solid;
+}
+
+.border-left{
+    border-left: 1px solid #111;
+}
+.border-right{
+    border-right: 1px #111 solid;
+}
+.border-top {
+    border-top: 1px #111 solid;
+}
+.border-bottom {
+    border-bottom: 1px #111 solid;
+}
+.border-all {
+    border-top: 1px #111 solid;
+    border-bottom: 1px #111 solid;
+    border-left: 1px solid #111;
+    border-right: 1px #111 solid;
+}
+.border-none {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0;
+    border-right: 0;
+}
+
+
+.border-left-bold{
+    border-left: 2px solid #111 !important;
+}
+.border-right-bold{
+    border-right: 2px #111 solid !important;
+}
+.border-top-bold{
+    border-top: 2px #111 solid !important;
+}
+.border-bottom-bold{
+    border-bottom: 2px #111 solid !important;
+}
+.border-all-bold{
+    border-top: 1px #111 solid;
+    border-bottom: 1px #111 solid;
+    border-left: 1px solid #111;
+    border-right: 1px #111 solid;
+}
+
+.po-form table thead{
+    background-color: #ccc;
+}
+.po-form table thead td{
+    font-weight: bold;
+}
+.po-form table td{
+    padding: 10px;
+}
+
+.po-total table td{
+    padding: 1px 5px;
+}
+
+.stock-requisition-table {
+    width: 97%;
+   /* margin-left: 20px;
+    margin-right: 20px;*/
+}
+
+.stock-requisition-table thead tr td{
+    padding: 8px;
+    color: #fff;
+}
+.stock-required-table thead{
+    background: #3C8DBC;
+}
+
+.stock-out-table thead{
+    background: #00a65a;
+}
+
+.stock-return-table thead{
+    background: #DD4B39;
+}
+
+
+.alert {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.final-inspection-content {
+    padding: 50px;
+    width: 800px;
+    border: 1px #eee solid;
+}
+.traveler-preview {
+    text-align:justify;
+}
+
+.traveler-preview img {
+    width: 100%;
+}
+
+.sub-section-added-link a,
+.section-added-link a{
+}
+
+
+.sub-section-added-link .active a,
+.section-added-link .active a{
+    color: #1A2226;
+    font-weight: bold;
+}
+
+.text-small {
+    font-size: 10px;
+}
+.text-xsmall {
+    font-size: 8px;
+}
+
+.padding-5 {
+    padding:5px;
+}
+
+.padding-10 {
+    padding:10px;
+}
+
+.padding-20 {
+    padding:20px;
+}
+
+.background-grey {
+    background: #ccc;
+}
+
+.requisition-menu {
+    height: 160px
+}
+.po-menu {
+    height: 160px
+}
+
+body .form-group.has-success label {
+    color: #000;
+}
+
+body .form-group.has-success .form-control {
+    border-color: #d2d6de;
+}

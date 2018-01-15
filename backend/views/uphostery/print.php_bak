@@ -1,0 +1,592 @@
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\DetailView;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+
+/* @var $this yii\web\View */
+/* @var $model common\models\Uphostery */
+
+use common\models\Currency;
+use common\models\Customer;
+use common\models\Part;
+use common\models\User;
+use common\models\Setting;
+
+$upNumber = 'Uphostery No Missing';
+if ( $model->uphostery_scope && $model->uphostery_type ) {
+    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+}
+
+
+$id = $model->id;
+$this->title = $upNumber;
+$this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+
+$dataCustomer = ArrayHelper::map(Customer::find()->all(), 'id', 'name');
+$dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
+$dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
+$dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
+$dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
+$serial = false;
+$batch = false;
+if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) { 
+    $serial = true;
+} 
+if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) { 
+    $batch = true;
+} 
+
+
+?>
+    <!-- Content Header (Page header) -->
+<div class="print-area">
+
+
+<?php /*page 1*/ ?> 
+    <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem; height: 100%">
+        
+        <tr>
+            <td width="50%">
+                <img src="images/logo.png">
+            </td>
+            <td align="right">
+                <div style="text-align:right; font-size: 10pt">
+                    Aero Industries Pte. Ltd.<br>
+                    28 Changi North way<br>
+                    Singapore 498813<br>
+                    Tel: (65) 6353 8003 &nbsp; &nbsp;
+                    Fax: (65) 6353 3578<br>
+                    Email: sales@aeroindustries.sg
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            <br>
+            </td>
+        </tr>
+        <tr class="">
+            <td colspan="2" align="center">
+                <h1>
+                    Uphostery
+                    <small><?= Html::encode($upNumber) ?></small>
+                </h1>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <?php if ( $att ) {  ?>
+                    <img src="uploads/up/<?= $att[0]['value'] ?>" style="height:350px">
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="">
+
+                    <table class="box-body preview-po uphostery-order-table" width="100%">
+                        <tr>
+                            <td class="td-bg">
+                                <label>Part Number</label>
+                            </td>
+                            <td class="td-bg">
+                                <label>Description</label>
+                            </td>
+                            <td class="td-bg">
+                                <label>Serial / Batch Numbers</label>
+                            </td>
+                            <td class="td-bg">
+                                <label>Date Received</label>
+                            </td>
+                            <td class="td-bg">
+                                <label>Customer</label>
+                            </td>
+                            <td class="td-bg">
+                                <label>Customer PO Number</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">
+                                <?= $model->part_no ?>
+                            </td>
+                            <td align="left">
+                                <?= $model->desc ?>
+                            </td>
+                            <td align="left">
+                                <?php if ( ! $serial && ! $batch ) { ?>
+                                    N/A
+                                <?php } else if ( $serial && ! $batch ) { ?>
+                                    <?= $model->serial_no ?>
+                                <?php } else if ( !$serial && $batch) { ?>
+                                    <?= $model->batch_no ?>
+                                <?php } else if ( $serial && $batch) { ?>
+                                    <?= $model->serial_no ?> /
+                                    <?= $model->batch_no ?>
+                                <?php } ?>
+                            </td>
+                            <td align="left">
+                                <?php 
+                                    if ( $model->received_date ) { 
+                                    $exIssue = explode(' ',$model->received_date);
+                                    $is = $exIssue[0];
+                                    
+                                    $time = explode('-', $is);
+                                    $monthNum = $time[1];
+                                    $dateObj   = DateTime::createFromFormat('!m', $monthNum);
+                                    $monthName = $dateObj->format('M'); // March
+                                    $receDate = $time[2] . ' ' .$monthName . ' ' .$time[0] ;
+
+                                ?>
+                                <?= $receDate ?>
+                                <?php } ?>
+                            </td>
+                            <td align="left">
+                                <?= $dataCustomer[$model->customer_id] ?>
+                            </td>
+                            <td align="left">
+                                <?= $model->customer_po_no ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-bg">
+                                <label>Eligibility</label>
+                            </td>
+                            <td rowspan="2" class="td-bg" valign="top">
+                                <label>QC Notes</label>
+                            </td>
+                            <td align="left" colspan="4" rowspan="2" valign="top">
+                                <?= $model->qc_notes ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">
+                                <?= $model->model ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-bg" align="center" colspan="6">
+                                <label>Customer Findings</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" colspan="6">
+                                <?= $model->complaint ?>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">
+                <br>
+                Form AI-019A Rev: Dated: 1/9/2008
+            </td>
+        </tr>
+    </table> 
+
+<?php /*page 2*/ ?>    
+    <div class="page-break"></div>
+
+    <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-top:40px;font-size: 11px;">
+        <tr>
+            <td align="left">
+                <h3>Uphostery <?= $upNumber ?></h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="preview-po uphostery-order-print-table" width="100%" border="1">
+                    <?php /* 6 col */ ?>
+                    <tr>
+                        <td class="td-label" width="180px">
+                            Part Number/
+                            Description
+                        </td>
+                        <td class="td-label" width="140px">
+                            Serial/Batch Number
+                        </td>
+                        <td class="td-label">
+                            Date Received
+                        </td>
+                        <td class="td-label">
+                            Customer
+                        </td>
+                        <td class="td-label">
+                            Customer PO
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?= $model->part_no ?><br>
+                            <?= $model->desc ?>
+                        </td>
+                        <td>
+                            <?php if ( ! $serial && ! $batch ) { ?>
+                                N/A
+                            <?php } else if ( $serial && ! $batch ) { ?>
+                                <?= $model->serial_no ?>
+                            <?php } else if ( !$serial && $batch) { ?>
+                                <?= $model->batch_no ?>
+                            <?php } else if ( $serial && $batch) { ?>
+                                <?= $model->serial_no ?> /
+                                <?= $model->batch_no ?>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?= $model->received_date ?>
+                        </td>
+                        <td>
+                            <?= $dataCustomer[$model->customer_id] ?>&nbsp;&nbsp;
+                        </td>
+                        <td>
+                            <?= $model->customer_po_no ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="td-label">
+                             Preliminary inspection and Evaluation
+                        </td>
+                    </tr>
+                    <?php foreach ($uphosteryPreliminary as $wP) { ?>
+                        <tr>
+                            <td valign="top">
+                                Discrepancy
+                            </td>
+                            <td colspan="5">
+                                <?= $wP->discrepancy ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">
+                                Corrective Action
+                            </td>
+                            <td colspan="5">
+                                <?= $wP->corrective ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                &nbsp;
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </table>
+                <table class="preview-po" width="100%">
+                    <tr>
+                        <td class="td-label" colspan="2">
+                            Technician
+                        </td>
+                        <td class="td-label" colspan="2">
+                            Inspector
+                        </td>
+                        <td class="td-label" colspan="2">
+                            Date
+                        </td>
+                    </tr>
+                    <?php foreach ($technicians as $key => $t) { ?>
+                    <tr>
+                        <td colspan="2">
+                            <?= $t->staff_name ?>
+                        </td>
+                        <td colspan="2">
+                            <?= $inspector[$key]['staff_name']?>
+                        </td>
+                        <td colspan="2">
+                            
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <div>
+        <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-top:40px">
+            <tr>
+                <td width="50%" valign="top">
+                    <strong>Supervisor Signature and date</strong><br>
+                    <?= $supervisor->staff_name ?>&nbsp;&nbsp;&nbsp;<?= $model->preliminary_date ?>
+                </td>
+                <td width="50%" valign="top">
+                    <strong>Inspector Signature and date</strong><br>
+                    &nbsp;&nbsp;&nbsp;<?= $model->preliminary_date ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <br>
+                    <br>
+                    <br>
+                </td>
+            </tr>
+            <?php /*
+            <tr>
+                <td width="50%" valign="top">
+                    <strong>Final Inspector Signature and date</strong><br>
+                    <?= $finalInspector->staff_name ?>
+                </td>
+                <td width="50%">
+                </td>
+            </tr>
+            */ ?>
+            <tr>
+                <td colspan="2">
+                    <br>
+                    <br>
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Form AI-019B Rev: Dated: 1/9/2008
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+<?php /*page 3*/ ?>    
+    <div class="page-break"></div>
+
+    <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-top:40px;font-size: 11px;">
+        <tr>
+            <td align="left">
+                <h3>Uphostery <?= $upNumber ?></h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="preview-po uphostery-order-print-table" width="100%" border="1" >
+                    <?php /* 6 col */ ?>
+                    <tr>
+                        <td class="td-label" width="180px">
+                            Part Number/
+                            Description
+                        </td>
+                        <td class="td-label" width="140px">
+                            Serial/Batch Number
+                        </td>
+                        <td class="td-label">
+                            Date Received
+                        </td>
+                        <td class="td-label">
+                            Customer
+                        </td>
+                        <td class="td-label">
+                            Customer PO
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?= $model->part_no ?><br>
+                            <?= $model->desc ?>
+                        </td>
+                        <td>
+                            <?php if ( ! $serial && ! $batch ) { ?>
+                                N/A
+                            <?php } else if ( $serial && ! $batch ) { ?>
+                                <?= $model->serial_no ?>
+                            <?php } else if ( !$serial && $batch) { ?>
+                                <?= $model->batch_no ?>
+                            <?php } else if ( $serial && $batch) { ?>
+                                <?= $model->serial_no ?> /
+                                <?= $model->batch_no ?>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?= $model->received_date ?>
+                        </td>
+                        <td>
+                            <?= $dataCustomer[$model->customer_id] ?>&nbsp;&nbsp;
+                        </td>
+                        <td>
+                            <?= $model->customer_po_no ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                        &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="td-label">
+                             Hidden Damage Inspection
+                        </td>
+                    </tr>
+                    <?php if ($hiddenDamage) { ?>
+                        <?php foreach ($hiddenDamage as $wP) { ?>
+                            <tr>
+                                <td valign="top">
+                                    Discrepancy
+                                </td>
+                                <td colspan="5">
+                                    <?= $wP->discrepancy ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    Corrective Action
+                                </td>
+                                <td colspan="5">
+                                    <?= $wP->corrective ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <tr>
+                            <td valign="top">
+                                Discrepancy
+                            </td>
+                            <td colspan="5">
+                                Nil
+                                <br>
+                                <br>
+                                <br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">
+                                Corrective Action
+                            </td>
+                            <td colspan="5">
+                                <br>
+                                <br>
+                                <br>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                &nbsp;
+                            </td>
+                        </tr>
+
+                    <?php } ?>
+                </table>
+                <table class="box-body preview-po" width="100%" >
+                    <tr>
+                        <td class="td-label">
+                            Technician
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td class="td-label">
+                            Inspector
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td class="td-label">
+                            Date
+                        </td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                    <?php foreach ($technicians as $key => $t) { ?>
+                    <tr>
+                        <td>
+                            <?= $t->staff_name ?>
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            <?= $inspector[$key]['staff_name']?>
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <div class="print-footer">
+        <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-top:40px">
+            <tr>
+                <td width="50%" valign="top">
+                    <strong>Supervisor Signature and date</strong><br>
+                    <?= $supervisor->staff_name ?><br>
+                    <?= $model->hidden_date ?>
+                </td>
+                <td width="50%" valign="top">
+                    <strong>Inspector Signature and date</strong><br>
+                    <?= $model->hidden_date ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <br>
+                    <br>
+                    <br>
+                </td>
+            </tr>
+            
+            <tr>
+                <td colspan="2">
+                    <br>
+                    <br>
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    Form AI-019C Rev: Dated: 1/9/2008
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+
+<div class="row text-center">
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-2"><br>
+        <button class="btn btn-danger form-control print-button">Print</button>
+    </div>
+    <div class="col-sm-2"><br>
+        <button class="btn btn-default form-control close-button">Close</button>
+    </div>
+</div>
