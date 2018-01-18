@@ -37,7 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <!-- /.box-header -->
 
-                        <div class="box-body">
+                        <div class="box-body table-responsive">
+
                             <?= GridView::widget([
                                 'dataProvider' => $dataProvider,
                                 // 'filterModel' => $searchModel,
@@ -46,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     'status',
                                     'company_name',
-                                    
+
                                     [
                                         'attribute' => 'addr',
                                         'label' => 'Address',
