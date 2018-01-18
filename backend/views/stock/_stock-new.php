@@ -15,7 +15,7 @@ use common\models\Part;
 use common\models\StorageLocation;
 use common\models\Unit;
 use common\models\PurchaseOrder;
-use common\models\GeneralPO;
+use common\models\GeneralPo;
 use common\models\Currency;
 use common\models\Supplier;
 /* @var $this yii\web\View */
@@ -37,7 +37,7 @@ foreach ( $dataPo as $id => $dp) {
     $created = $dataAllPOCreated[$id];
     $dataPurchaseOrder[$id] = PurchaseOrder::getPONo($dp,$created);
 }
-$dataGPo = GeneralPO::dataGPO();
+$dataGPo = GeneralPo::dataGPO();
 $dataAllGPOCreated = GeneralPO::dataAllGPOCreated();
 $dataGeneralPO = [];
 foreach ( $dataGPo as $id => $dp) {
@@ -53,13 +53,14 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
 
 ?>
 
+
 <div class="stock-form">
     <section class="content">
         <?php $form = ActiveForm::begin(); ?>
         <div class="form-group text-right">
             <?php if ( ! $allReceivedStatus ) { ?>
                 <?= Html::submitButton('<i class="fa fa-save"></i> Save', ['class' => 'btn btn-primary']) ?>
-            <?php } ?> 
+            <?php } ?>
             <?= Html::a( 'Back', Url::to(['index']), array('class' => 'btn btn-default')) ?>
             &nbsp;
         </div>
@@ -81,7 +82,7 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                     <?php } ?>
                                 </div>
                                 <!-- /.box-header -->
-                                            
+
                                 <div class="box-body ">
                                     <div class="col-sm-12 col-xs-12">
                                         <div class="form-group field-stock-purchase_order_id">
@@ -98,20 +99,20 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                         }
                                                     ?>
                                                     <optgroup label="Parts PO">
-                                                        <?php foreach ($dataPurchaseOrder as $id => $dataP) {  ?> 
+                                                        <?php foreach ($dataPurchaseOrder as $id => $dataP) {  ?>
                                                             <?php $selected1 = $varSelected == $id . '-part' ?'selected':'';?>
                                                             <option value="<?= $id ?>-part" <?=$selected1?>><?=$dataP?></option>
                                                         <?php } ?>
                                                     </optgroup>
                                                     <optgroup label="General PO">
-                                                        <?php foreach ($dataGeneralPO as $id => $dataP) {  ?> 
+                                                        <?php foreach ($dataGeneralPO as $id => $dataP) {  ?>
                                                             <?php $selected2 = $varSelected == $id . '-tool' ?'selected':'';?>
                                                             <option value="<?= $id ?>-tool" <?=$selected2?>><?=$dataP?></option>
                                                         <?php } ?>
                                                     </optgroup>
                                                 </select>
                                                 <div class="help-block"></div>
-                                            </div> 
+                                            </div>
                                         </div>
 
                                         <?php if ( $purchaseOrder && $purchaseOrderDetail ) { ?>
@@ -125,7 +126,7 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                     <input type="text" id="stock-freight-top" class="form-control">
                                                     <div class="help-block">
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </div>
 
                                         <?php }  ?>
@@ -142,7 +143,7 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                     <div class="box-header with-border">
                                       <h3 class="box-title">PO Details</h3>
                                     </div>
-                                    <div class="box-body">            
+                                    <div class="box-body">
 
                                         <div class="col-sm-6 col-xs-12">
                                             <div class="col-sm-4">
@@ -165,10 +166,10 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                 <label>Date Issued:</label>
                                             </div>
                                             <div class="col-sm-8">
-                                                <?php 
+                                                <?php
                                                     $exIssue = explode(' ',$purchaseOrder->issue_date);
                                                     $is = $exIssue[0];
-                                                    
+
                                                     $time = explode('-', $is);
                                                     $monthNum = $time[1];
                                                     $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -183,10 +184,10 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                 <label>Delivery Date:</label>
                                             </div>
                                             <div class="col-sm-8">
-                                                <?php 
+                                                <?php
                                                     $exDelivery = explode(' ',$purchaseOrder->delivery_date);
                                                     $dd = $exDelivery[0];
-                                                    
+
                                                     $time = explode('-', $dd);
                                                     $monthNum = $time[1];
                                                     $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -223,7 +224,7 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                       <h3 class="box-title">Stock in</h3>
                                     </div>
                                     <!-- /.box-header -->
-                                    <div class="box-body">            
+                                    <div class="box-body">
                                         <table class="table table-striped table-bordered">
 
                                             <?php $loop = 1; ?>
@@ -249,7 +250,7 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                     <?php $partId = $poD['part_id']; ?>
                                                     <tr>
                                                         <td>
-                                                           <?= $loop ?> 
+                                                           <?= $loop ?>
                                                         </td>
                                                         <td>
                                                             <?= $dataPart[$poD['part_id']] ?> [<?= $dataPartType[$poD['part_id']] ?>]
@@ -372,7 +373,7 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                     <?php /* if all received for this item */ ?>
                                                     <tr>
                                                         <td>
-                                                           <?= $loop ?> 
+                                                           <?= $loop ?>
                                                         </td>
                                                         <td>
                                                             <?= $dataPart[$poD['part_id']] ?>
