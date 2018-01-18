@@ -12,7 +12,7 @@ use common\models\GeneralPO;
 
 $this->title = 'General POs';
 $this->params['breadcrumbs'][] = $this->title;
-$gridColumns = 
+$gridColumns =
 
 [
     ['class' => 'yii\grid\SerialColumn'],
@@ -24,14 +24,14 @@ $gridColumns =
         'value' => function($model, $index, $column) {
             return GeneralPO::getGPONo($model->purchase_order_no,$model->created) ;
         },
-        
+
         'label' => 'PO Number',
     ],
     [
         'attribute' => 'supplier_id',
         'value' => 'supplier.company_name',
         'label' => 'Supplier',
-    ], 
+    ],
     [
         'attribute' => 'supplier_ref_no',
         'value' => 'supplier_ref_no',
@@ -53,7 +53,7 @@ $gridColumns =
             }
         },
     ],
-   
+
     // 'subtotal',
     // 'gst_rate',
     [
@@ -93,7 +93,7 @@ $gridColumns =
                                     'confirm' => 'Are you sure you want to cancel this purchase order?',
                                 ],
                     ]);
-                }   
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
@@ -147,6 +147,7 @@ $gridColumns =
                     <div class="col-sm-12 text-right export-menu">
                     <br>
                     <?= Html::a('<i class="fa fa-plus"></i> New General PO', ['new'], ['class' => 'btn btn-default']) ?>
+
                     <?php
 
                             /*Renders a export dropdown menu*/
@@ -173,16 +174,17 @@ $gridColumns =
                                 ]
                             ]);
                         ?>
+                        <br><br>
                     </div>
                     <!-- /.box-header -->
 
                     <div class="box-body">
-                    <?= 
+                    <?=
                         GridView::widget([
                             'dataProvider' => $dataProvider,
                             'columns' => $gridColumns,
                             'showFooter'=>true,
-                        ]); 
+                        ]);
                     ?>
 
                     </div>
