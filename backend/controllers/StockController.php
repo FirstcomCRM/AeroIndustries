@@ -22,6 +22,7 @@ use common\models\PurchaseOrder;
 use common\models\PurchaseOrderDetail;
 use common\models\GeneralPo;
 use common\models\GeneralPoDetail;
+use common\models\Setting;
 
 use yii\data\ArrayDataProvider;
 /**
@@ -32,12 +33,12 @@ class StockController extends Controller
     /**
      * @inheritdoc
      */
-    
+
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'Stock'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -50,7 +51,7 @@ class StockController extends Controller
                 $allow[$uGName] = true;
             }
 
-        }     
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -153,17 +154,17 @@ class StockController extends Controller
 
             $dataUnit = ArrayHelper::map(Unit::find()->where(['<>','status','inactive'])->all(), 'id', 'unit');
             /* custom sql query */
-                $sqlQuery = "  
-                            SELECT 
+                $sqlQuery = "
+                            SELECT
                                 s.id,
                                 s.part_id,
                                 p.part_no,
                                 p.restock,
                                 p.manufacturer
-                            FROM 
+                            FROM
                                 stock s,
                                 part p
-                            WHERE 
+                            WHERE
                                 s.part_id = p.id AND
                                 s.status = 'active'
                                 $filter
@@ -176,14 +177,14 @@ class StockController extends Controller
             /* custom sql query for grand total only */
                 foreach ( $stockQuery as $key => $sQ){
                     $partId = $sQ['part_id'];
-                    $sqlQueryTotal = "  
-                                SELECT 
+                    $sqlQueryTotal = "
+                                SELECT
                                     sum(quantity) sumsQ,
                                     unit_id
-                                FROM 
+                                FROM
                                     stock s
                                 WHERE
-                                    s.status = 'active' AND 
+                                    s.status = 'active' AND
                                     s.part_id = $partId
                             ";
                     $stockQtyTotal = Yii::$app->db->createCommand($sqlQueryTotal)->queryOne();
@@ -202,7 +203,7 @@ class StockController extends Controller
                     'sort' => [
                         'attributes' => ['part_id'],
                     ],
-                ]); 
+                ]);
 
 
             return $this->render('stock', [
@@ -232,13 +233,13 @@ class StockController extends Controller
          * @return mixed
          */
         public function actionPreviewStock($id)
-        {   
+        {
             $attachment = new StockAttachment();
             $oldAttachment = StockAttachment::find()->where(['stock_id' => $id])->all();
             $model = $this->findModel($id);
             $partId = $model->part_id;
             $stockPart = Stock::find()->where(['part_id' => $model->part_id])->all();
-            
+
                 $searchModel = new SearchStock();
                 $dataProvider = $searchModel->searchStock($partId, Yii::$app->request->queryParams);
 
@@ -251,7 +252,7 @@ class StockController extends Controller
                 'oldAttachment' => $oldAttachment,
             ]);
         }
-       
+
 
 
 
@@ -272,7 +273,7 @@ class StockController extends Controller
         $purchaseOrderDetail = false;
         $allReceivedStatus = true;
         $allReceivedStatusArr = array();
-        
+
         $dataCheckReceived = Stock::checkReceived($id);
         $purchaseOrder = $dataCheckReceived['purchaseOrder'];
         $purchaseOrderDetail = $dataCheckReceived['purchaseOrderDetail'];
@@ -280,6 +281,9 @@ class StockController extends Controller
 
         if ( $model->load(Yii::$app->request->post()) ) {
         /* if load model */
+        // echo '<pre>';
+      //    print_r(gettype($purchaseOrder));
+      //    echo '</pre>';die();
             if ( !empty ( $model->part_id ) ) {
                     $freight = 0;
                     $previousNo = 0;
@@ -287,10 +291,10 @@ class StockController extends Controller
                     $rec2 = 0;
                     $recNo = Stock::find()->where(['status'=>'active'])->orderBy('receiver_no DESC')->limit(1)->one();
                     $toolrecNo = Tool::find()->where(['status'=>'active'])->orderBy('receiver_no DESC')->limit(1)->one();
-                    if ( !empty ( $recNo ) ) {  
+                    if ( !empty ( $recNo ) ) {
                         $rec1 = $recNo->receiver_no;
                     }
-                    if ( !empty ( $toolrecNo ) ) {  
+                    if ( !empty ( $toolrecNo ) ) {
                         $rec2 = $toolrecNo->receiver_no;
                     }
                     if ( $rec1 >= $rec2 ) {
@@ -316,8 +320,10 @@ class StockController extends Controller
                             $allReceived[$podId] = true;
                         }
                     }
+
                     /* there is false meaning there still have remaining pod balance */
-                    if ( ! in_array(false, $allReceived) ) { 
+                    if ( ! in_array(false, $allReceived) ) {
+
                         $purchaseOrder->approved = 'closed';
                         $purchaseOrder->save();
                         if($stockType == 'part') {
@@ -325,21 +331,25 @@ class StockController extends Controller
                         } else {
                             Yii::$app->getSession()->setFlash('success', "Stock updated! All the item from GPO-" . sprintf("%008d", $purchaseOrder->purchase_order_no) . ' were received, PO Closed!');
                         }
+                        //edrEmailCompose
+                        $this->composeEmail($purchaseOrder);
                         $allReceivedStatus = true;
                     } else {
                         Yii::$app->getSession()->setFlash('success', 'Stock updated!');
                     }
+
                     return $this->redirect(['new', 'id' => $id,'r_n' => $previousNo]);
-            } 
+            }
         /* if load model ended */
-        } 
+        }
+
         return $this->render('new', [
             'model' => $model,
             'purchaseOrder' => $purchaseOrder,
             'purchaseOrderDetail' => $purchaseOrderDetail,
             'allReceivedStatus' => $allReceivedStatus,
         ]);
-        
+
     }
 
     /**
@@ -376,19 +386,19 @@ class StockController extends Controller
                         $stA->save();
 
                     }
-                        
-                }   
+
+                }
 
 
                 return $this->redirect(['preview', 'id' => $model->id]);
             }
-        } 
+        }
         return $this->render('edit', [
             'model' => $model,
             'attachment' => $attachment,
             'oldAttachment' => $oldAttachment,
         ]);
-        
+
     }
 
 
@@ -398,20 +408,20 @@ class StockController extends Controller
      * @return mixed
      */
     public function actionPreview($id)
-    {   
+    {
         $attachment = new StockAttachment();
         $oldAttachment = StockAttachment::find()->where(['stock_id' => $id])->all();
         $model = $this->findModel($id);
 
         $otherBatches = Stock::find()->where(['part_id' => $model->part_id])->andWhere(['<>','id', $id])->all();
-            
+
         $otherBatchesQty = 0;
-        $otherBatchesTotalQty = 0;        
-        foreach ( $otherBatches as $oB ) {  
+        $otherBatchesTotalQty = 0;
+        foreach ( $otherBatches as $oB ) {
             $otherBatchesQty += $oB->quantity;
             $otherBatchesTotalQty += $oB->quantity ;
         }
-        
+
         if ( $attachment->load(Yii::$app->request->post()) ) {
             $attachment->attachment = UploadedFile::getInstances($attachment, 'attachment');
 
@@ -457,7 +467,7 @@ class StockController extends Controller
      * @return mixed
      */
     public function actionReceiver($id)
-    {   
+    {
         $this->layout = 'print';
         $model = Stock::find()->where(['receiver_no' => $id])->groupBy(['part_id'])->all();
         $model2 = Tool::find()->where(['receiver_no' => $id])->groupBy(['part_id'])->all();
@@ -497,7 +507,7 @@ class StockController extends Controller
         ]);
     }
     /**
-     * Print for stock 
+     * Print for stock
      * @param integer $id = receiver_no .
      * @return mixed
      */
@@ -506,15 +516,15 @@ class StockController extends Controller
         /* get models  */
         $receiverNo = $id;
         $stockWithTheSameReceiverNo = [];
-        
+
         if ( $id ) {
-            $stockWithTheSameReceiverNo = Stock::find()->where(['receiver_no' => $receiverNo])->all();   
+            $stockWithTheSameReceiverNo = Stock::find()->where(['receiver_no' => $receiverNo])->all();
             /* receiver no will not be duplicated for stock and tool, they are using same running no. */
             $isTool = false;
             if ( empty($stockWithTheSameReceiverNo ) ) {
                 $isTool = true;
-                $stockWithTheSameReceiverNo = Tool::find()->where(['receiver_no' => $receiverNo])->groupBy('part_id')->all();  
-            }  
+                $stockWithTheSameReceiverNo = Tool::find()->where(['receiver_no' => $receiverNo])->groupBy('part_id')->all();
+            }
             // $stockWithTheSameReceiverNo[] = Tool::find()->where(['receiver_no' => $receiverNo])->groupBy('part_id')->all();
             $toolQty = Tool::find()->where(['receiver_no' => $receiverNo])->count();
         }
@@ -529,15 +539,15 @@ class StockController extends Controller
             'subTitle' => 'Print Receiver',
             'toolQty' => $toolQty,
         ]);
-        
+
     }
     /**
-     * Sticker for stock 
+     * Sticker for stock
      * @param integer $id = stock id .
      * @return mixed
      */
     public function actionSticker($id,$q,$pt)
-    {   
+    {
         $this->layout = 'print';
 
         $type = Part::find()->where(['id' => $pt])->one()->type;
@@ -553,7 +563,7 @@ class StockController extends Controller
             $receiverNo = $model->receiver_no;
             $po = GeneralPo::find()->where(['id' => $poId])->one();
         }
-               
+
         return $this->render('sticker', [
             'model' => $model,
             'po' => $po,
@@ -562,7 +572,7 @@ class StockController extends Controller
     }
 
 /**
- * 
+ *
  *
  *  AJAX FUNCTION.
  *
@@ -570,11 +580,11 @@ class StockController extends Controller
 
     /**
      * get qty available for work order stock out
-     * 
+     *
      */
-    
+
     public function actionAjaxCheckstock()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             // d(Yii::$app->request->post());exit;
@@ -582,12 +592,12 @@ class StockController extends Controller
 
             if ( isset ( Yii::$app->request->post()['selectedStockPartId'] ) ) {
                 $partId = Yii::$app->request->post()['selectedStockPartId'];
-            } 
+            }
             $part = Part::getPart($partId);
             $partType = $part->type;
             $partQ = Yii::$app->db->createCommand("SELECT sum(quantity) qty FROM stock WHERE part_id = $partId");
             $sumQ = $partQ->queryScalar();
-            
+
             $data['stQty'] = 0;
             $data['partType'] = $partType;
 
@@ -602,11 +612,11 @@ class StockController extends Controller
 
     /**
      * get qty available for work order stock out
-     * 
+     *
      */
-    
+
     public function actionAjaxAddstock()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             // d(Yii::$app->request->post());exit;
@@ -614,7 +624,7 @@ class StockController extends Controller
 
             $soQty = 0;
             $soSubQty = 0;
-            
+
             $stQty = 0;
             $stSubQty = 0;
 
@@ -625,29 +635,29 @@ class StockController extends Controller
 
             if ( !empty ( $postData['soPartId'] ) ) {
                 $soPartId = $postData['soPartId'];
-            } 
+            }
             if ( !empty ( $postData['soQty'] ) ) {
                 $soQty = $postData['soQty'];
-            } 
+            }
             if ( !empty ( $postData['soSubQty'] ) ) {
                 $soSubQty = $postData['soSubQty'];
-            } 
+            }
             if ( !empty ( $postData['stQty'] ) ) {
                 $stQty = $postData['stQty'];
-            } 
+            }
             if ( !empty ( $postData['stSubQty'] ) ) {
                 $stSubQty = $postData['stSubQty'];
-            } 
+            }
             if ( !empty ( $postData['soRemark'] ) ) {
                 $soRemark = $postData['soRemark'];
-            } 
+            }
             if ( !empty ( $postData['soUom'] ) ) {
                 $soUom = $postData['soUom'];
-            } 
+            }
             if ( !empty ( $postData['n'] ) ) {
                 $n = $postData['n'];
 
-            } 
+            }
             return $this->render('ajax-addstock', [
                 'soPartId' => $soPartId,
                 'soRemark' => $soRemark,
@@ -662,11 +672,11 @@ class StockController extends Controller
     }
     /**
      * stock info from ajax
-     * 
+     *
      */
-    
+
     public function actionGetStockinfo()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -678,7 +688,7 @@ class StockController extends Controller
             $batch_no = $getStock->batch_no;
             $hour_used = $getStock->hour_used;
             $expiration_date = $getStock->expiration_date;
-            
+
             return $this->render('get-stockinfo', [
                 'shelf_life' => $shelf_life,
                 'part_id' => $part_id,
@@ -690,11 +700,11 @@ class StockController extends Controller
     }
     /**
      * stock part from ajax
-     * 
+     *
      */
-    
+
     public function actionGetStockdropdown()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -712,4 +722,24 @@ class StockController extends Controller
             ]);
         }
     }
+
+    /*
+    * Function that sends an email notificaton when stocks has been received
+    */
+    protected function composeEmail($purchaseOrder){
+      $data = Setting::find()->where(['name'=>'Stocks Received Email Notification'])->one();
+      $message = '<p>Testing mssage in gmail smtp</p>';
+      //$data = Yii::$app->mailer->compose('email_notif',['purchaseOrder'=>$purchaseOrder])
+      $data = Yii::$app->mailer->compose(['html'=>'email_notif'],['purchaseOrder'=>$purchaseOrder])
+      ->setTo($data->value)
+    //    ->setTo('eumerjoseph.ramos@yahoo.com')
+      ->setFrom(['info@aeriindustriesdemo.com' => 'info@aeriindustriesdemo.com'])
+      ->setSubject('Stocks Received')
+    //  ->setHtmlBody($message)
+      ->send();
+
+
+
+    }
+
 }
