@@ -2,10 +2,10 @@
 
 
 /*********************************************************
- *	
+ *
  *	MISC
- *	
- *	
+ *
+ *
 *********************************************************/
 
     $('.back-button').click(function(){
@@ -25,7 +25,7 @@
 
 	/*********************************************************
 	 *	ALL :: DATEPICKER
-	 *	
+	 *
 	*********************************************************/
 
 	  $(function () {
@@ -82,7 +82,7 @@
 
 	/*********************************************************
 	 *	ALL :: PRINT FUNCTION
-	 *	
+	 *
 	*********************************************************/
 		$('.print-button').click(function(){
 		    window.print();
@@ -90,7 +90,7 @@
 
 	/*********************************************************
 	 *	ALL :: PRINT STICKER FUNCTION
-	 *	
+	 *
 	*********************************************************/
 		$('.print-sticker').click(function(){
 			var id = $('#re-no').val();
@@ -101,15 +101,15 @@
 
 	/*********************************************************
 	 *	ALL :: SEARCH DROP DOWN
-	 *	
+	 *
 	*********************************************************/
 		$(".select2").select2();
-		$(".select3").select2({ width: '100%' }); 
+		$(".select3").select2({ width: '100%' });
 
-	       
+
 	/*********************************************************
 	 *	ALL :: Fixing Kartik-v/export dropdown now dropping
-	 *	
+	 *
 	*********************************************************/
 
 		$(".export-export-all").click(function(e){
@@ -128,7 +128,7 @@
 	    	$('.drop-dropdown-' + classSe).toggle('fast');
 		    e.stopPropagation();
 		});
-		
+
 		$('.generate-dropdown').click(function(e){
 			var classes = $(this).attr('class').split(' ');
 			var classSe = classes[4];
@@ -136,7 +136,7 @@
 	    	$('.generate-dropdown-' + classSe).toggle('fast');
 		    e.stopPropagation();
 		});
-		
+
 		$(document).click(function(){
 		  $('.export-menu').find(".dropdown-menu").not(".kv-checkbox-list").hide();
 		  $('.kv-checkbox-list').hide();
@@ -159,10 +159,10 @@
 
 
 /*********************************************************
- *	
- *	USER PERMISSION 
- *	
- *	
+ *
+ *	USER PERMISSION
+ *
+ *
 *********************************************************/
 	$('#userGroup').change(function(){
 		$('#w0').submit();
@@ -170,23 +170,23 @@
 	$('#controllerName').change(function(){
 		$('#w0').submit();
 	});
-	$('#select-all').click(function(event) {   
+	$('#select-all').click(function(event) {
 	    $(':checkbox').each(function() {
-	        this.checked = true;                        
+	        this.checked = true;
 	    });
 	});
 
 
 /*********************************************************
- *	
+ *
  *	CUSTOMER
- *	
- *	
+ *
+ *
 *********************************************************/
-		
+
 		/*********************************************************
 		 *	CUSTOMER :: AJAX ADD COMPANY ADDRESS
-		 *	
+		 *
 		*********************************************************/
 
 			function addCompanyAddress(){
@@ -211,7 +211,7 @@
 
 		/*********************************************************
 		 *	CUSTOMER :: AJAX ADD SHIPPING ADDRESS
-		 *	
+		 *
 		*********************************************************/
 
 			function addShippingAddress(){
@@ -236,7 +236,7 @@
 
 		/*********************************************************
 		 *	CUSTOMER :: AJAX ADD BILLING ADDRESS
-		 *	
+		 *
 		*********************************************************/
 
 			function addBillingAddress(){
@@ -258,17 +258,17 @@
 					'</div>'+
 				'');
 			}
-			
+
 /*********************************************************
- *	
+ *
  *	PURCHASE ORDER
- *	
- *	
+ *
+ *
 *********************************************************/
-		
+
 		/*********************************************************
 		 *	PURCHASE ORDER :: PARTS ONCHANGE CHECK STOCK
-		 *	
+		 *
 		*********************************************************/
 
 		 $('#purchaseorderdetail-part_id').change(function(){
@@ -278,7 +278,7 @@
 		        selectedStockPartId:part_id
 		    },
 		    function(data, status){
-		        returnData = JSON.parse(data);		    
+		        returnData = JSON.parse(data);
 		        var qty = 0;
 		        var textToAppend = '0 stock';
 		        if ( returnData['stQty'] > 0 ) {
@@ -293,12 +293,12 @@
 		        }
 			        $('.stock-result').append(textToAppend + ' remaining');
 		    });
-		 });	
+		 });
 
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: ONCHANGE UPDATE INDIVIDUAL SUBTOTAL
-		 *	
+		 *
 		*********************************************************/
 
 		 function updatePOSubTotal() {
@@ -312,7 +312,7 @@
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: ONCHANGE CONVERT UNIT
-		 *	
+		 *
 		*********************************************************/
 
 		 function convert() {
@@ -321,11 +321,11 @@
 		 	var converted_unit = unit * conversion_rate;
 		 	$('#converted_unit').val(converted_unit.toFixed(2));
 	 		updatePOSubTotal();
-		 }	
+		 }
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: ONCHANGE UPDATE INDIVIDUAL SUBTOTAL
-		 *	
+		 *
 		*********************************************************/
 
 		 function addPOItem() {
@@ -344,7 +344,7 @@
 			 	} else if ( unit == '' ) {
 			 		alert('Please key in unit price');
 			 	} else {
-			 		
+
 				 	var n = $('#n').val();
 
 				    n ++ ;
@@ -371,14 +371,14 @@
 				 	setTimeout(function(){
 				 		getPoTotal();
 					}, 500);
-			 	}	
+			 	}
 
 		 	}
 		 }
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: REMOVE ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 function removePOItem(n) {
@@ -391,7 +391,7 @@
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: ONCHANGE UPDATE TOTAL
-		 *	
+		 *
 		*********************************************************/
 			function getPoTotal(){
 				// alert();
@@ -417,8 +417,8 @@
 			}
 
 		/*********************************************************
-		 *	PURCHASE ORDER :: CHANGE CURRENCY 
-		 *	
+		 *	PURCHASE ORDER :: CHANGE CURRENCY
+		 *
 		*********************************************************/
 
 			 $('.currency-selection').change(function(){
@@ -440,7 +440,7 @@
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: UPDATE UNIT AFTER CURRENCY CHANGED
-		 *	
+		 *
 		*********************************************************/
 
 			 function afterConversion() {
@@ -460,7 +460,7 @@
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: GET CUSTOMER ADDRESS
-		 *	
+		 *
 		*********************************************************/
 			 $('.po-supplier').change(function(){
 				var supplierId = $('.po-supplier').val();
@@ -482,11 +482,33 @@
 			 });
 
 
+       /*********************************************************
+   		 *	GPO PURCHASE ORDER :: GET CUSTOMER ADDRESSES 
+   		 *	EDR
+   		*********************************************************/
+      $('.gpo-supplier').change(function(){
+       var supplierId = $('.gpo-supplier').val();
+       // console.log(supplierId);
+       $.post("?r=general-po/ajax-address",{
+             supplierId:supplierId
+         },
+         function(data, status){
+           $('.gpo_pay_addr').empty();
+           $('.gpo_pay_addr').append(data);
+         });
+
+       $.post("?r=general-po/ajax-attention",{
+             supplierId:supplierId
+         },
+         function(data, status){
+           $('.gpo-attention').val(data);
+         });
+      });
 
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: EDIT ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 // function editPOItem(n) {
@@ -500,7 +522,7 @@
 
 		/*********************************************************
 		 *	PURCHASE ORDER :: SAVE EDITED ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 // function savePOItem(n) {
@@ -512,16 +534,16 @@
 		 // }
 
 /*********************************************************
- *	
- *	GENERAL PO 
- *	
- *	
+ *
+ *	GENERAL PO
+ *
+ *
 *********************************************************/
 
 
 		/*********************************************************
 		 *	GENERAL PO :: ONCHANGE UPDATE INDIVIDUAL SUBTOTAL
-		 *	
+		 *
 		*********************************************************/
 
 		 function addGPOItem() {
@@ -541,7 +563,7 @@
 			 	} else if ( unit == '' ) {
 			 		alert('Please key in unit price');
 			 	} else {
-			 		
+
 				 	var n = $('#n').val();
 
 				    n ++ ;
@@ -568,23 +590,23 @@
 				 	setTimeout(function(){
 				 		getPoTotal();
 					}, 500);
-			 	}	
+			 	}
 
 		 	}
 		 }
 
 /*********************************************************
- *	
- *	QUOTATION 
- *	
- *	
+ *
+ *	QUOTATION
+ *
+ *
 *********************************************************/
 
 
 
 		/*********************************************************
 		 *	QUOTATION :: ONCHANGE UPDATE INDIVIDUAL SUBTOTAL - For parts
-		 *	
+		 *
 		*********************************************************/
 
 		 // function changeItemType(itemType) {
@@ -611,7 +633,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: ONCHANGE UPDATE INDIVIDUAL SUBTOTAL - For parts
-		 *	
+		 *
 		*********************************************************/
 
 		 function updateQuoSubTotalPar() {
@@ -624,7 +646,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: CONFIRM THE ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 function addQuoItemPar() {
@@ -645,7 +667,7 @@
 			 	} else if ( unit == '' ) {
 			 		alert('Please key in unit price');
 			 	} else {
-			 		
+
 				 	var n = $('#n').val();
 
 				    n ++ ;
@@ -672,13 +694,13 @@
 				 	setTimeout(function(){
 				 		getQuoTotal();
 					}, 500);
-			 	}	
+			 	}
 		 	}
 		 }
 
 		/*********************************************************
 		 *	QUOTATION :: EDIT ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 function editQuoItem(n) {
@@ -691,7 +713,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: REMOVE ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 function removeQuoItem(n) {
@@ -703,7 +725,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: CALCULATE EDITED ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 function updateQuoSubtotal(n) {
@@ -716,7 +738,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: SAVE EDITED ITEM
-		 *	
+		 *
 		*********************************************************/
 
 		 function saveQuoItem(n) {
@@ -729,7 +751,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: ONCHANGE UPDATE TOTAL
-		 *	
+		 *
 		*********************************************************/
 			function getQuoTotal(){
 				// alert();
@@ -756,7 +778,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: GET CUSTOMER ADDRESS
-		 *	
+		 *
 		*********************************************************/
 			$('#quotation-customer_id').change(function(){
 				var customerId = $('#quotation-customer_id').val();
@@ -773,7 +795,7 @@
 
 		/*********************************************************
 		 *	QUOTATION :: AUTO SELECT CUSTOMER WHEN WO IS SELECTED
-		 *	
+		 *
 		*********************************************************/
 			$('.work-order-selection').change(function(){
 				var woId = $('.work-order-selection').val();
@@ -794,20 +816,20 @@
 			});
 
 
-			
+
 
 
 /*********************************************************
- *	
- *	STOCK 
- *	
- *	
+ *
+ *	STOCK
+ *
+ *
 *********************************************************/
 
 
 		/*********************************************************
 		 *	STOCK :: CALCULATE FREIGHT
-		 *	
+		 *
 		*********************************************************/
 
 			$('#stock-freight-top').keyup(function() {
@@ -841,7 +863,7 @@
 
 		/*********************************************************
 		 *	STOCK :: PO ID ONCHANGE RETRIEVE ALL PO DATA
-		 *	
+		 *
 		*********************************************************/
 
 			function stockInPo() {
@@ -854,7 +876,7 @@
 
 		/*********************************************************
 		 *	RECEIVING LABEL :: RE ID ONCHANGE RETRIEVE ALL RE DATA
-		 *	
+		 *
 		*********************************************************/
 
 			function printStickerRe() {
@@ -866,7 +888,7 @@
 
 		/*********************************************************
 		 *	RECEIVING LABEL :: RE ID ONCHANGE RETRIEVE ALL RE DATA
-		 *	
+		 *
 		*********************************************************/
 
 			function printSticker(stockId) {
@@ -878,10 +900,10 @@
 
 		/************************************************************
 		 *	STOCK :: STOCK ISSUE CHANGE STOCK ID OF THE REQUISITION
-		 *	
+		 *
 		************************************************************/
 
-			
+
 			$('#editStockId').on('show.bs.modal', function (event) {
 				var button = $(event.relatedTarget) ;
 				var partid = button.data('partid') ;
@@ -895,7 +917,7 @@
 		        function(data, status){
 		        	$('.stock-dropdown').html(data);
 		        });
-				// get stock info 
+				// get stock info
 				$.post("?r=stock/get-stockinfo",{
 		            stockid:stockid
 		        },
@@ -908,7 +930,7 @@
 
 			$('.stock-dropdown').change(function(){
 				var stockid = $('.stock-dropdown').val() ;
-				// get stock info 
+				// get stock info
 				$.post("?r=stock/get-stockinfo",{
 		            stockid:stockid
 		        },
@@ -923,32 +945,32 @@
 			$('.save-stock-id').click(function(){
 				$.ajax({
 					type: "POST",
-					url: "?r=work-order/save-stockid", 
-					data: { 
+					url: "?r=work-order/save-stockid",
+					data: {
 						stockid: $('.stock-dropdown').val(),
 						reqid: $('#modal-req-id').val()
 					},
-					success: function(data){  
+					success: function(data){
 						$('.close-modal').click();
 						window.location.reload();
 					},
-					error: function(XMLHttpRequest, textStatus, errorThrown) { 
-						alert("ERROR!!!");           
-					} 
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+						alert("ERROR!!!");
+					}
 				});
-			}); 
+			});
 
 /*********************************************************
- *	
+ *
  *	TEMPLATE
- *	
- *	
+ *
+ *
 *********************************************************/
 
 
 		/*********************************************************
 		 *	TEMPLATE :: Add alternate part no.
-		 *	
+		 *
 		*********************************************************/
 			$('.btn-add-alt').click(function(){
 				var no = parseInt($('#no').val()) + 1;
@@ -959,15 +981,15 @@
 
 
 /*********************************************************
- *	
+ *
  *	WORK ORDER
- *	
- *	
+ *
+ *
 *********************************************************/
 
 		/*********************************************************
 		 *	WORK ORDER :: Ajax Search Parts
-		 *	
+		 *
 		*********************************************************/
 
 		    $('#workorderpart-part_no').on('input', function() {
@@ -990,14 +1012,14 @@
 		    function woSelectPart(partNo=null) {
 		    	var partNoText = "";
 		    	partNoText = partNo;
-	    	 	$('#workorderpart-part_no').val(partNoText);	
+	    	 	$('#workorderpart-part_no').val(partNoText);
 	    	 	getTemplate();
 		    }
 
 
 		/************************************************************
 		 *	WORK ORDER :: index change multiple wo's status at once
-		 *	
+		 *
 		************************************************************/
 
 			function update_status() {
@@ -1025,10 +1047,10 @@
 
 		/*********************************************************
 		 *	WORK ORDER :: Search template by part no
-		 *	
+		 *
 		*********************************************************/
 		    // $('#workorder-part_no').on('input', function() {
-		    function getTemplate() { 
+		    function getTemplate() {
 		        var partNoTemp = $('#workorderpart-part_no').val();
 		        if ( partNoTemp != '' ) {
 			        $.post("?r=work-order/get-template",{
@@ -1037,11 +1059,11 @@
 			        function(data, status){
 		        		var returnData = JSON.parse(data);
 			            if ( returnData != false ) {
-					    	$('#workorderpart-template_id').val(returnData).change(); 
+					    	$('#workorderpart-template_id').val(returnData).change();
 					    	$('.yes-template').removeClass('hidden');
 			    			$('.no-template').addClass('hidden');
 		    			}else {
-					    	$('#workorderpart-template_id').val('').change(); 
+					    	$('#workorderpart-template_id').val('').change();
 					    	$('.no-template').removeClass('hidden');
 			    			$('.yes-template').addClass('hidden');
 		    			}
@@ -1053,10 +1075,10 @@
 			        function(data, status){
 			            if ( data != false ) {
 			        		var returnData = JSON.parse(data);
-					    	$('#workorderpart-desc').val(returnData['description']).change(); 
-					    	$('#workorderpart-manufacturer').val(returnData['manufacturer']).change(); 
+					    	$('#workorderpart-desc').val(returnData['description']).change();
+					    	$('#workorderpart-manufacturer').val(returnData['manufacturer']).change();
 		    			} else {
-					    	$('#workorderpart-desc').val(''); 
+					    	$('#workorderpart-desc').val('');
 		    			}
 			        });
 		        }
@@ -1069,7 +1091,7 @@
 				// }
 	   //      });
 
-		    function addPart() { 
+		    function addPart() {
 		        var n = parseInt($('#n').val());
 
 		        var part_no = $('#workorderpart-part_no').val();
@@ -1109,7 +1131,7 @@
 			        function(data, status){
 			            if ( data != false ) {
 			        		var returnData = JSON.parse(data);
-					    	$('.part-added tbody').append(returnData); 
+					    	$('.part-added tbody').append(returnData);
 					    	n++;
 					    	$('#n').val(n);
 					    	$('.add-part-section #workorderpart-part_no').val("");
@@ -1124,8 +1146,8 @@
 					        $('.add-part-section #workorderpart-productive_hour').val("");
 					        $('.add-part-section #workorderpart-man_hour').val("");
 					        $('.add-part-section #workorderpart-new_part_no').val("");
-					    	$('#workorderpart-template_id').val('').change(); 
-					    	$('#workorderpart-location_id').val('').change(); 
+					    	$('#workorderpart-template_id').val('').change();
+					    	$('#workorderpart-location_id').val('').change();
 					    	$('.no-template').removeClass('hidden');
 			    			$('.yes-template').addClass('hidden');
 			    			$('.empty-cart').remove();
@@ -1164,9 +1186,9 @@
 		    	$('.save-button').removeClass('hidden');
 		    	$('#m').val(n);
 		    }
-        	
 
-		    function savePart() { 
+
+		    function savePart() {
 		        var m = $('#m').val();
 
 		       	$('.edit-id-'+m).val( $('#workorderpart-id').val() );
@@ -1200,8 +1222,8 @@
 		        $('.add-part-section #workorderpart-man_hour').val("");
 		        $('.add-part-section #workorderpart-new_part_no').val("");
 		        $('.add-part-section #workorderpart-productive_hour').val("");
-		    	$('#workorderpart-template_id').val('').change(); 
-		    	$('#workorderpart-location_id').val('').change(); 
+		    	$('#workorderpart-template_id').val('').change();
+		    	$('#workorderpart-location_id').val('').change();
 		    	$('.no-template').removeClass('hidden');
     			$('.yes-template').addClass('hidden');
 		    	$('.add-button').removeClass('hidden');
@@ -1214,15 +1236,15 @@
 				var r = confirm("Are you sure to remove the part from this work order?");
 				if (r == true) {
 			    	$('.edit-deleted-'+n).val(1);
-			    	$('.part-'+n).css('display','none');	
-				} 
+			    	$('.part-'+n).css('display','none');
+				}
 		    }
 
 		/*********************************************************
 		 *	WORK ORDER :: Add Technician Column
-		 *	
+		 *
 		*********************************************************/
-		    $('.add-tech').on('click', function() { 
+		    $('.add-tech').on('click', function() {
 		    	var n = parseInt($('#n').val());
 		    	n += 1;
 		        $.ajax({url: "?r=work-order/get-technician", success: function(data){
@@ -1232,12 +1254,12 @@
 		    });
 
 
-                                                        
-                                                    
+
+
 
 		/*********************************************************
 		 *	WORK ORDER :: Unassign Staff
-		 *	
+		 *
 		*********************************************************/
 		    function unassignStaff(id){
 		    	$('.tec-' + id ).empty();
@@ -1247,15 +1269,15 @@
 
 
 	/*********************************************************
-	 *	
+	 *
 	 *	STOCK OUT
-	 *	
-	 *	
+	 *
+	 *
 	*********************************************************/
 
 		/*********************************************************
 		 *	WORK ORDER :: Get the maximum stock quantity for stock out
-		 *	
+		 *
 		*********************************************************/
 	    	function changeAvailableStock() {
 
@@ -1263,7 +1285,7 @@
 
 			 	$('#so-qty').val('');
 			 	$('#so-st_qty').val('');
-			 	
+
 		        $.post("?r=stock/ajax-checkstock",{
 		            selectedStockPartId:selectedStockPartId
 		        },
@@ -1287,7 +1309,7 @@
 
 		/*********************************************************
 		 *	WORK ORDER :: Limit the qty input for stock out
-		 *	
+		 *
 		*********************************************************/
 
 			$('#so-qty').keyup(function(){
@@ -1306,13 +1328,13 @@
 					alert('Not enough stock!');
 					$('#so-qty').val(0);
 				}
-				
+
 			}
 
 
 		/*********************************************************
 		 *	WORK ORDER :: Add Stock Required
-		 *	
+		 *
 		*********************************************************/
 
 			function addStockRequired() {
@@ -1327,7 +1349,7 @@
 				if ( soPartId == 'empt' ) {
 			 		alert('Please select stock');
 		 		} else {
-			 		
+
 				 	var n = $('#n').val();
 
 				    n ++ ;
@@ -1351,13 +1373,13 @@
 				 	$('#so-remark').val('');
 				 	$('#so-st_qty').val('');
 
-				
+
 		 		}
 			}
 
 		/*********************************************************
 		 *	WORK ORDER :: Stock Requisition change work order id
-		 *	
+		 *
 		*********************************************************/
 			$('.selected-wo').change(function() {
 				var selectedWo = $('.selected-wo').val();
@@ -1366,17 +1388,17 @@
 
 		/*********************************************************
 		 *	WORK ORDER :: Stock Return change work order id
-		 *	
+		 *
 		*********************************************************/
 			$('.selected-wo-return').change(function() {
 				var selectedWo = $('.selected-wo-return').val();
 				window.location = '?r=work-order/return&work_order=' + selectedWo;
 			});
 
-			
+
 		/*********************************************************
 		 *	WORK ORDER :: Remove Stock
-		 *	
+		 *
 		*********************************************************/
 			function removeStock(n) {
 			 	$('.stock-added-'+n).remove();
@@ -1386,14 +1408,14 @@
 			 	$('#so-st_qty').val('');
 				changeAvailableStock();
 
-				// if the stock id is selected then add the quantity back to the so-st_qty 
+				// if the stock id is selected then add the quantity back to the so-st_qty
 			}
 
 
 
 		/*********************************************************
 		 *	WORK ORDER :: Submit stock out
-		 *	
+		 *
 		*********************************************************/
 			$('.submit-btn').click(function(e){
 
@@ -1401,7 +1423,7 @@
 					var r = confirm("Are you sure you want to submit?");
 					if ( r == true ) {
 						$('.stock-out-form form').submit();
-					} 
+					}
 
 				} else {
 					alert('Please add stock!');
@@ -1413,7 +1435,7 @@
 					var r = confirm("Are you sure you want to submit?");
 					if ( r == true ) {
 						$('.stock-return-form form').submit();
-					} 
+					}
 
 				} else {
 					alert('Please add stock!');
@@ -1421,8 +1443,8 @@
 			}) ;
 
 		/*************************************************************
-		 *	WORK ORDER :: Stock return refresh page with work order id 
-		 *	
+		 *	WORK ORDER :: Stock return refresh page with work order id
+		 *
 		*************************************************************/
 			$('.return-wo').change(function(e){
 				var workOrderId = $('.return-wo').val();
@@ -1432,17 +1454,17 @@
 
 
     /*********************************************************
-	 *	
+	 *
 	 *	AFTER WORK ORDER
-	 *	
-	 *	
+	 *
+	 *
 	*********************************************************/
 
 
 
 		/*********************************************************
 		 *	WORK ORDER :: Add ARC records
-		 *	
+		 *
 		*********************************************************/
 			// function addWorkOrderArc() {
 			// 	var appen = "<div class='col-sm-12 col-xs-12'><div class='form-group field-datepicker5'><div class='col-sm-3 text-right'><label class='control-label' for='datepicker5'>Date</label></div><div class='col-sm-9 col-xs-12'><input type='text' id='datepicker5' class='form-control' name='WorkOrderArc[date][]'><div class='help-block'></div></div></div></div>";
@@ -1452,9 +1474,9 @@
 
 		/*********************************************************
 		 *	WORK ORDER :: Print Final Inspection
-		 *	
+		 *
 		*********************************************************/
-			function getFinal(){ 
+			function getFinal(){
 				var selection = $('#final-inspection-selection').val();
 				$.post("?r=work-order/ajax-getfinal",{
 					selection:selection
@@ -1478,7 +1500,7 @@
 
 		/*********************************************************
 		 *	WORK ORDER :: Add discrepancy
-		 *	
+		 *
 		*********************************************************/
 		    function addDiscrepancy(){
 		        var noLoop = parseInt($('#noLoop').val());
@@ -1491,7 +1513,7 @@
 
 		/*********************************************************
 		 *	WORK ORDER :: Add discrepancy for hidden damage
-		 *	
+		 *
 		*********************************************************/
 		    function addHiddenDiscrepancy(){
 		        var noLoop = parseInt($('#noLoop').val());
@@ -1503,16 +1525,16 @@
 		    }
 
 /*********************************************************
- *	
+ *
  *	DELIVERY ORDER
- *	
- *	
+ *
+ *
 *********************************************************/
 
 
 		/*********************************************************
 		 *	DELIVERY ORDER :: Add in do detail
-		 *	
+		 *
 		*********************************************************/
 		    function addDODetail(){
 
@@ -1531,7 +1553,7 @@
 
 		/*********************************************************
 		 *	DELIVERY ORDER :: GET CUSTOMER ADDRESS
-		 *	
+		 *
 		*********************************************************/
 			$('#deliveryorder-customer_id').change(function(){
 				var customerId = $('#deliveryorder-customer_id').val();
@@ -1546,16 +1568,16 @@
 			});
 
 /*********************************************************
- *	
+ *
  *	TRAVELLER
- *	
- *	
+ *
+ *
 *********************************************************/
 
 
 		/*********************************************************
 		 *	TRAVELLER :: Discontinue
-		 *	
+		 *
 		*********************************************************/
 		    $('#traveller-status').change(function(){
 				var st = $('#traveller-status').val();
@@ -1568,16 +1590,16 @@
 
 
 /*********************************************************
- *	
+ *
  *	CALIBRATION
- *	
- *	
+ *
+ *
 *********************************************************/
 
 
 		/*********************************************************
 		 *	CALIBRATION :: Select tool from the tool index
-		 *	
+		 *
 		*********************************************************/
 
 	 	$('.calibrate-button').click(function(){
@@ -1593,4 +1615,3 @@
 		  	});
 		  	window.location = '?r=calibration/multiple' + opurl;
 		 });
-
