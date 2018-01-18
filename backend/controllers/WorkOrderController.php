@@ -1214,5 +1214,16 @@ class WorkOrderController extends Controller
         return $this->redirect(['preview', 'id' => $part->work_order_id]);
     }
 
+    /*
+    * Set selected part to returned. Just like scrapped, cannot be undone as it has been set
+    */
+    public function actionReturnBack($work_order_part_id){
+        $part = WorkOrderPart::find()->where(['id'=>$work_order_part_id])->one();
+        $part->status = 'returned';
+        $part->save(false);
+        Yii::$app->getSession()->setFlash('success', 'Part returned to customer');
+        return $this->redirect(['preview', 'id' => $part->work_order_id]);
+    }
+
 
 }
