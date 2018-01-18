@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
+use yii\helpers\Html;
 use common\models\PurchaseOrder;
 use common\models\PurchaseOrderDetail;
 use common\models\PurchaseOrderPayment;
@@ -12,7 +13,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\base\ErrorException;
-
+use yii\helpers\BaseUrl;
+use yii\helpers\Url;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -23,6 +25,7 @@ use common\models\Supplier;
 use common\models\Currency;
 use common\models\Unit;
 use common\models\PurchaseOrderAttachment;
+use common\models\Setting;
 
 use imanilchaudhari\CurrencyConverter\CurrencyConverter;
 
@@ -34,12 +37,12 @@ class PurchaseOrderController extends Controller
     /**
      * @inheritdoc
      */
-    
+
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'PurchaseOrder'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -52,7 +55,7 @@ class PurchaseOrderController extends Controller
                 $allow[$uGName] = true;
             }
 
-        }     
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -125,8 +128,6 @@ class PurchaseOrderController extends Controller
 
 
 
-
-
    /**
      * add new PO.
      * If creation is successful, the browser will be redirected to the 'preview' page.
@@ -146,6 +147,7 @@ class PurchaseOrderController extends Controller
             $supplierAddresses[$firstSupplier->p_addr_3] = $firstSupplier->p_addr_3;
             $supplierAttention = $firstSupplier->contact_person;
         }
+
         if ($model->load(Yii::$app->request->post()) ) {
             // d(Yii::$app->request->post());exit;
             /* save user involved */
@@ -163,7 +165,7 @@ class PurchaseOrderController extends Controller
             if ( $model->save() ) {
                 $purchaseOrderId = $model->id;
                 if ( $detail->load(Yii::$app->request->post()) ) {
-                    foreach ( Yii::$app->request->post()['PurchaseOrderDetail'] as $d ) { 
+                    foreach ( Yii::$app->request->post()['PurchaseOrderDetail'] as $d ) {
                         $poD = new PurchaseOrderDetail();
                         $poD->purchase_order_id = $purchaseOrderId;
                         $poD->part_id = $d['part_id'];
@@ -188,13 +190,13 @@ class PurchaseOrderController extends Controller
                         $poA->save();
                     }
                 }
-
-                Yii::$app->getSession()->setFlash('success', 'Purchase order created!'); 
+                $this->composeEmail($model);
+                Yii::$app->getSession()->setFlash('success', 'Purchase order created!');
                 return $this->redirect(['preview', 'id' => $model->id]);
             } /* save model */ else {
-                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');  
+                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');
             }
-        } 
+        }
         return $this->render('new', [
             'model' => $model,
             'detail' => $detail,
@@ -239,7 +241,7 @@ class PurchaseOrderController extends Controller
                 $purchaseOrderId = $id;
                 if ( $detail->load(Yii::$app->request->post()) ) {
                     PurchaseOrderDetail::deleteAll(['purchase_order_id' => $purchaseOrderId]);
-                    foreach ( Yii::$app->request->post()['PurchaseOrderDetail'] as $d ) { 
+                    foreach ( Yii::$app->request->post()['PurchaseOrderDetail'] as $d ) {
                         $poD = new PurchaseOrderDetail();
                         $poD->purchase_order_id = $purchaseOrderId;
                         $poD->part_id = $d['part_id'];
@@ -250,14 +252,14 @@ class PurchaseOrderController extends Controller
                         $poD->save();
                     }
                 }
-                Yii::$app->getSession()->setFlash('success', 'Purchase order updated!'); 
+                Yii::$app->getSession()->setFlash('success', 'Purchase order updated!');
                 return $this->redirect(['preview', 'id' => $model->id]);
             } /* save model */ else {
-                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');  
+                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');
             }
 
 
-        } 
+        }
         return $this->render('edit', [
             'model' => $model,
             'detail' => $detail,
@@ -274,7 +276,7 @@ class PurchaseOrderController extends Controller
      * @return mixed
      */
     public function actionPreview($id)
-    {           
+    {
         $payment = new PurchaseOrderPayment();
         if ( $payment->load( Yii::$app->request->post() ) ) {
             // d(Yii::$app->request->post());exit;
@@ -282,19 +284,19 @@ class PurchaseOrderController extends Controller
 
             $po->status = 0;
             if ( Yii::$app->request->post()['balanceAmt'] <= $payment->amount ) {
-                $po->status = 1;                 
+                $po->status = 1;
             } else if ( Yii::$app->request->post()['balanceAmt'] >= $payment->amount && $payment->amount > 0) {
-                $po->status = 2;   
+                $po->status = 2;
             }
             $po->save();
 
 
             if ( $payment->save() ) {
-                Yii::$app->getSession()->setFlash('success', 'Payment added!'); 
+                Yii::$app->getSession()->setFlash('success', 'Payment added!');
                 return $this->redirect(['preview', 'id' => $id]);
             }
         }
-        
+
         $oldPayment = false;
         if ( PurchaseOrderPayment::find()->where(['purchase_order_id' => $id])->exists() ) {
             $oldPayment = PurchaseOrderPayment::find()->where(['purchase_order_id' => $id])->andWhere(['<>', 'status', 0])->all();
@@ -322,7 +324,7 @@ class PurchaseOrderController extends Controller
             $sumAmt = PurchaseOrderPayment::find()->where(['purchase_order_id' => $poId])->andWhere(['<>','status','0'])->sum('amount');
             $totalAmt = $po->grand_total;
 
-            
+
 
         if ( $totalAmt > $sumAmt && $sumAmt > 0 ) {
             $po->status = 2; /* partially paid */
@@ -429,10 +431,10 @@ class PurchaseOrderController extends Controller
 
     /**
      * Add parts
-     * 
+     *
      */
     public function actionAjaxPart()
-    {   
+    {
         $detail = new PurchaseOrderDetail();
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
@@ -464,11 +466,11 @@ class PurchaseOrderController extends Controller
 
     /**
      * Get addresses based on supplier id selected.
-     * 
+     *
      */
-    
+
     public function actionAjaxAddress()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $supplierId = Yii::$app->request->post()['supplierId'];
@@ -480,11 +482,11 @@ class PurchaseOrderController extends Controller
     }
     /**
      * Get attention based on supplier id selected.
-     * 
+     *
      */
-    
+
     public function actionAjaxAttention()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $supplierId = Yii::$app->request->post()['supplierId'];
@@ -496,11 +498,11 @@ class PurchaseOrderController extends Controller
     }
     /**
      * Get attention based on supplier id selected.
-     * 
+     *
      */
-    
+
     public function actionAjaxCurrency()
-    {   
+    {
         $converter = new CurrencyConverter();
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
@@ -508,7 +510,7 @@ class PurchaseOrderController extends Controller
             $currency = Currency::find()->where(['id' => $currencyId])->one();
 
             $data['iso'] = $currency->iso;
-                       
+
             $rate = 0;
             try{
                 $rate = $converter->convert($currency->iso, 'USD');
@@ -519,8 +521,38 @@ class PurchaseOrderController extends Controller
             $data['rate'] = $rate;
 
             return json_encode($data);
-            
+
         }
+    }
+
+    protected function composeEmail($model){
+      $data = Setting::find()->where(['name'=>'PO Email Notification'])->one();
+      $poNumber = PurchaseOrder::getPONo($model->purchase_order_no,$model->created);
+    //  $link = Html::a('Link',['purchase-order/preview','id'=>$model->id]);
+    //  $link = 'http://www.aeroindustries3011.firstcomdemolinks.com/system88/backend/web/index.php?r=purchase-order%2Fpreview&id='.$model->id;
+      $link = Html::a('link text', Url::to(['purchase-order/preview','id'=>$model->id], true));
+      $message = '';
+      $message .= "<p>PO {$poNumber} has been created</p>";
+      $message .= $link;
+
+      //print_r($message);die();
+    //  $data = Setting::find()->where(['name'=>'PO Email Notification'])->one();
+    //  $message = 'Test email to see if email is working';
+
+      $data = Yii::$app->mailer->compose()
+      ->setTo($data->value)
+    //    ->setTo('eumerjoseph.ramos@yahoo.com')
+      ->setFrom(['info@aeriindustriesdemo.com' => 'info@aeriindustriesdemo.com'])
+      ->setSubject('PO Created')
+      ->setHtmlBody($message)
+    //  ->setReplyTo([$eng->email])
+    //  ->attachContent($attach,['fileName'=>$model->service_no.'.pdf','contentType' => 'application/pdf'])
+      //  ->setFrom([$eng->email => $eng->fullname])
+      //      ->setCc($testcc) //temp
+      ->send();
+
+
+
     }
 
 }
