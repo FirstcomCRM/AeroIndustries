@@ -23,7 +23,6 @@ AppAsset::register($this);
         $isStockReceive = false;
         $isStorage= false;
         $isSupplier = false;
-        $isGpoSupplier = false;
         $isUser = false;
         $isUsernGroup = false;
         $isRfq= false;
@@ -48,7 +47,7 @@ AppAsset::register($this);
         $isTravelerLog = false;
         $isARC = false;
         $isUP = false;
-
+        
         $isTool = false;
         $isQuarantine = false;
         $isScrap = false;
@@ -65,7 +64,7 @@ AppAsset::register($this);
               }
             }
 
-            if ( $getClass == 'part-category' ) {
+            if ( $getClass == 'part-category' ) { 
               $isPartCat = true;
               $isPartnCat = true;
             }
@@ -106,7 +105,7 @@ AppAsset::register($this);
               $isUnit = true;
               $isPartnCat = true;
             }
-            if ( $getClass == 'user-group' ) {
+            if ( $getClass == 'user-group' ) { 
               $isUserGroup = true;
               $isUsernGroup = true;
             }
@@ -114,7 +113,7 @@ AppAsset::register($this);
               $isUser = true;
               $isUsernGroup = true;
             }
-            if ( $getClass == 'staff' ) {
+            if ( $getClass == 'staff' ) { 
               $isStaff = true;
               $isStaffnGroup = true;
             }
@@ -125,10 +124,6 @@ AppAsset::register($this);
 
             if ( $getClass == 'supplier') {
               $isSupplier = true;
-            }
-
-            if ( $getClass == 'gpo-supplier') {
-              $isGpoSupplier = true;
             }
 
             if ( $getClass == 'purchase-order') {
@@ -291,7 +286,7 @@ AppAsset::register($this);
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
-
+          
           <li class="dropdown messages-menu po-dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-file-text"></i> Purchase Order
@@ -308,7 +303,7 @@ AppAsset::register($this);
                   </li>
                   <li>
                     <a href="?r=general-po/new">
-                      <i class="fa fa-file-text-o text-yellow"></i> For Non-aviation parts
+                      <i class="fa fa-file-text-o text-yellow"></i> For Non-aviation parts 
                     </a>
                   </li>
                   <li>
@@ -360,7 +355,7 @@ AppAsset::register($this);
               Work Order
             </a>
           </li>
-<?php /*
+<?php /* 
           <!-- Messages: style can be found in dropdown.less-->
           <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -573,7 +568,7 @@ AppAsset::register($this);
                 </p>
               </li>
               <!-- Menu Body -->
-          <?php /*
+          <?php /* 
               <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
@@ -592,7 +587,7 @@ AppAsset::register($this);
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-          <?php /*
+          <?php /* 
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                   */ ?>
                 </div>
@@ -605,7 +600,7 @@ AppAsset::register($this);
             </ul>
           </li>
           <!-- Control Sidebar Toggle Button -->
-          <?php /*
+          <?php /* 
           <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
@@ -695,8 +690,6 @@ AppAsset::register($this);
 
         <li class="<?php if ( $isSupplier ) { echo 'active'; }?>"><a href="?r=supplier"><i class="fa fa-cart-arrow-down"></i> <span>Supplier</span></a></li>
 
-        <li class="<?php if ( $isGpoSupplier ) { echo 'active'; }?>"><a href="?r=gpo-supplier"><i class="fa fa-cart-arrow-down"></i> <span>GPO Supplier</span></a></li>
-
         <li class="<?php if ( $isTraveler ) { echo 'active'; }?>"><a href="?r=traveler"><i class="fa fa-file"></i> <span>Worksheet</span></a></li>
 
         <li class="<?php if ( $isTemplate ) { echo 'active'; }?>"><a href="?r=template"><i class="fa fa-clone"></i> <span>Template</span></a></li>
@@ -725,7 +718,7 @@ AppAsset::register($this);
             <li class="<?php if ( $isUnit ) { echo 'active'; }?>"><a href="?r=unit"><i class="fa fa-circle-o"></i> Unit Measurement</a></li>
           </ul>
         </li>
-        <?php /*
+        <?php /* 
           <li><a href="?r=gii" target="_blank"><i class="fa fa-book"></i> <span>Gii</span></a></li>
           <li class="header">LABELS</li>
           <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
