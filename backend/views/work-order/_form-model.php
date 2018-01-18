@@ -15,6 +15,7 @@ if ( isset ( $exBackUrlFull[1] ) ) {
 $backUrl = $exBackUrlFull[1];
 }
 
+use common\models\User;
 use common\models\Currency;
 use common\models\Customer;
 use common\models\Staff;
@@ -25,6 +26,7 @@ use common\models\StorageLocation;
 use common\models\Traveler;
 use common\models\Unit;
 use common\models\Setting;
+
 /* @var $this yii\web\View */
 /* @var $data['model'] common\models\WorkOrder */
 /* @var $form yii\widgets\ActiveForm */
@@ -50,6 +52,13 @@ $dataArcStatus = Setting::dataArcStatus();
 use kartik\file\FileInput;
 /* k6 */
 ?>
+
+<?php
+	$files = User::find()->where(['id'=>Yii::$app->user->id])->one();
+?>
+
+
+
 
 <div class="work-order-form">
 	<section class="content">
@@ -77,85 +86,97 @@ use kartik\file\FileInput;
                                         </div>
                                         <!-- /.box-header -->
                                         <div class="box-body ">
-                                            <div class="col-sm-12 col-xs-12">    
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'customer_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->dropDownList($dataCustomer,['class' => 'select2 form-control',])->label('Customer') 
+                                                    '])->dropDownList($dataCustomer,['class' => 'select2 form-control',])->label('Customer')
                                                 ?>
-                                            </div>    
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'customer_po_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['maxlength' => true,'autocomplete' => 'off'])->label("Customer PO No.") 
+                                                    '])->textInput(['maxlength' => true,'autocomplete' => 'off'])->label("Customer PO No.")
                                                 ?>
-                                            </div>    
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'work_scope', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->dropDownList($dataWorkScope) 
+                                                    '])->dropDownList($dataWorkScope)
                                                 ?>
-                                            </div>    
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'work_type', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->dropDownList($dataWorkType) 
+                                                    '])->dropDownList($dataWorkType)
                                                 ?>
-                                            </div>   
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                     '])->textInput(['id'=>'datepicker', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true])
                                                 ?>
-                                            </div>  
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'received_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['id'=>'datepicker2', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true]) 
+                                                    '])->textInput(['id'=>'datepicker2', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true])
                                                 ?>
-                                            </div>  
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'approval_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['id'=>'datepicker5', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true]) 
+                                                    '])->textInput(['id'=>'datepicker5', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true])
                                                 ?>
-                                            </div>  
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'on_dock_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['id'=>'datepicker3', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true]) 
+                                                    '])->textInput(['id'=>'datepicker3', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true])
                                                 ?>
-                                            </div>    
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'needs_by_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['id'=>'datepicker4', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true]) 
+                                                    '])->textInput(['id'=>'datepicker4', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true])
                                                 ?>
-                                            </div>  
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'disposition_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['id'=>'datepicker7', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true]) 
+                                                    '])->textInput(['id'=>'datepicker7', 'autocomplete' => 'off', 'placeholder' => 'Please select date','readonly' => true])
                                                 ?>
 
-                                            </div>  
-                                            <div class="col-sm-12 col-xs-12">    
-                                                <?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
-                                                    <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control']) 
-                                                ?>
-                                            </div>   
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+
+																						<div class="col-sm-12 col-xs-12">
+																						<!---edr if the work order is cancelled, status cannot be edited unless user is super admin--->
+																						<?php if ($data['model']['status']=='cancelled'): ?>
+																							<?php if ($files->user_group_id == 1): ?>
+																								<?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+																										<div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
+																										'])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control'])
+																								?>
+																							<?php endif; ?>
+																						<?php else: ?>
+																							<?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+																									<div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
+																									'])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control'])
+																							?>
+																						<?php endif; ?>
+																						</div>
+
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'complaint', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textArea(['maxlength' => true,'rows' => 2]) 
+                                                    '])->textArea(['maxlength' => true,'rows' => 2])
                                                 ?>
-                                            </div> 
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'qc_notes', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textArea(['maxlength' => true,'rows' => 4]) 
+                                                    '])->textArea(['maxlength' => true,'rows' => 4])
                                                 ?>
-                                            </div>   
+                                            </div>
                                             <div class="col-sm-12 col-xs-12">
                                                <?= $form->field($data['woAttachment'], 'attachment[work_order][]', [
                                                       'template' => "<div class='col-sm-3 text-right'>{label}{hint}</div>\n<div class='col-sm-9 col-xs-12'>{input}{error}</div>\n\n"
@@ -163,37 +184,37 @@ use kartik\file\FileInput;
                                                     ->widget(FileInput::classname(), [
                                                     'options' => ['accept' => 'image/*'],
                                                 ])->fileInput(['multiple' => true,])->label('Upload Attachment(s)') ?>
-                                            </div>      
-                                            <?php if ( $data['isEdit'] ) { ?> 
+                                            </div>
+                                            <?php if ( $data['isEdit'] ) { ?>
                                                 <div class='col-sm-3 text-right'>
                                                     <label>Work Order Attachment</label>
                                                 </div>
                                                 <div class="col-sm-9 col-xs-12">
-                                                <?php if ( !empty ( $data['currWoAtt'] ) ) { ?> 
-                                                    <?php foreach ( $data['currWoAtt'] as $at ) { 
+                                                <?php if ( !empty ( $data['currWoAtt'] ) ) { ?>
+                                                    <?php foreach ( $data['currWoAtt'] as $at ) {
                                                         $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
-                                                        <?php 
+                                                        <?php
                                                             $fileNameOnlyEx = explode('-', $at->value);
 
                                                         ?>
                                                         <div class="col-sm-5 col-xs-12">
-                                                            <a href="<?= 'uploads/work_order/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
+                                                            <a href="<?= 'uploads/work_order/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
                                                             <?= Html::a(' <i class="fa fa-close"></i> ', ['work-order/remove-woa', 'id' => $at->id], [
                                                                 'data' => [
                                                                     'confirm' => 'Are you sure you want to remove this attachment?',
                                                                 ],
                                                             ]) ?>
                                                         </div>
-                                                    <?php } ?> 
-                                                <?php } else { ?> 
+                                                    <?php } ?>
+                                                <?php } else { ?>
                                                         <div class="col-sm-12 col-xs-12">
                                                             No attachment found!
                                                         </div>
-                                                <?php } ?> 
-                                                </div>  
-       
+                                                <?php } ?>
+                                                </div>
+
                                             <?php } ?>
- 
+
                     				    </div>
                     			    </div>
                     		    </div>
@@ -212,12 +233,12 @@ use kartik\file\FileInput;
                                         <!-- /.box-header -->
 
                                         <div class="box-body add-part-section">
-                                            <?php if ( $data['isEdit'] ) { ?> 
+                                            <?php if ( $data['isEdit'] ) { ?>
                                                 <?= $form->field($data['workOrderPart'], 'id[]')->hiddenInput()->label(false) ?>
                                                 <?= $form->field($data['workOrderPart'], 'deleted[]')->hiddenInput()->label(false) ?>
                                             <?php } ?>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'part_no[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}
                                                         <ul id="search-result" style="display: none;" class="dropdown-menu collapse">
@@ -225,10 +246,10 @@ use kartik\file\FileInput;
                                                     </div>
                                                     '])->textInput(['maxlength' => true,'autocomplete' => 'off'])
                                                 ?>
-                                            </div> 
+                                            </div>
 
                                             <?php if ( $data['isEdit'] ) { ?>
-                                                <div class="col-sm-4 col-xs-12">    
+                                                <div class="col-sm-4 col-xs-12">
                                                     <?= $form->field($data['workOrderPart'], 'new_part_no[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                         <div class="col-sm-9 col-xs-12">{input}{error}{hint}
                                                             <ul id="search-result" style="display: none;" class="dropdown-menu collapse">
@@ -236,21 +257,21 @@ use kartik\file\FileInput;
                                                         </div>
                                                         '])->textInput(['maxlength' => true,'autocomplete' => 'off'])
                                                     ?>
-                                                </div>  
+                                                </div>
 
-                                                <div class="col-sm-4 col-xs-12">    
+                                                <div class="col-sm-4 col-xs-12">
                                                     <?= $form->field($data['workOrderPart'], 'man_hour[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                         <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                        '])->textInput(['autocomplete' => 'off']) 
+                                                        '])->textInput(['autocomplete' => 'off'])
                                                     ?>
-                                                </div>  
+                                                </div>
 
-                                                <div class="col-sm-4 col-xs-12">    
+                                                <div class="col-sm-4 col-xs-12">
                                                     <?= $form->field($data['workOrderPart'], 'productive_hour[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                         <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                        '])->textInput(['autocomplete' => 'off']) 
+                                                        '])->textInput(['autocomplete' => 'off'])
                                                     ?>
-                                                </div>  
+                                                </div>
 
                                             <?php } else { ?>
 
@@ -261,63 +282,63 @@ use kartik\file\FileInput;
                                             <?php } ?>
 
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'desc[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
-                                            
-                                            <div class="col-sm-4 col-xs-12">    
+                                            </div>
+
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'manufacturer[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'model[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'ac_tail_no[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'ac_msn[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'serial_no[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'batch_no[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>   
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">    
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'quantity[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                                    '])->textInput(['autocomplete' => 'off']) 
+                                                    '])->textInput(['autocomplete' => 'off'])
                                                 ?>
-                                            </div>  
-                                        
-                                            <div class="col-sm-4 col-xs-12">    
+                                            </div>
+
+                                            <div class="col-sm-4 col-xs-12">
                                                 <?= $form->field($data['workOrderPart'], 'location_id[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}
                                                         <ul id="search-result" style="display: none;" class="dropdown-menu collapse">
@@ -325,9 +346,9 @@ use kartik\file\FileInput;
                                                     </div>
                                                     '])->dropDownList($dataLocation,['class' => 'select2','prompt' => 'Please select'])
                                                 ?>
-                                            </div> 
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12">   
+                                            <div class="col-sm-4 col-xs-12">
                                                 <div class="form-group field-workorder-batch_no">
                                                     <div class="col-sm-3 text-right">
                                                         <label class="control-label" for="workorder-batch_no">Template</label>
@@ -356,20 +377,20 @@ use kartik\file\FileInput;
 
                                                     </div>
                                                 </div>
-                                            </div>  
+                                            </div>
 
-                                            <div class="col-sm-4 col-xs-12 hidden">    
+                                            <div class="col-sm-4 col-xs-12 hidden">
                                                 <?= $form->field($data['workOrderPart'], 'template_id[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                     '])->dropDownList($dataTemplate)
                                                 ?>
-                                            </div>  
-                                                             
-                                        </div>  
+                                            </div>
 
-                                    </div>  
-                                </div>  
-                            </div>   
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                             <button type="button" onclick="addPart();" class="btn btn-success add-button">Add Part</button>
                             <button type="button" onclick="savePart();" class="btn btn-primary save-button hidden">Save Part</button>
                             <div class="row part-added">
@@ -466,8 +487,8 @@ use kartik\file\FileInput;
                                         <?php /* is edit */ ?>
 
                                         <div class="box-body ">
-                                                        
-                                            <div class="col-sm-12 col-xs-12">    
+
+                                            <div class="col-sm-12 col-xs-12">
                                                 <div class="form-group field-workorderstaff-staff_name has-success">
                                                     <div class="col-sm-3 text-right">
                                                         <label class="control-label" for="workorderstaff-staff_name">Supervisor</label>
@@ -486,10 +507,10 @@ use kartik\file\FileInput;
                                                     <input type="hidden" id="workorderstaff-staff_type" class="form-control" name="WorkOrderStaff[staff_type][]" value="supervisor">
                                                     <div class="help-block"></div>
                                                 </div>
-                                            </div> 
-                                            
-                                                        
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-xs-12">
                                                 <div class="form-group field-workorderstaff-staff_name has-success">
                                                     <div class="col-sm-3 text-right">
                                                         <label class="control-label" for="workorderstaff-staff_name">Final Inspector</label>
@@ -508,8 +529,8 @@ use kartik\file\FileInput;
                                                     <input type="hidden" id="workorderstaff-staff_type" class="form-control" name="WorkOrderStaff[staff_type][]" value="final inspector">
                                                     <div class="help-block"></div>
                                                 </div>
-                                            </div> 
-                                        </div>  
+                                            </div>
+                                        </div>
                                         <div class="box-body technician-add">
                                             <div class="col-sm-12 text-right">
                                                 <button type="button" class="btn btn-primary add-tech">Add Technician</button>
@@ -520,7 +541,7 @@ use kartik\file\FileInput;
                                             <?php foreach ( $data['technician'] as $key => $tecc) { ?>
 
                                                 <div class="tec-<?= $n ?>">
-                                                    <div class="col-sm-6 col-xs-12">    
+                                                    <div class="col-sm-6 col-xs-12">
                                                         <div class="form-group field-workorderstaff-staff_name">
                                                             <div class="col-sm-3 text-right">
                                                                 <label class="control-label" for="workorderstaff-staff_name">Technician</label>
@@ -532,16 +553,16 @@ use kartik\file\FileInput;
                                                                         <option value="<?= $dsf ?>" <?= $selected ?>><?= $dsf ?></option>
                                                                     <?php } ?>
                                                                 </select>
-                                                                <div class="help-block"></div>  
+                                                                <div class="help-block"></div>
                                                             </div>
-                                                        </div>                                            
+                                                        </div>
                                                         <div class="form-group field-workorderstaff-staff_type">
                                                             <input type="hidden" id="workorderstaff-staff_type" class="form-control" name="WorkOrderStaff[staff_type][]" value="technician">
                                                             <div class="help-block"></div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-sm-5 col-xs-12">    
+                                                    <div class="col-sm-5 col-xs-12">
                                                         <div class="form-group field-workorderstaff-staff_name">
                                                             <div class="col-sm-3 text-right">
                                                                 <label class="control-label" for="workorderstaff-staff_name">Inspector</label>
@@ -555,7 +576,7 @@ use kartik\file\FileInput;
                                                                 </select>
                                                                 <div class="help-block"></div>
                                                             </div>
-                                                        </div>                                            
+                                                        </div>
                                                         <div class="form-group field-workorderstaff-staff_type">
                                                             <input type="hidden" id="workorderstaff-staff_type" class="form-control" name="WorkOrderStaff[staff_type][]" value="inspector">
                                                         <div class="help-block"></div>
@@ -567,27 +588,27 @@ use kartik\file\FileInput;
                                                 </div>
 
                                                 <?php $n ++ ; ?>
-                                            <?php } /* foreach technician row */ ?> 
-                                        </div>   
+                                            <?php } /* foreach technician row */ ?>
+                                        </div>
 
                                     <?php } else {  ?>
-                                        
+
                                         <div class="box-body ">
-                                            <div class="col-sm-12 col-xs-12">    
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['staff'], 'staff_name[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                     '])->dropDownList($dataStaff,['class' => 'select2 form-control',])->label('Supervisor')
                                                 ?>
                                                 <?= $form->field($data['staff'], 'staff_type[]')->hiddenInput(['value' => 'supervisor'])->label(false) ?>
-                                            </div>   
-                                            <div class="col-sm-12 col-xs-12">    
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['staff'], 'staff_name[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                     <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                     '])->dropDownList($dataStaff,['class' => 'select2 form-control',])->label('Final Inspector')
                                                 ?>
                                                 <?= $form->field($data['staff'], 'staff_type[]')->hiddenInput(['value' => 'final inspector'])->label(false) ?>
-                                            </div>    
-                                        </div>  
+                                            </div>
+                                        </div>
                                         <div class="box-body technician-add">
                                             <div class="col-sm-12 text-right">
                                                 <button type="button" class="btn btn-primary add-tech">Add Technician and Inspector</button>
@@ -595,35 +616,35 @@ use kartik\file\FileInput;
                                                 <br>
                                             </div>
                                             <div class="tec-<?=$n?>">
-                                                <div class="col-sm-6 col-xs-12">    
+                                                <div class="col-sm-6 col-xs-12">
                                                     <?= $form->field($data['staff'], 'staff_name[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                         <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                         '])->dropDownList($dataStaff,['class' => 'form-control',])->label('Technician')
                                                     ?>
                                                     <?= $form->field($data['staff'], 'staff_type[]')->hiddenInput(['value' => 'technician'])->label(false) ?>
 
-                                                </div>   
-                                                <div class="col-sm-5 col-xs-12">    
+                                                </div>
+                                                <div class="col-sm-5 col-xs-12">
                                                     <?= $form->field($data['staff'], 'staff_name[]', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                         <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                         '])->dropDownList($dataStaff,['class' => 'form-control',])->label('Inspector')
                                                     ?>
                                                     <?= $form->field($data['staff'], 'staff_type[]')->hiddenInput(['value' => 'inspector'])->label(false) ?>
-                                                </div> 
+                                                </div>
                                                 <div class="col-sm-1">
                                                     <a href="javascript:unassignStaff(<?= $n ?>)">Unassign</a>
-                                                </div>  
-                                            </div>   
-                                        </div> 
+                                                </div>
+                                            </div>
+                                        </div>
 
                                     <?php } /* if else edit */ ?>
                                     <input type="hidden" id="n" value="<?= $n ?>">
 
                                 </div>
                             </div>
-                        </div>    
+                        </div>
 
-                      
+
                 </div>
     	    </div>
         <?php ActiveForm::end(); ?>

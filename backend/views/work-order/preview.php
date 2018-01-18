@@ -294,12 +294,14 @@ use kartik\file\FileInput;
                                                         <li><?= Html::a( 'Preliminary Inspection', Url::to(['preliminary-inspection', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Hidden Damage Inspection', Url::to(['hidden-damage', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Worksheet', Url::to(['work-sheet', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
-                                                        <?php if ($wop->status!= 'scrapped'): ?>
+                                                        <?php if ($wop->status!= 'scrapped' && $wop->status!='returned'): ?>
                                                           <?php if ($wop->status =='quarantined'): ?>
                                                             <li><?= Html::a( 'Move out of Quarantine', Url::to(['work-order/remove-quarantined','work_order_part_id' => $wop->id])) ?></li>
                                                           <?php else: ?>
                                                             <li><?= Html::a( 'Move to Quarantine', Url::to(['quarantine/new','work_order_part_id' => $wop->id])) ?></li>
                                                           <?php endif; ?>
+
+                                                          <li><?= Html::a( 'Return Back to Customer', Url::to(['work-order/return-back','work_order_part_id' => $wop->id])) ?></li>
                                                           <li><?= Html::a( 'Scrap Parts', Url::to(['scrap/new', 'work_order_part_id' => $wop->id])) ?></li>
                                                         <?php endif; ?>
 
