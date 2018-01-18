@@ -17,13 +17,15 @@ $backUrl = $exBackUrlFull[1];
 /* @var $form yii\widgets\ActiveForm */
 $settingSelection = [
 	'product_type' => 'Product Type',
-	'arc_status' => 'ARC Status', 
-	'job_type' => 'Job Type', 
+	'arc_status' => 'ARC Status',
+	'job_type' => 'Job Type',
 	'work_status' => 'Work Status',
 	'email_calibration' => 'Calibration Email Notification',
-	'id_tag_type' => 'ID Tag Type', 
-	'identify_from' => 'Part Number Identification', 
-
+	'id_tag_type' => 'ID Tag Type',
+	'identify_from' => 'Part Number Identification',
+	'PO Email Notification'=>'PO email notification',
+	'GPO Email Notification'=>'GPO email notification',
+	'Stocks Received Email Notification'=>'Stocks Received Email Notification',
 ];
 ?>
 
@@ -41,52 +43,52 @@ $settingSelection = [
 
 					    <?php $form = ActiveForm::begin(); ?>
 
-					    <div class="col-sm-12 col-xs-12">    
+					    <div class="col-sm-12 col-xs-12">
 
 					    	<?= $form->field($model, 'name', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 								<div class="col-sm-9 col-xs-12">{input}</div>
 								{hint}
 								{error}'])->dropDownList($settingSelection,['maxlength' => true]) ?>
 
-	   					</div>    
+	   					</div>
 
-	    				<div class="col-sm-12 col-xs-12">    
+	    				<div class="col-sm-12 col-xs-12">
 
 		    				<?= $form->field($model, 'desc', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 								<div class="col-sm-9 col-xs-12">{input}</div>
 								{hint}
 								{error}'])->textInput(['maxlength' => true]) ?>
 
-					    </div>    
+					    </div>
 
-					    <div class="col-sm-12 col-xs-12">    
+					    <div class="col-sm-12 col-xs-12">
 
 						    <?= $form->field($model, 'value', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 								<div class="col-sm-9 col-xs-12">{input}</div>
 								{hint}
 								{error}'])->textInput(['maxlength' => true]) ?>
 
-					    </div>		            
+					    </div>
 
 
-					    <div class="col-sm-12 col-xs-12">    
+					    <div class="col-sm-12 col-xs-12">
 
 						    <?= $form->field($model, 'value_2', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 								<div class="col-sm-9 col-xs-12">{input}</div>
 								{hint}
 								{error}'])->textInput(['maxlength' => true]) ?>
 
-					    </div>		       
+					    </div>
 
 
-					    <div class="col-sm-12 col-xs-12">    
+					    <div class="col-sm-12 col-xs-12">
 
 						    <?= $form->field($model, 'sort', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 								<div class="col-sm-9 col-xs-12">{input}</div>
 								{hint}
 								{error}'])->textInput(['maxlength' => true]) ?>
 
-					    </div>		            
+					    </div>
 
 					    <div class="col-sm-12 text-right">
 			            	<br>
