@@ -8,14 +8,17 @@ use common\models\SearchGeneralPo;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\BaseUrl;
+use yii\helpers\Url;
+use yii\helpers\Html;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\GeneralPoDetail;
 use common\models\GeneralPoPayment;
-use common\models\Supplier;
+use common\models\Setting;
+use common\models\GpoSupplier;
 use common\models\CurrencyConverter;
 use common\models\Unit;
 use common\models\Part;
@@ -31,8 +34,8 @@ class GeneralPoController extends Controller
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'GeneralPo'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -45,7 +48,7 @@ class GeneralPoController extends Controller
                 $allow[$uGName] = true;
             }
 
-        } 
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -129,8 +132,8 @@ class GeneralPoController extends Controller
     {
         $model = new GeneralPo();
         $detail = new GeneralPoDetail();
-        
-        $firstSupplier = Supplier::find()->one();
+
+        $firstSupplier = GpoSupplier::find()->one();
         $supplierAddresses = array();
         $supplierAttention = '';
         if ( $firstSupplier ) {
@@ -161,7 +164,7 @@ class GeneralPoController extends Controller
             if ( $model->save() ) {
                 $generalPOId = $model->id;
                 if ( $detail->load(Yii::$app->request->post()) ) {
-                    foreach ( Yii::$app->request->post()['GeneralPoDetail'] as $d ) { 
+                    foreach ( Yii::$app->request->post()['GeneralPoDetail'] as $d ) {
                         $poD = new GeneralPoDetail();
                         $poD->general_po_id = $generalPOId;
                         $poD->part_id = $d['part_id'];
@@ -172,14 +175,15 @@ class GeneralPoController extends Controller
                         $poD->save();
                     }
                 }
-                Yii::$app->getSession()->setFlash('success', 'Purchase order created!'); 
+                $this->composeEmail($model);
+                Yii::$app->getSession()->setFlash('success', 'Purchase order created!');
                 return $this->redirect(['preview', 'id' => $model->id]);
             } /* save model */ else {
-                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');  
+                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');
             }
 
 
-        } 
+        }
         return $this->render('new', [
             'model' => $model,
             'detail' => $detail,
@@ -200,7 +204,8 @@ class GeneralPoController extends Controller
         $detail = new GeneralPoDetail();
         $oldDetail = GeneralPoDetail::getGeneralPoDetail($id);
         $supplierId = $model->supplier_id;
-        $firstSupplier = Supplier::getSupplier($supplierId);
+        //$firstSupplier = GpoSupplier::getSupplier($supplierId);
+        $firstSupplier = GpoSupplier::find()->where(['id'=>$supplierId]);
         $supplierAddresses = array();
         $supplierAttention = '';
         if ( $firstSupplier ) {
@@ -223,7 +228,7 @@ class GeneralPoController extends Controller
                 $purchaseOrderId = $id;
                 if ( $detail->load(Yii::$app->request->post()) ) {
                     GeneralPoDetail::deleteAll(['general_po_id' => $purchaseOrderId]);
-                    foreach ( Yii::$app->request->post()['GeneralPoDetail'] as $d ) { 
+                    foreach ( Yii::$app->request->post()['GeneralPoDetail'] as $d ) {
                         $poD = new GeneralPoDetail();
                         $poD->general_po_id = $purchaseOrderId;
                         $poD->part_id = $d['part_id'];
@@ -235,16 +240,16 @@ class GeneralPoController extends Controller
                     }
 
                 }
-               
 
-                Yii::$app->getSession()->setFlash('success', 'Purchase order updated!'); 
+
+                Yii::$app->getSession()->setFlash('success', 'Purchase order updated!');
                 return $this->redirect(['preview', 'id' => $model->id]);
             } /* save model */ else {
-                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');  
+                Yii::$app->getSession()->setFlash('danger', 'Unable to create purchase order!');
             }
 
 
-        } 
+        }
         return $this->render('edit', [
             'model' => $model,
             'detail' => $detail,
@@ -252,7 +257,7 @@ class GeneralPoController extends Controller
             'supplierAttention' => $supplierAttention,
             'supplierAddresses' => $supplierAddresses,
         ]);
-        
+
     }
 
     /**
@@ -261,7 +266,7 @@ class GeneralPoController extends Controller
      * @return mixed
      */
     public function actionPreview($id)
-    {           
+    {
         $payment = new GeneralPoPayment();
         if ( $payment->load( Yii::$app->request->post() ) ) {
             // d(Yii::$app->request->post());exit;
@@ -269,19 +274,19 @@ class GeneralPoController extends Controller
 
             $po->status = 0;
             if ( Yii::$app->request->post()['balanceAmt'] <= $payment->amount ) {
-                $po->status = 1;                 
+                $po->status = 1;
             } else if ( Yii::$app->request->post()['balanceAmt'] >= $payment->amount && $payment->amount > 0) {
-                $po->status = 2;   
+                $po->status = 2;
             }
             $po->save();
 
 
             if ( $payment->save() ) {
-                Yii::$app->getSession()->setFlash('success', 'Payment added!'); 
+                Yii::$app->getSession()->setFlash('success', 'Payment added!');
                 return $this->redirect(['preview', 'id' => $id]);
             }
         }
-        
+
         $oldPayment = false;
         if ( GeneralPoPayment::find()->where(['general_po_id' => $id])->exists() ) {
             $oldPayment = GeneralPoPayment::find()->where(['general_po_id' => $id])->andWhere(['<>', 'status', 0])->all();
@@ -371,16 +376,48 @@ class GeneralPoController extends Controller
 
 
 
+
+
+    public function actionAjaxAddress()
+    {
+        $this->layout = false;
+        if ( Yii::$app->request->post() ) {
+            $supplierId = Yii::$app->request->post()['supplierId'];
+            print_r($supplierId);
+            $supplier = GpoSupplier::find()->where(['id' => $supplierId])->one();
+            return $this->render('ajax-address', [
+                'supplier' => $supplier,
+            ]);
+        }
+    }
+    /**
+     * Get attention based on supplier id selected.
+     *
+     */
+
+    public function actionAjaxAttention()
+    {
+        $this->layout = false;
+        if ( Yii::$app->request->post() ) {
+            $supplierId = Yii::$app->request->post()['supplierId'];
+            $supplier = GpoSupplier::find()->where(['id' => $supplierId])->one();
+            return $this->render('ajax-attention', [
+                'supplier' => $supplier,
+            ]);
+        }
+    }
+
+
     /**
 * AJAX FUNCTION.
 */
 
     /**
      * Add parts
-     * 
+     *
      */
     public function actionAjaxPart()
-    {   
+    {
         $detail = new GeneralPoDetail();
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
@@ -391,7 +428,7 @@ class GeneralPoController extends Controller
             $unit = Yii::$app->request->post()['unit'];
             $unitm = Yii::$app->request->post()['unitm'];
             $subTotal = Yii::$app->request->post()['subTotal'];
-            
+
             $part = Part::find()->where(['id' => $partId])->one()->part_no;
             $unitM = Unit::find()->where(['id' => $unitm])->one();
 
@@ -407,6 +444,31 @@ class GeneralPoController extends Controller
                 'detail' => $detail,
             ]);
         }
+    }
+
+
+
+    /**
+    *Protected Functions
+    */
+    protected function composeEmail($model){
+      $data = Setting::find()->where(['name'=>'GPO Email Notification'])->one();
+      $poNumber = GeneralPO::getGPONo($model->purchase_order_no,$model->created);
+    //  $link = Html::a('Link',['purchase-order/preview','id'=>$model->id]);
+    //  $link = 'http://www.aeroindustries3011.firstcomdemolinks.com/system88/backend/web/index.php?r=purchase-order%2Fpreview&id='.$model->id;
+      $link = Html::a('Link', Url::to(['general-po/preview','id'=>$model->id], true));
+      $message = '';
+      $message .= "<p>GPO {$poNumber} has been created</p>";
+      $message .= $link;
+      $data = Yii::$app->mailer->compose()
+      ->setTo($data->value)
+    //    ->setTo('eumerjoseph.ramos@yahoo.com')
+      ->setFrom(['info@aeriindustriesdemo.com' => 'info@aeriindustriesdemo.com'])
+      ->setSubject('General PO Created')
+      ->setHtmlBody($message)
+      ->send();
+
+
     }
 
 
