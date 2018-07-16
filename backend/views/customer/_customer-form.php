@@ -53,6 +53,13 @@ $dataCurrency = ArrayHelper::map(Currency::find()->where(['status' => 'active'])
                                     </div>    
 
                                     <div class="col-sm-12 col-xs-12">    
+                                        <?= $form->field($model, 'code', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                        <div class="col-sm-9 col-xs-12">{input}</div>
+                                        {hint}
+                                        {error}'])->textInput(['maxlength' => true]) ?>
+                                    </div>    
+
+                                    <div class="col-sm-12 col-xs-12">    
                                         <?= $form->field($model, 'company_name', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                         <div class="col-sm-9 col-xs-12">{input}</div>
                                         {hint}
@@ -61,6 +68,20 @@ $dataCurrency = ArrayHelper::map(Currency::find()->where(['status' => 'active'])
 
                                     <div class="col-sm-12 col-xs-12">    
                                         <?= $form->field($model, 'contact_person', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                        <div class="col-sm-9 col-xs-12">{input}</div>
+                                        {hint}
+                                        {error}'])->textInput(['maxlength' => true]) ?>
+                                    </div>   
+                                    
+                                    <div class="col-sm-12 col-xs-12">    
+                                        <?= $form->field($model, 'contact_person_2', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                        <div class="col-sm-9 col-xs-12">{input}</div>
+                                        {hint}
+                                        {error}'])->textInput(['maxlength' => true]) ?>
+                                    </div>   
+                                    
+                                    <div class="col-sm-12 col-xs-12">    
+                                        <?= $form->field($model, 'contact_person_3', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                         <div class="col-sm-9 col-xs-12">{input}</div>
                                         {hint}
                                         {error}'])->textInput(['maxlength' => true]) ?>
@@ -89,10 +110,25 @@ $dataCurrency = ArrayHelper::map(Currency::find()->where(['status' => 'active'])
                                     </div>    
 
                                     <div class="col-sm-12 col-xs-12">    
+                                        <?= $form->field($model, 'fax', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                        <div class="col-sm-9 col-xs-12">{input}</div>
+                                        {hint}
+                                        {error}'])->textInput(['maxlength' => true]) ?>
+                                    </div>   
+
+                                    <div class="col-sm-12 col-xs-12">    
                                         <?= $form->field($model, 'freight_forwarder', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                         <div class="col-sm-9 col-xs-12">{input}</div>
                                         {hint}
                                         {error}'])->textInput(['maxlength' => true]) ?>
+                                    </div>    
+
+
+                                    <div class="col-sm-12 col-xs-12">    
+                                        <?= $form->field($model, 'account_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                        <div class="col-sm-9 col-xs-12">{input}</div>
+                                        {hint}
+                                        {error}'])->textInput() ?>
                                     </div>    
 
                                     <div class="col-sm-12 col-xs-12">    

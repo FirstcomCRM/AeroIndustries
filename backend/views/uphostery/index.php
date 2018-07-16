@@ -7,19 +7,19 @@ use kartik\export\ExportMenu;
 use common\models\Quarantine;
 use common\models\Scrap;
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\SearchUphostery */
+/* @var $searchModel common\models\SearchWorkOrder */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Uphosterys';
+$this->title = 'Uphostery';
 $this->params['breadcrumbs'][] = $this->title;
 
 use common\models\Setting;
-$dataUphosteryStatus = Setting::dataUphosteryStatus();
+$dataWorkStatus = Setting::dataWorkStatus();
 
-$gridColumns = 
+$gridColumns =
 [
     [
-        'class' => 'yii\grid\CheckboxColumn', 
+        'class' => 'yii\grid\CheckboxColumn',
         'checkboxOptions' => [
             'class' => 'uphostery-checkbox',
         ],
@@ -29,11 +29,11 @@ $gridColumns =
         'attribute' => 'uphostery_no',
         'format' => 'text',
         'value' => function($model, $index, $column) {
-            $upNumber = 'Uphostery No Missing';
+            $woNumber = 'Uphostery No Missing';
             if ( $model->uphostery_scope && $model->uphostery_type ) {
-                $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+                $woNumber = Setting::getWorkNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
             }
-            return $upNumber;
+            return $woNumber;
         },
     ],
     [
@@ -41,7 +41,7 @@ $gridColumns =
         'value' => 'customer.name',
     ],
     // 'part_no',
-     [
+    [
         'attribute' => 'date',
         'format' => 'text',
         'value' => function($model, $index, $column) {
@@ -70,10 +70,10 @@ $gridColumns =
     // 'updated_by',
     // 'deleted',
 
-    
+
     [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{quarantine}{scrap}{preview}{cancel}',
+        'template' => '{preview}{cancel}',
         'buttons' => [
             'quarantine' => function ($url, $model) {
 
@@ -124,7 +124,7 @@ $gridColumns =
                                     'confirm' => 'Are you sure you want to cancel this uphostery?',
                                 ],
                     ]);
-                }   
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
@@ -139,7 +139,7 @@ $gridColumns =
             if ($action === 'preview') {
                 $url ='?r=uphostery/preview&id='.$model->id;
                 return $url;
-            }   
+            }
             if ($action === 'approve' && $model->status != 'approved') {
                 $url ='?r=uphostery/approve&id='.$model->id;
                 return $url;
@@ -175,11 +175,12 @@ $gridColumns =
 
 
 
-$exportColumns = 
+
+$exportColumns =
 // $gridColumns =
 [
     [
-        'class' => 'yii\grid\CheckboxColumn', 
+        'class' => 'yii\grid\CheckboxColumn',
         'checkboxOptions' => [
             'class' => 'uphostery-checkbox',
         ],
@@ -189,11 +190,11 @@ $exportColumns =
         'attribute' => 'uphostery_no',
         'format' => 'text',
         'value' => function($model, $index, $column) {
-            $upNumber = 'Uphostery No Missing';
+            $woNumber = 'Uphostery No Missing';
             if ( $model->uphostery_scope && $model->uphostery_type ) {
-                $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+                $woNumber = Setting::getWorkNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
             }
-            return $upNumber;
+            return $woNumber;
         },
     ],
     [
@@ -232,7 +233,7 @@ $exportColumns =
     // 'updated_by',
     // 'deleted',
 
-    
+
     [
         'class' => 'yii\grid\ActionColumn',
         'template' => '{preview}{cancel}',
@@ -260,7 +261,7 @@ $exportColumns =
                                     'confirm' => 'Are you sure you want to cancel this uphostery?',
                                 ],
                     ]);
-                }   
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
@@ -275,7 +276,7 @@ $exportColumns =
             if ($action === 'preview') {
                 $url ='?r=uphostery/preview&id='.$model->id;
                 return $url;
-            }   
+            }
             if ($action === 'approve' && $model->status != 'approved') {
                 $url ='?r=uphostery/approve&id='.$model->id;
                 return $url;
@@ -307,7 +308,7 @@ $exportColumns =
 
         <section class="content">
                     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-        
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
@@ -318,8 +319,8 @@ $exportColumns =
                         <div class="col-sm-12 text-right export-menu">
                         <br>
                         <?= Html::a('<i class=\'fa fa-plus\'></i> New Uphostery', ['new'], ['class' => 'btn btn-default']) ?>
-                        <?= Html::dropDownList('update-status-selection', null, $dataUphosteryStatus,['id' => 'update-status-selection', 'class' => 'select2'] ) ?>
-                        <a class="btn btn-primary" href="javascript:update_status()"><i class="fa fa-save"></i> Update Status</a>
+                        <?= Html::dropDownList('update-status-selection', null, $dataWorkStatus,['id' => 'update-status-selection', 'class' => 'select2'] ) ?>
+                        <a class="btn btn-primary" href="javascript:update_up_status()"><i class="fa fa-save"></i> Update Status</a>
                         <?php
 
                             /*Renders a export dropdown menu*/
@@ -350,11 +351,11 @@ $exportColumns =
                         <!-- /.box-header -->
 
                         <div class="box-body table-responsive">
-                            <?= 
+                            <?=
                                 GridView::widget([
                                     'dataProvider' => $dataProvider,
                                     'columns' => $gridColumns
-                                ]); 
+                                ]);
                             ?>
 
                         </div>

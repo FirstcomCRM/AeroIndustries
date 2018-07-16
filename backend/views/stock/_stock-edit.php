@@ -69,7 +69,7 @@ use kartik\file\FileInput;
                                             </label>
                                         </div>
                                         <div class="col-sm-9 col-xs-12">
-                                            <input type="text" class="form-control" value="<?= PurchaseOrder::getPONoById($model->purchase_order_id) ?>" readonly="">
+                                            <input type="text" class="form-control" value="<?= $model->purchase_order_id!=0?PurchaseOrder::getPONoById($model->purchase_order_id):'' ?>" readonly="">
                                             <div class="help-block"></div>
                                         </div>
                                         <?= $form->field($model, 'purchase_order_id')->hiddenInput()->label(false) ?>

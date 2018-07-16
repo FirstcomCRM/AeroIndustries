@@ -59,7 +59,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
-            
+        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Uphostery</a>
         <br>
         <br>
         <!-- /.box-header -->
@@ -68,28 +68,6 @@ use kartik\file\FileInput;
         <?php $form = ActiveForm::begin(); ?>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Please fill in the following details</h3>
-                        </div>
-
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <?= $form->field($req, 'uphostery_id',['template' => 
-                                        '<div class="col-sm-3 text-right">{label}</div>
-                                        <div class="col-sm-9 col-xs-12">{input}{error}</div> 
-                                        {hint}'])->dropDownList($dataWO,
-                                        [
-                                            'class' => 'select2 form-control selected-up-return',
-                                            'prompt' => 'Please select Uphostery', 
-                                            'options' => [isset($_GET['uphostery'])&&!empty($_GET['uphostery'])?$_GET['uphostery']:''  => ['Selected'=>'selected']]
-                                        ])->label('Uphostery') ?>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                    </div>
                     <?php /* required parts */ ?>
 
                         <div class="box">
@@ -106,6 +84,7 @@ use kartik\file\FileInput;
                                             <td width="10%">Qty Required</td>
                                             <td width="10%">Qty Issued</td>
                                             <td width="10%">Qty Returned</td>
+                                            <td width="10%">Uom</td>
                                             <td width="10%">Return</td>
                                             <td width="10%">Hour Used</td>
                                             <td width="10%">Return Date</td>
@@ -116,7 +95,7 @@ use kartik\file\FileInput;
                                     </thead>
                                     <tbody class="selected-parts">
                                         <?php foreach ( $requisition as $reqq ) : ?>
-                                            <?php if ( $reqq->qty_returned < $reqq->qty_issued ) { ?>
+                                            <?php /* if ( $reqq->qty_returned < $reqq->qty_issued ) {*/ ?>
                                             <tr>
                                                 <td width="">
                                                     <input type="text" class="form-control" value="<?=$dataStock[$reqq->part_id]?>" readonly>
@@ -127,10 +106,13 @@ use kartik\file\FileInput;
                                                     <input type="text" class="form-control" readonly value="<?=$reqq->qty_required?>">
                                                 </td>
                                                 <td>
-                                                    <input type="text" name="UphosteryStockRequisition[qty_issued][]" class="form-control" value="<?=$reqq->qty_issued?$reqq->qty_issued:($reqq->qty_required?$reqq->qty_required:'')?>" readonly>
+                                                    <input type="text" name="UphosteryStockRequisition[qty_issued][]" class="form-control" value="<?=$reqq->qty_issued?$reqq->qty_issued:0?>" readonly>
                                                 </td>
                                                 <td>
                                                     <input type="text" name="UphosteryStockRequisition[qty_returned][]" class="form-control" value="<?=$reqq->qty_returned>0?$reqq->qty_returned:0?>" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="UphosteryStockRequisition[uom][]" class="form-control" value="<?=!empty($reqq->uom)?$reqq->uom:''?>" readonly>
                                                 </td>
                                                 <td>
                                                     <input type="text" name="UphosteryStockRequisition[return_qty][]" class="form-control" value="<?= $reqq->qty_issued - ($reqq->qty_returned>0?$reqq->qty_returned:0)?>" >
@@ -176,7 +158,7 @@ use kartik\file\FileInput;
                                                     </td>
                                                 </tr>
                                             <?php } ?>
-                                            <?php } /* if returned quantity moer than issued quantity, means all have returned */ ?>
+                                            <?php /* }  if returned quantity moer than issued quantity, means all have returned */ ?>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>

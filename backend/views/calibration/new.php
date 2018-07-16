@@ -22,6 +22,7 @@ $subTitle = 'Create Calibration';
         'model' => $model,
         'tool'=>$tool,
         'partId' => $partId,
+            'atta' => $atta,
         'subTitle' => $subTitle,
         'serialNo' => $serialNo,
     ]) ?>

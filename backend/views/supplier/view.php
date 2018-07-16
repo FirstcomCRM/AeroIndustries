@@ -64,7 +64,7 @@ $dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
                                     <label>Status:</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <?= $model->status == 1 && !empty ( $model->status ) ? 'Active' : 'Inactive' ?>
+                                    <?= $model->status ?>
                                 </div>
                             </div>
                         </div>

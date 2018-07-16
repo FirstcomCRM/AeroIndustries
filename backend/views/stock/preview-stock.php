@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
-
+use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model common\models\Stock */
 use common\models\Supplier;
@@ -34,16 +34,7 @@ use kartik\file\FileInput;
 
 $gridColumns = [
     ['class' => 'yii\grid\SerialColumn'],
-
-    [
-        'attribute' => 'status',
-        'format' => 'text',
-        'value' => function($model, $index, $column) {
-            return $model->status == 1 ? 'Active' : 'Inactive' ;
-        },
-        
-        'label' => 'Status',
-    ],
+    'status',
     [
         'format' => 'raw',
         'attribute' => 'purchase_order_id',
@@ -61,7 +52,7 @@ $gridColumns = [
         'format' => 'raw',
         'attribute' => 'receiver_no',
         'value' => function($model, $index, $column) {
-            
+
             if ( $model->receiver_no ) {
                 return Html::a(Html::encode("RE-" . sprintf("%006d", $model->receiver_no)),'?r=stock/receiver&id='.$model->receiver_no);
             } else {
@@ -97,7 +88,7 @@ $gridColumns = [
         'value' => 'storage.name',
         'label' => 'Storage at',
     ],
-   
+
     'expiration_date',
     'shelf_life',
     [
@@ -108,8 +99,13 @@ $gridColumns = [
 
     [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{preview}{amend}{receiver}',
+        'template' => '{quarantine}{preview}{amend}{receiver}',
         'buttons' => [
+            'quarantine' => function ($url, $model) {
+                    return Html::a(' <span class="glyphicon glyphicon-new-window"></span> ', $url, [
+                        'title' => Yii::t('app', 'Move to Quarantine'),
+                ]);
+            },
             'preview' => function ($url, $model) {
                     return Html::a(' <span class="glyphicon glyphicon-eye-open"></span> ', $url, [
                         'title' => Yii::t('app', 'Preview'),
@@ -121,12 +117,17 @@ $gridColumns = [
                 ]);
             },
             'receiver' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-print"></span> ', $url, [
+                return 
+                $model->purchase_order_id!=0?Html::a(' <span class="glyphicon glyphicon-print"></span> ', $url, [
                         'title' => Yii::t('app', 'Receiver'),
-                ]);
+                ]):'';
             }
         ],
         'urlCreator' => function ($action, $model, $key, $index) {
+            if ($action === 'quarantine') {
+                $url ='?r=supplier-quarantine/new&s_id='.$model->id.'&qty='.$model->quantity;
+                return $url;
+            }
             if ($action === 'preview') {
                 $url ='?r=stock/preview&id='.$model->id . '&s=1';
                 return $url;
@@ -155,6 +156,13 @@ $gridColumns = [
         </h2>
     </section>
     <div class="col-sm-12 text-right">
+          <?php echo Html::a('View Part Images','#',
+            [
+              'class'=>'btn btn-warning modalButton',
+              'title'=>'View Image',
+              'value' => Url::to(['stock/part-image', 'id' => $model->part_id]),
+            ]
+          );?>
             <?= Html::a( 'Back', Url::to(['stock']), array('class' => 'btn btn-default')) ?>
         <br>
         <br>
@@ -202,6 +210,7 @@ $gridColumns = [
                                     <?= $model->part->manufacturer ? $model->part->manufacturer : '' ?>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -212,12 +221,12 @@ $gridColumns = [
                       <h3 class="box-title">All stocks <?= $model->part_id ? 'of '. $dataPart[$model->part_id] : '' ?></h3>
                     </div>
                     <div class="box-body table-responsive">
-                        <?= 
+                        <?=
                             GridView::widget([
                                 'dataProvider' => $dataProvider,
                                 'columns' => $gridColumns,
                                 'showFooter'=>true,
-                            ]); 
+                            ]);
                         ?>
 
                     </div>
@@ -226,3 +235,23 @@ $gridColumns = [
         </div>
     </section>
 </div>
+
+
+<?php
+  Modal::begin([
+    'header'=>$dataPart[$model->part_id],
+    'id'=>'modals',
+    'size'=>'modal-lg',
+  //'size'=>'modal-sm',
+    //'clientOptions' => ['backdrop' => false],
+    'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>',
+  //  'closeButton'=>'tag',
+  ]);
+
+ ?>
+
+<div class="" id="modalContent">
+
+</div>
+
+<?php Modal::end() ?>

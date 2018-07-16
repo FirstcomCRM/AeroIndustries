@@ -17,12 +17,12 @@ use common\models\User;
 use common\models\Setting;
 use dosamigos\ckeditor\CKEditorInline;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 $id = $model->id;
-$this->title = $upNumber;
+$this->title = $woNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 

@@ -17,9 +17,9 @@ use common\models\Stock;
 use common\models\PurchaseOrder;
 use common\models\Staff;
 $this->title = 'Materials Requisition Form';
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 $dataPart = Part::dataPart();
 $dataPartDesc = Part::dataPartDesc();
@@ -54,7 +54,7 @@ $dataStaffId = Staff::dataStaffId();
                                    
                                 </td>
                                 <td class="border-bottom" align="center"> 
-                                    <?=$model->part_no?>
+                                    <?=$uphosteryPart->part_no?>
                                 </td>
                             </tr>
                             <tr>
@@ -68,7 +68,7 @@ $dataStaffId = Staff::dataStaffId();
                                    
                                 </td>
                                 <td class="border-bottom" align="center"> 
-                                    <?=$model->desc?>
+                                    <?=$uphosteryPart->desc?>
                                 </td>
                             </tr>
                             <tr>
@@ -82,7 +82,7 @@ $dataStaffId = Staff::dataStaffId();
                                    
                                 </td>
                                 <td class="border-bottom" align="center"> 
-                                    <?=$upNumber?>
+                                    <?=$woNumber?>
                                 </td>
                             </tr>
                             <tr>
@@ -205,7 +205,7 @@ $dataStaffId = Staff::dataStaffId();
                     <ol>
                         <li>Stockroom personnel is to notify technician (at the point of issuance) material whose shelf life is affected by storage temperature.</li>
                         <li>Non-shelf life material and material whose shelf life are not room temperature sensitive do not require time recording.</li>
-                        <li>Upon completion of this form, production is to ensure this form is filled within the uphostery order package.</li>
+                        <li>Upon completion of this form, production is to ensure this form is filled within the work order package.</li>
                     </ol>
 
                 </td>

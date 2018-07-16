@@ -14,11 +14,12 @@ use common\models\Supplier;
 use common\models\Part;
 use common\models\User;
 use common\models\Unit;
+use common\models\PurchaseOrder;
 
 
-$poNumber = "PO-" . sprintf("%008d", $model->purchase_order_no);
+$poNumber = PurchaseOrder::getPONo($model->purchase_order_no,$model->created);
 $id = $model->id;
-$this->title = "PO-" . sprintf("%008d", $model->purchase_order_no);
+$this->title = $poNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 

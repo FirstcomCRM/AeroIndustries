@@ -10,7 +10,7 @@ $this->title = 'General Purchase Order';
 $this->params['breadcrumbs'][] = ['label' => 'General Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
-$poNumber = GeneralPo::getGPONo($model->purchase_order_no);
+$poNumber = GeneralPo::getGPONo($model->purchase_order_no,$model->created);
 $subTitle = 'Update ' . $poNumber;
 $isEdit = true;
 ?>

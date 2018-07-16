@@ -33,144 +33,117 @@ foreach ( $dataWorkOrder as $id => $dwo ) {
         $dataWorkO[$id] = $woNumber;
     }
 }
-
-
+$dataQuotationType = [
+    'work_order' => 'For Work Order',
+    'uphostery' => 'For Uphostery'
+];
 /*plugins*/
 use kartik\file\FileInput;
 ?>
-
 <div class="purchase-order-form">
     <section class="content">
         <?php $form = ActiveForm::begin(); ?>
         <div class="row">
             <div class="col-xs-12">
-
-
 <?php /* BASIC INFO  */ ?>
                 <div class="box">
                     <div class="box-header with-border">
                       <h3 class="box-title"><?= $subTitle ?></h3>
                     </div>
                     <!-- /.box-header -->
-
                     <div class="box-body ">
-
                         <div class="row">
-
+                            <div class="col-sm-6 col-xs-12">    
+                                <?= $form->field($model, 'quotation_type', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                <div class="col-sm-9 col-xs-12">{input}{error}</div>
+                                {hint}
+                                '])->dropDownList($dataQuotationType,['class' => 'form-control quotation-type',])->label('Quotation Type') ?>
+                            </div>
                             <div class="col-sm-6 col-xs-12">    
                                 <?= $form->field($model, 'work_order_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->dropDownList($dataWorkO,['class' => 'select2 form-control work-order-selection',])->label('Work Order No.') ?>
                             </div>
-                        
-                            <div class="col-sm-6 col-xs-12">    
-                                <?= $form->field($model, 'date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
-                                <div class="col-sm-9 col-xs-12">{input}{error}</div>
-                                {hint}
-                                '])->textInput(['id'=>'datepicker', 'autocomplete' => 'off', 'placeholder' => 'Please select date']) ?>
-                            </div>
-
                         </div>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-xs-12">    
                                 <?= $form->field($model, 'customer_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->dropDownList($dataCustomer,['class' => 'select2 form-control',])->label('Customer') ?>
                             </div>
-
                             <div class="col-sm-6 col-xs-12">    
-                                <?= $form->field($model, 'attention', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                <?= $form->field($model, 'date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
-                                '])->textInput() ?>
+                                '])->textInput(['id'=>'datepicker', 'autocomplete' => 'off', 'placeholder' => 'Please select date']) ?>
                             </div>
-
-
                         </div>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-xs-12">    
                                 <?= $form->field($model, 'address', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->dropDownList($customerAddresses, ['class' => 'form-control quo_cust_addr']) ?>
                             </div>
-
                             <div class="col-sm-6 col-xs-12">    
-                                
-                                <?= $form->field($model, 'p_term', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                <?= $form->field($model, 'attention', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
-                                '])->textInput(['maxlength' => true])->label('Payment Term') ?>
-
+                                '])->textInput() ?>
                             </div>
-
                         </div>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-xs-12">    
                                 <?= $form->field($model, 'reference', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->textInput(['maxlength' => true]) ?>
                             </div>
-
                             <div class="col-sm-6 col-xs-12">    
                                 <?= $form->field($model, 'd_term', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->textInput(['maxlength' => true])->label('Delivery Term') ?>
                             </div>
-
                             <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'certification', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->dropDownList([ 'ARC' => 'ARC', 'COC' => 'COC', 'NA' => 'NA']) ?>
                             </div>
-
                             <div class="col-sm-6 col-xs-12">    
-                                <?= $form->field($model, 'p_currency', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                <?= $form->field($model, 'p_term', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
-                                '])->dropDownList($dataCurrency,['class' => 'select2 form-control',])->label('Currency') ?>
+                                '])->textInput(['maxlength' => true])->label('Payment Term') ?>
                             </div>
-
-
                         </div>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-xs-12">    
                                 <?= $form->field($model, 'remark', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->textArea(['maxlength' => true,'rows' => 4]) ?>
                             </div>
-                            
-
                             <div class="col-sm-6 col-xs-12">    
+                                <?= $form->field($model, 'p_currency', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                <div class="col-sm-9 col-xs-12">{input}{error}</div>
+                                {hint}
+                                '])->dropDownList($dataCurrency,['class' => 'select2 form-control',])->label('Currency') ?>
                                 <?= $form->field($model, 'lead_time', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->textInput() ?>
                             </div>
                         </div>
-                       
-
                     </div>
                 </div>
 
 
 
 <?php /* SELECTION */ ?>
-
 
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -179,7 +152,6 @@ use kartik\file\FileInput;
                             <?php /* <button onclick="changeItemType('service')" class="btn btn-primary">Add Services</button>*/ ?>
                         </div>
                     </div>
-
                     <div class="box-body">
                         <div class="po-table col-md-12">
                             <div class="table-responsive">
@@ -312,9 +284,7 @@ use kartik\file\FileInput;
                                 </div>
                             </div>
                             <input type="hidden" id='n' value="0">
-                        
                         </div>
-
                     </div>
                 </div>
 <?php /* ATTACHMENTS */ ?>
@@ -339,21 +309,12 @@ use kartik\file\FileInput;
                             <?= Html::a( 'Cancel', Url::to('?r='.$backUrl), array('class' => 'btn btn-default')) ?>
                         </div>
                     </div>
-
                 </div>
-
-
             </div> 
-
-
-
 <?php /* END */ ?>
         <?php ActiveForm::end(); ?>
-
             </div> <!--  col-sm-12 -->
         </div><!--  row -->
-
     </section>
 </div>
-
 <script type="text/javascript"> confi(); </script>

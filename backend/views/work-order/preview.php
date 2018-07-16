@@ -29,7 +29,7 @@ $id = $model->id;
 $this->title = $woNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Work Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-
+$dataLocation= StorageLocation::dataLocation();
 $dataCustomer = Customer::dataCustomer();
 $dataCurrency = Currency::dataCurrency();
 $dataStaff = Staff::dataStaff();
@@ -43,8 +43,11 @@ $dataTemplate = Template::dataTemplate();
 
 /*plugins*/
 use kartik\file\FileInput;
+$files = User::find()->where(['id'=>Yii::$app->user->id])->one();
 ?>
-<div class="purchase-order-view">
+
+
+<div class="work-order-view" style="min-height: 1000px">
 
 
     <!-- Content Header (Page header) -->
@@ -59,7 +62,13 @@ use kartik\file\FileInput;
     </section>
         <div class="col-sm-12 text-right">
                 <?php if ( $model->status == 'Completed' ) { ?>
-                    <?php echo Html::a('<i class="fa fa-edit"></i> Generate DO', ['delivery-order/new', 'id' => $model->id], ['class' => 'btn btn-danger']) ?>
+                    
+                    <?php if ( $model->is_do ) { ?>
+                        <?php echo Html::a('<i class="fa fa-eye"></i> Preview DO', ['delivery-order/index','delivery_order_id' => $model->delivery_order_id], ['class' => 'btn btn-success']) ?>
+                    <?php } else { ?>
+                        <?php echo Html::a('<i class="fa fa-edit"></i> Generate DO', ['delivery-order/new', 'id' => $model->id], ['class' => 'btn btn-danger']) ?>
+                    <?php } ?>
+
                 <?php } ?>
 
                 <?php if ( $model->status != 'Completed' ) { ?>
@@ -91,9 +100,10 @@ use kartik\file\FileInput;
                 <div class="col-xs-12">
 
                 <?php /* general info */ ?>
-                    <div class="box">
+
+                    <div class="box box-danger">
                         <div class="box-header with-border">
-                          <h3 class="box-title"><?= Html::encode($woNumber) ?></h3>
+                          <h3 class="box-title">Customer Details</h3>
                         </div>
 
 
@@ -104,18 +114,47 @@ use kartik\file\FileInput;
                                         <label>Customer:</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?= $dataCustomer[$model->customer_id] ?>
+                                        <a href="?r=customer/update&id=<?=$customer->id?>" target="_blank"><?= $customer->name ?></a>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-xs-12">
                                     <div class="col-sm-5">
-                                        <label>Customer PO:</label>
+                                        <label>Contact Person:</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <?= $model->customer_po_no ?>
+                                        1. <?= $customer->contact_person ?><br>
+                                        2. <?= $customer->contact_person_2?><br>
+                                        3. <?= $customer->contact_person_3?><br>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-5">
+                                        <label>Email:</label>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <?= $customer->email ?>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-5">
+                                        <label>Contact No.:</label>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <?= $customer->contact_no ?>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+
+                    <div class="box">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Work Order Details</h3>
+                        </div>
+
+
+                        <div class="box-body preview-po">
                             <div class="row">
                                 <div class="col-sm-6 col-xs-12">
                                     <div class="col-sm-5">
@@ -239,6 +278,14 @@ use kartik\file\FileInput;
                                         <?php } ?>
                                     </div>
                                 </div>
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-5">
+                                        <label>Customer PO:</label>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <?= $model->customer_po_no ?>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -269,6 +316,12 @@ use kartik\file\FileInput;
                             <tbody>
                                 <?php if (!empty($workOrderParts) ) { ?>
                                     <?php foreach ( $workOrderParts as $wop ) : ?>
+                                        <?php 
+                                            $isAllChecked = false;
+                                            if ( $wop->is_processing == 1 && $wop->is_receiving == 1 && $wop->is_preliminary == 1 && $wop->is_hidden == 1 && $wop->is_traveler == 1 && $wop->is_final == 1 ) {
+                                                $isAllChecked = true;
+                                            }
+                                        ?>
                                         <tr>
                                             <td><?= $wop->id ?></td>
                                             <td><?= $wop->part_no ?></td>
@@ -276,11 +329,11 @@ use kartik\file\FileInput;
                                             <td><?= $wop->serial_no ?></td>
                                             <td><?= $wop->batch_no ?></td>
                                             <td><?= $wop->model ?></td>
-                                            <td><?= $wop->location_id ?></td>
+                                            <td><?= $wop->location_id?$dataLocation[$wop->location_id]:'' ?></td>
                                             <td><?= $wop->quantity ?></td>
                                             <td><?= isset($wop->template_id)&&!empty($wop->template_id)?$dataTemplate[$wop->template_id]:'' ?></td>
                                             <td><?= $wop->status ?></td>
-                                            <td>
+                                            <td class="wo-dropdown">
                                                 <div class="btn-group">
                                                   <button type="button" class="btn btn-success">Actions</button>
                                                   <button type="button" class="btn btn-success dropdown-toggle generate-dropdown <?= $wop->id ?>" aria-expanded="true">
@@ -294,6 +347,7 @@ use kartik\file\FileInput;
                                                         <li><?= Html::a( 'Preliminary Inspection', Url::to(['preliminary-inspection', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Hidden Damage Inspection', Url::to(['hidden-damage', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Worksheet', Url::to(['work-sheet', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
+                                                        <li><hr></li>
                                                         <?php if ($wop->status!= 'scrapped' && $wop->status!='returned'): ?>
                                                           <?php if ($wop->status =='quarantined'): ?>
                                                             <li><?= Html::a( 'Move out of Quarantine', Url::to(['work-order/remove-quarantined','work_order_part_id' => $wop->id])) ?></li>
@@ -304,13 +358,16 @@ use kartik\file\FileInput;
                                                           <li><?= Html::a( 'Return Back to Customer', Url::to(['work-order/return-back','work_order_part_id' => $wop->id])) ?></li>
                                                           <li><?= Html::a( 'Scrap Parts', Url::to(['scrap/new', 'work_order_part_id' => $wop->id])) ?></li>
                                                         <?php endif; ?>
-
-
-                                                      <?php } ?>
-                                                        <li><?= Html::a( 'Generate ARC', Url::to(['work-order-arc/generate', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
+                                                        <li><hr></li>
                                                         <li><?= Html::a( 'Set Requisition', Url::to(['work-order/requisition', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Issue Parts', Url::to(['work-order/issue', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Return Parts', Url::to(['work-order/return', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
+
+                                                        <?php } else {?>
+                                                            <?php if ( $isAllChecked ) { ?>
+                                                                <li><?= Html::a( 'Generate ARC', Url::to(['work-order-arc/generate', 'id' => $model->id,'work_order_part_id' => $wop->id])) ?></li>
+                                                            <?php } ?>
+                                                        <?php } ?>
                                                   </ul>
                                                 </div>
                                                 <div class="btn-group">
@@ -323,7 +380,7 @@ use kartik\file\FileInput;
                                                     <li><?= Html::a( 'Receiving Inspection', Url::to(['print-receiving', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <li><?= Html::a( 'Detailed Inspection', Url::to(['print', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <li><?= Html::a( 'Disposition Report', Url::to(['print-disposition', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                    <li><?= Html::a( 'Traveler', Url::to(['print-traveler', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                    <li><?= Html::a( 'Worksheet', Url::to(['print-traveler', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <li><?= Html::a( 'Repairable Sticker', Url::to(['repairable-sticker', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <?php if ( $model->status == 'Completed') { ?>
                                                         <li class="divider"></li>
@@ -331,25 +388,45 @@ use kartik\file\FileInput;
                                                         <li><?= Html::a( 'BOM', Url::to(['print-bom', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                         <li><?= Html::a( 'Release Sticker', Url::to(['final-sticker', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                         <li><?= Html::a( 'Final Inspection', Url::to(['print-final', 'id' => $model->id,'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                        <?php foreach ( $workOrderArc as $woa ) {  ?>
-                                                            <?php if ( $woa->type == 'CAAS' ) { ?>
-                                                                <li><?= Html::a( 'ARC - CAAS', Url::to(['work-order-arc/print-caa', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                        
+                                                        <?php //if ( $wop->is_processing == 1 && $wop->is_receiving == 1 && $wop->is_preliminary == 1 && $wop->is_hidden == 1 && $wop->is_traveler == 1 && $wop->is_final == 1 ) { ?>
+                                                            <?php foreach ( $workOrderArc[$wop->id] as $woa ) {  ?>
+                                                                <?php if ( $woa->type == 'CAAS' ) { ?>
+                                                                    <li><?= Html::a( 'ARC - CAAS', Url::to(['work-order-arc/print-caa', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                                <?php } ?>
+                                                                <?php if ( $woa->type == 'FAA' ) { ?>
+                                                                    <li><?= Html::a( 'ARC - FAA', Url::to(['work-order-arc/print-faa', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                                <?php } ?>
+                                                                <?php if ( $woa->type == 'EASA' ) { ?>
+                                                                    <li><?= Html::a( 'ARC - EASA', Url::to(['work-order-arc/print-easa', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                                <?php } ?>
+                                                                <?php if ( $woa->type == 'COC' ) { ?>
+                                                                    <li><?= Html::a( 'ARC - COC', Url::to(['work-order-arc/print-coc', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                                <?php } ?>
+                                                                <?php if ( $woa->type == 'CAAV' ) { ?>
+                                                                    <li><?= Html::a( 'ARC - CAAV', Url::to(['work-order-arc/print-caav', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                                <?php } ?>
+                                                                <?php if ( $woa->type == 'DCAM' ) { ?>
+                                                                    <li><?= Html::a( 'ARC - DCAM', Url::to(['work-order-arc/print-dcam', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                                <?php } ?>
                                                             <?php } ?>
-                                                            <?php if ( $woa->type == 'FAA' ) { ?>
-                                                                <li><?= Html::a( 'ARC - FAA', Url::to(['work-order-arc/print-faa', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                            <?php } ?>
-                                                            <?php if ( $woa->type == 'EASA' ) { ?>
-                                                                <li><?= Html::a( 'ARC - EASA', Url::to(['work-order-arc/print-easa', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                            <?php } ?>
-                                                            <?php if ( $woa->type == 'COC' ) { ?>
-                                                                <li><?= Html::a( 'ARC - COC', Url::to(['work-order-arc/print-coc', 'id' => $model->id, 'work_order_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                            <?php } ?>
-                                                        <?php } ?>
+                                                        <?php// } ?>
 
                                                     <?php } ?>
 
                                                   </ul>
                                                 </div>
+                                                <?php if ($files->user_group_id == 1 || $wop->status != 'Completed'){ ?>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-danger" data-toggle="modal" 
+                                                            data-target="#checklistModal"
+                                                            data-work_order_id="<?=$model->id?>"
+                                                            data-work_order_part_id="<?=$wop->id?>">
+                                                            Checklist
+                                                        </button>
+                                                    </div>
+                                                <?php } ?>
+                                                </td>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -363,6 +440,27 @@ use kartik\file\FileInput;
                             </tbody>
                         </table>
 
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="checklistModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form method="POST">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Work Order Checklist</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -392,6 +490,7 @@ use kartik\file\FileInput;
                                     <tbody>
                                         <?php $loopNo = 1; ?>
                                         <?php foreach ($WorkStockRequisition as $wPU ) { ?>
+
                                             <tr>
                                                 <td><?= $loopNo ?></td>
                                                 <td><?= $dataPart[$wPU->part_id] ?></td>
@@ -399,7 +498,7 @@ use kartik\file\FileInput;
                                                 <td><?= $wPU->qty_required ?></td>
                                                 <td><?= $wPU->qty_issued ?></td>
                                                 <td><?= $wPU->qty_returned ?></td>
-                                                <td><?= $dataUnit[$dataPartUnit[$wPU->part_id]] ?></td>
+                                                <td><?php $dataUnit[$dataPartUnit[$wPU->part_id]]  ?></td>
                                                 <!-- <td><?= $wPU->qty_stock ?></td> -->
                                                 <td><?= $wPU->created ?></td>
                                             </tr>

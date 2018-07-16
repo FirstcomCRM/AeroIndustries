@@ -13,6 +13,9 @@ use common\models\Currency;
 use common\models\Customer;
 use common\models\Part;
 use common\models\User;
+use common\models\Uphostery;
+use common\models\WorkOrder;
+use common\models\Setting;
 
 
 $quoNumber = "QUO-" . sprintf("%008d", $model->quotation_no);
@@ -27,7 +30,19 @@ $dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
 $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
 $currencyId = $model->p_currency;
-
+$work_uphostery_no = 0;
+if ($model->quotation_type=="work_order") {
+    $workOrder = WorkOrder::getWorkOrder($model->work_order_id);
+    if ( $workOrder->work_scope && $workOrder->work_type ) {
+        $work_uphostery_no = Setting::getWorkNo($workOrder->work_type,$workOrder->work_scope,$workOrder->work_order_no);
+    }
+}
+if ($model->quotation_type=="uphostery") {
+    $uphostery = Uphostery::getUphostery($model->work_order_id);
+    if ( $uphostery->uphostery_scope && $uphostery->uphostery_type ) {
+        $work_uphostery_no = Setting::getUphosteryNo($uphostery->uphostery_type,$uphostery->uphostery_scope,$uphostery->uphostery_no);
+    }
+}
 /*plugins*/
 use kartik\file\FileInput;
 ?>
@@ -154,7 +169,12 @@ use kartik\file\FileInput;
                                 </div>
                             </div>
                             <div class="col-sm-6 col-xs-12">
-                              
+                                <div class="col-sm-4">
+                                    <label>Work Order/Uphostery:</label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <?= $work_uphostery_no; ?>
+                                </div>
                             </div>
                         </div>
                         <div class="row">

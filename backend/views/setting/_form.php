@@ -25,6 +25,7 @@ $settingSelection = [
 	'identify_from' => 'Part Number Identification',
 	'PO Email Notification'=>'PO email notification',
 	'GPO Email Notification'=>'GPO email notification',
+	'TPO Email Notification'=>'TPO email notification',
 	'Stocks Received Email Notification'=>'Stocks Received Email Notification',
 ];
 ?>

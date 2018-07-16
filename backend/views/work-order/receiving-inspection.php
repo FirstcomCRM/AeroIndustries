@@ -188,7 +188,7 @@ if ( $data['model']->work_scope && $data['model']->work_type ) {
                                         </div>  
 
                                         <div class="col-sm-12 col-xs-12">
-                                           <?= $form->field($data['woAttachment'], 'attachment[work_order][]', [
+                                           <?= $form->field($data['woAttachment'], 'attachment[receiving][]', [
                                                   'template' => "<div class='col-sm-3 text-right'>{label}{hint}</div>\n<div class='col-sm-9 col-xs-12'>{input}{error}</div>\n\n"
                                                 ])
                                                 ->widget(FileInput::classname(), [
@@ -207,7 +207,7 @@ if ( $data['model']->work_scope && $data['model']->work_type ) {
 
                                                 ?>
                                                 <div class="col-sm-3 col-xs-12">
-                                                    <a href="<?= 'uploads/work_order/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
+                                                    <a href="<?= 'uploads/receiving/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
                                                     <?= Html::a(' <i class="fa fa-close"></i> ', ['work-order/remove-woa', 'id' => $at->id], [
                                                         'data' => [
                                                             'confirm' => 'Are you sure you want to remove this attachment?',

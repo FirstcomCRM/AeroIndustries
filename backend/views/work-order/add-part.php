@@ -6,19 +6,19 @@
         $returndata = "
         	<tr class='part-$n'>
         		<td>
-                    " . $data['part_no'] ;
+                    <span class='display-part-no-$n'>" . $data['part_no'] . "</span>" ;
                     foreach ($data as $variableName => $value) {
                         $returndata .= "<input type='hidden' placeholder='$variableName' id='added-$variableName' name='WorkOrderPart[$variableName][]' class='edit-$variableName-$n' value='$value'>";
                     }        
         $returndata .="
                 </td>
-                <td>
+                <td class='display-manufacturer-$n'>
                     " . $data['manufacturer'] . "
                 </td>
-                <td>
+                <td class='display-model-$n'>
                     " . $data['model'] . "
                 </td>
-        		<td>
+                <td class='display-quantity-$n'>
         			" . $data['quantity'] . "
         		</td>
                 <td>

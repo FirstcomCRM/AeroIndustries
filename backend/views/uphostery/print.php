@@ -15,14 +15,14 @@ use common\models\Part;
 use common\models\User;
 use common\models\Setting;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getWorkNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 
 
 $id = $model->id;
-$this->title = $upNumber;
+$this->title = $woNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -79,7 +79,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         <tr>
             <td>
                 Preliminary inspection and Evaluation
-                <table class="preview-po uphostery-order-print-table" width="100%" border="1">
+                <table class="preview-po uphostery-print-table" width="100%" border="1">
                     <?php $loop = 1; ?>
                     <?php foreach ($uphosteryPreliminary as $wP) { ?>
                         <tr>
@@ -122,7 +122,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         </tr>
         <tr>
             <td>
-                <table class="preview-po uphostery-order-print-table" width="100%" border="1">
+                <table class="preview-po uphostery-print-table" width="100%" border="1">
                     <tr>
                         <td align="center" colspan="5" class="border-none">
                             <?php if ( $att ) {  ?>

@@ -12,15 +12,15 @@ use yii\helpers\Url;
 use common\models\Setting;
 use common\models\Capability;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 
 
 
 $id = $model->id;
-$this->title = $upNumber . ' (Sticker) ' ;
+$this->title = $woNumber . ' (Sticker) ' ;
 $this->params['breadcrumbs'][] = ['label' => 'Uphosterys', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -57,7 +57,7 @@ use kartik\file\FileInput;
                                                         }
                                                     ?>
                                                    <h5><strong>REPAIRABLE COMPONENT TAG</strong></h5><br>
-                                                   CUSTOMER: <?=$model->customer->name?>&nbsp;&nbsp;&nbsp;WO#<?=$upNumber?><br>
+                                                   CUSTOMER: <?=$model->customer->name?>&nbsp;&nbsp;&nbsp;WO#<?=$woNumber?><br>
                                                    DATE: <?=$newDate?>&nbsp;&nbsp;&nbsp;DESC: <?=Capability::getPartDesc($uphosteryPart->part_no)?><br>
                                                    P/N: <?=$uphosteryPart->part_no?>&nbsp;&nbsp;&nbsp;S/N: <?=$uphosteryPart->serial_no?><br>
                                                    INSPECTOR: _____________________<br>

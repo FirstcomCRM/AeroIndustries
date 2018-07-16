@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use kartik\file\FileInput;
 
 $backUrlFull = Yii::$app->request->referrer;
 $exBackUrlFull = explode('?r=', $backUrlFull);
@@ -73,7 +74,6 @@ $dataPartDesc = Part::dataPartDesc();
                                     </td>
                                 </tr>
                             </tbody>
-
                             <thead>
                                 <tr>
                                     <th>Storage Location</th>
@@ -101,10 +101,24 @@ $dataPartDesc = Part::dataPartDesc();
                                         <?= $form->field($model, 'due_date[]')->textInput(['id' => 'datepicker2'])->label(false) ?>
                                     </td>
                                 </tr>
+                            </tbody>
+
+                            <thead>
+                                <tr>
+                                    <th colspan="5">Attachment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <?= $form->field($atta, 'attachment[]')->fileInput()->label(false) ?>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td colspan="5"><hr></td>
                                 </tr>
                             </tbody>
+
                             <?php } /* foreach e */ ?> 
                         </table>
    

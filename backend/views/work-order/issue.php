@@ -58,6 +58,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
+        <a class="btn btn-default" href="?r=work-order/preview&id=<?php echo $_GET['id']; ?> ">Back to Work Order</a>
         <br>
         <br>
         <!-- /.box-header -->
@@ -99,7 +100,7 @@ use kartik\file\FileInput;
                             <div class="box-header with-border">
                               <h3 class="box-title">Parts Issue</h3>
                             </div>
-                            <div class="box-body">
+                            <div class="box-body"> 
                             <?php if ( $requisition ) { ?>
                                 <input id="gt" type="hidden" value="1">
                                 <table class="table stock-requisition-table stock-out-table" width="100%">
@@ -123,9 +124,9 @@ use kartik\file\FileInput;
                                                 <tr>
                                                     <td width="">
                                                         <?php if($dataPartReusable[$reqq->part_id]==1){ ?>
-                                                            <a href="#"
-                                                            data-toggle="modal"
-                                                            data-target="#editStockId"
+                                                            <a href="#" 
+                                                            data-toggle="modal" 
+                                                            data-target="#editStockId" 
                                                             data-stockid="<?=$reqq->stock_id?>"
                                                             data-partid="<?=$reqq->part_id?>"
                                                             data-reqid="<?=$reqq->id?>"
@@ -147,18 +148,18 @@ use kartik\file\FileInput;
                                                     <td width="6%">
                                                         <input type="text" name="WorkStockRequisition[qty_issued][]" class="form-control" value="<?=!empty($reqq->uom)?$reqq->uom:''?>" readonly >
                                                     </td>
-                                                    <td width="7%">
-                                                        <input type="text" name="WorkStockRequisition[issue_qty][]" class="form-control" value="<?= $reqq->qty_required - ($reqq->qty_issued>0?$reqq->qty_issued:0)?>" <?=($reqq->qty_issued)>=($reqq->qty_required)?'readonly="readonly"':''?> >
+                                                    <td width=7%">
+                                                        <input type="text" name="WorkStockRequisition[issue_qty][]" class="form-control" value="<?= $reqq->qty_required - ($reqq->qty_issued>0?$reqq->qty_issued:0)?>" <?=($reqq->qty_issued)>=($reqq->qty_required)?'readonly="readonly"':''?>>
                                                     </td>
                                                     <td width="11%">
                                                         <input type="text" id="datepicker" name="WorkStockRequisition[issued_date][]" class="form-control so-issued_date" value="<?=date('Y-m-d')?>">
                                                     </td>
                                                     <td width="15%">
-                                                    <?php
+                                                    <?php 
                                                         // usage without model
                                                         echo TimePicker::widget([
                                                             'name' => 'WorkStockRequisition[issued_time][]',
-                                                            'class' => 'start_time form-control',
+                                                            'class' => 'start_time form-control', 
                                                             'pluginOptions' => [
                                                                 'minuteStep' => 1,
                                                                 'showMeridian' => false,
@@ -198,11 +199,14 @@ use kartik\file\FileInput;
                                 </table>
                                 <table class="table stock-requisition-table stock-out-table">
                                     <tbody class=" added-issue">
-
+                                        
                                     </tbody>
                                 </table>
-                                <div class="row">
+                                <div class="row"> 
                                     <div class="col-sm-12 text-right">
+                                        <?php if ($reqq->status == 'issued') { ?>
+                                           <a class="btn btn-success" href="?r=work-order/pick-list&id=<?php echo $_GET['id']; ?>&work_order_part_id=<?php echo $_GET['work_order_part_id']; ?>"><i class="fa fa-file"></i> Pick List</a>
+                                        <?php } ?>
                                        <a class="btn btn-primary submit-btn" href="javascript:;"><i class="fa fa-save"></i> Issue</a>
                                     </div>
                                 </div>

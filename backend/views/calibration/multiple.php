@@ -21,6 +21,7 @@ $subTitle = 'Multiple Calibration';
     <?= $this->render('_form-multiple', [
         'model' => $model,
         'tidDetails' => $tidDetails,
+            'atta' => $atta,
         'subTitle' => $subTitle,
     ]) ?>
 

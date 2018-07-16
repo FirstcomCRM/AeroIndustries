@@ -75,7 +75,10 @@ if ( $model->work_scope == 'Production') {
             <td align="left" colspan="2"  width="250" valign="top" class="border-all">
                 3. Form Tracking Number<br>
                 <div style="text-align:center; margin-top:15px;">
-                    <?php echo $woNumber; ?>-<?=$arc->reprint?>
+                    <?php echo $woNumber; ?>
+                    <?php if ($arc->is_tracking_no) { ?>
+                    -<?=$arc->form_tracking_no?>
+                    <?php } ?>
                 </div>
             </td>
         </tr>
@@ -212,7 +215,7 @@ if ( $model->work_scope == 'Production') {
 
             </td>
             <td colspan="2" align="left" valign="top" class="<?= $classLeft ?> border-all">
-               13e. Date (dd/mmmm/yyyy)<br>
+               13e. Date (dd/mm/yyyy)<br>
 
             </td>
             <td colspan="2" class="<?= $classRight ?> border-all" align="left" valign="top">
@@ -222,9 +225,9 @@ if ( $model->work_scope == 'Production') {
                 </div>
             </td>
             <td colspan="2" class="<?= $classRight ?> border-all" align="left" valign="top">
-                14e. Date (dd/mmm/yyyy)<br>
+                14e. Date (dd/mm/yyyy)<br>
                 <div style="text-align:center">
-                    <?php echo date('d/M/Y',strtotime($arc->date)); ?>
+                    <?php echo date('d/m/Y',strtotime($arc->date)); ?>
                     
                 </div>
 

@@ -13,14 +13,15 @@ use common\models\Currency;
 use common\models\Customer;
 use common\models\Part;
 use common\models\User;
+use common\models\Staff;
 use common\models\Setting;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 $id = $model->id;
-$this->title = $upNumber;
+$this->title = $woNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -30,6 +31,7 @@ $dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
 $dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
 $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
+$dataStaffId = Staff::dataStaffId();
 $serial = false;
 $batch = false;
 if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) { 
@@ -62,7 +64,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         </tr>
         <tr>
             <td colspan="3">
-                <table class="box-body preview-po uphostery-order-print-table" width="100%" style="font-size: 11px;" border="1">
+                <table class="box-body preview-po uphostery-print-table" width="100%" style="font-size: 11px;" border="1">
                     <?php $loop = 1; ?>
                     <?php foreach ($uphosteryPreliminary as $wP) { ?>
                         <tr>
@@ -97,7 +99,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         <tr>
             <td colspan="3">
                 
-                <table class="box-body preview-po uphostery-order-print-table" width="100%" style="font-size: 11px;" border="1">
+                <table class="box-body preview-po uphostery-print-table" width="100%" style="font-size: 11px;" border="1">
                     <?php if ( $hiddenDamage ) { ?>
                         <?php $loop = 1; ?>
                         <?php foreach ($hiddenDamage as $hD) : ?>
@@ -152,7 +154,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                  Repair Supervisor
             </td>
             <td colspan="2">
-                <?= $uphosteryPart->repair_supervisor?>
+                <?= $dataStaffId[$uphosteryPart->repair_supervisor] ?>
             </td>
         </tr>
     </table>

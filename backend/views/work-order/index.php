@@ -179,12 +179,6 @@ $gridColumns =
 $exportColumns =
 // $gridColumns =
 [
-    [
-        'class' => 'yii\grid\CheckboxColumn',
-        'checkboxOptions' => [
-            'class' => 'work-order-checkbox',
-        ],
-    ],
     ['class' => 'yii\grid\SerialColumn'],
     [
         'attribute' => 'work_order_no',
@@ -201,96 +195,22 @@ $exportColumns =
         'attribute' => 'customer_id',
         'value' => 'customer.name',
     ],
-    'work_scope',
-    'work_type',
-    'customer_po_no',
-    'part_no',
-    'date',
-    'status',
-    'arc_status',
-    'received_date',
-    'on_dock_date',
-    'needs_by_date',
-    'approval_date',
-    'model',
-    'serial_no',
-    'batch_no',
-    'new_part_no',
-    'desc',
-    'remark',
-    // 'qc_notes',
-    'arc_remark',
-    'final_inspection_date',
-    'disposition_date',
-    'preliminary_date',
-    'created',
-    'updated',
-    // [
-    //     'attribute' => 'created_by',
-    //     'value' => 'user.username',
-    // ],
-    // 'updated',
-    // 'updated_by',
-    // 'deleted',
-
-
+    // 'part_no',
     [
-        'class' => 'yii\grid\ActionColumn',
-        'template' => '{preview}{cancel}',
-        'buttons' => [
-            'preview' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-eye-open"></span> ', $url, [
-                            'title' => Yii::t('app', 'Preview'),
-                ]);
-            },
-            'approve' => function ($url, $model) {
-                if ( $model->status != 'approved' ) {
-                    return Html::a(' <span class="glyphicon glyphicon-ok"></span> ', $url, [
-                                'title' => Yii::t('app', 'Approve'),
-                                'data' => [
-                                    'confirm' => 'Are you sure you want to approve this work order?',
-                                ],
-                    ]);
-                }
-            },
-            'cancel' => function ($url, $model) {
-                if ( $model->status != 'cancelled' ) {
-                    return Html::a(' <span class="glyphicon glyphicon-ban-circle"></span> ', $url, [
-                                'title' => Yii::t('app', 'Cancel'),
-                                'data' => [
-                                    'confirm' => 'Are you sure you want to cancel this work order?',
-                                ],
-                    ]);
-                }
-            },
-            'delete' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
-                            'title' => Yii::t('app', 'Delete'),
-                            'data' => [
-                                'confirm' => 'Are you sure you want to delete this work order?',
-                            ],
-                ]);
-            },
-        ],
-        'urlCreator' => function ($action, $model, $key, $index) {
-            if ($action === 'preview') {
-                $url ='?r=work-order/preview&id='.$model->id;
-                return $url;
-            }
-            if ($action === 'approve' && $model->status != 'approved') {
-                $url ='?r=work-order/approve&id='.$model->id;
-                return $url;
-            }
-            if ($action === 'cancel') {
-                $url ='?r=work-order/cancel&id='.$model->id;
-                return $url;
-            }
-            if ($action === 'delete') {
-                $url ='?r=work-order/delete-column&id='.$model->id;
-                return $url;
-            }
-        }
+        'attribute' => 'date',
+        'format' => 'text',
+        'value' => function($model, $index, $column) {
+            $exDate = explode(' ',$model->date);
+            $is = $exDate[0];
+            $time = explode('-', $is);
+            $monthNum = $time[1];
+            $dateObj   = DateTime::createFromFormat('!m', $monthNum);
+            $monthName = $dateObj->format('M'); // March
+            $newDate = $time[2] . ' ' .$monthName . ' ' .$time[0] ;
+            return $newDate;
+        },
     ],
+    'status',
 ]
 ;
 

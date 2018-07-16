@@ -82,7 +82,10 @@ if ( $model->work_scope == 'Production') {
             <td align="left" colspan="2"  width="250" valign="top">
                 3. Form Tracking Number<br>
                 <div style="text-align:center; margin-top:15px; font-size: 14px">
-                    <?php echo 'AI'.sprintf("%005d", $arc->form_tracking_no); ?>-<?=$arc->reprint?>
+                    <?php echo $woNumber; ?>
+                    <?php if ($arc->is_tracking_no) { ?>
+                    -<?=$arc->reprint?>
+                    <?php } ?>
                 </div>
             </td>
         </tr>
@@ -170,7 +173,7 @@ if ( $model->work_scope == 'Production') {
             </td>
             <td align="left" valign="top">
                 <div style="text-align:center" class="capitalize">
-                    <?= $workOrderPart->arc_status?>
+                    <?= $arc->arc_status?>
                 </div>
             </td>
         </tr>
@@ -178,7 +181,7 @@ if ( $model->work_scope == 'Production') {
             <td colspan="7" height="60px" valign="top">
                 13. Remarks<br>
                 <div style=" margin-left: 100px">
-                    <?= $workOrderPart->arc_remarks ?>
+                    <?= $arc->arc_remarks ?>
                 </div>
 
             </td>
@@ -238,9 +241,9 @@ if ( $model->work_scope == 'Production') {
                 </div>
             </td>
             <td colspan="2" align="left" valign="top" class="<?= $classLeft ?>">
-                18. Date (d/m/y)<br>
+                18. Date (dd/mm/yyyy)<br>
                 <div style="text-align:center">
-                    <?= $classLeft == '' ? date('d/M/Y',strtotime($arc->date)) : ''?>
+                    <?= $classLeft == '' ? date('d/m/Y',strtotime($arc->date)) : ''?>
                 </div>
             </td>
             <td colspan="2" class="<?= $classRight ?>" align="left" valign="top">
@@ -250,9 +253,9 @@ if ( $model->work_scope == 'Production') {
                 </div>
             </td>
             <td colspan="2" class="<?= $classRight ?>" align="left" valign="top">
-                23. Date (d/m/y)<br>
+                23. Date (dd/mm/yyyy)<br>
                 <div style="text-align:center">
-                    <?= $classRight == '' ? date('d/M/Y',strtotime($arc->date)) : ''?>
+                    <?= $classRight == '' ? date('d/m/Y',strtotime($arc->date)) : ''?>
                 </div>
             </td>
         </tr>

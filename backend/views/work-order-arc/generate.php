@@ -101,6 +101,21 @@ $backUrl = $exBackUrlFull[1];
                             '])->checkbox() ?>
 
                         </div>    
+                        <div class="col-sm-12 col-xs-12">    
+
+                            <?= $form->field($model, 'is_tracking_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                            <div class="col-sm-9 col-xs-12">{input}{hint}{error}</div>
+                            '])->checkbox() ?>
+
+                        </div>    
+
+                        <div class="col-sm-12 col-xs-12">    
+
+                            <?= $form->field($model, 'form_tracking_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                            <div class="col-sm-9 col-xs-12">{input}{hint}{error}</div>
+                            '])->textInput() ?>
+
+                        </div>    
                         
                         <div class="col-sm-12 text-right">
 

@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="col-sm-12 text-right export-menu">
                         <br>
-                        <?= Html::a('<i class=\'fa fa-plus\'></i> New Delivery Order', ['new'], ['class' => 'btn btn-default']) ?>
+                        <?php Html::a('<i class=\'fa fa-plus\'></i> New Delivery Order', ['new'], ['class' => 'btn btn-default']) ?>
                         </div>
                         <!-- /.box-header -->
 
@@ -43,15 +43,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 // 'filterModel' => $searchModel,
                                 'columns' => [
                                     ['class' => 'yii\grid\SerialColumn'],
-
-                                    [
-                                        'attribute' => 'delivery_order_no',
-                                        'format' => 'text',
-                                        'value' => function($model, $index, $column) {
-                                            return $model->delivery_order_no ? "DO-" . sprintf("%008d", $model->delivery_order_no) : '' ;
-                                        },
-                                        'label' => 'DO Number',
-                                    ],
+                                    'delivery_order_no',
+                                    'sco_no',
                                     [
                                         'attribute' => 'date',
                                         'format' => 'text',
@@ -83,18 +76,33 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'label' => 'Attachment',
                                     ],
                                     'contact_no',
-                                    'is_attachment',
                                     'status',
-                                    'created',
                                     // 'created_by',
 
                                     [
                                         'class' => 'yii\grid\ActionColumn',
-                                        'template' => '{print}{delete}',
+                                        'template' => '{print}{delete}{remove}{attachment}',
                                         'buttons' => [
+                                            'attachment' => function ($url, $model) {
+                                                if ($model->is_attachment) {
+                                                    return Html::a(' <span class="glyphicon glyphicon-file"></span> ', $url, [
+                                                                'title' => Yii::t('app', 'Attachment'),
+                                                                'target' => '_blank'
+                                                    ]);
+                                                }
+                                            },
                                             'print' => function ($url, $model) {
                                                 return Html::a(' <span class="glyphicon glyphicon-print"></span> ', $url, [
                                                             'title' => Yii::t('app', 'Print'),
+                                                            'target' => '_blank'
+                                                ]);
+                                            },
+                                            'remove' => function ($url, $model) {
+                                                return Html::a(' <span class="glyphicon glyphicon-remove"></span> ', $url, [
+                                                            'title' => Yii::t('app', 'Void'),
+                                                            'data' => [
+                                                                'confirm' => 'Are you sure you want to void this delivery order?',
+                                                            ],
                                                 ]);
                                             },
                                             'delete' => function ($url, $model) {
@@ -112,7 +120,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 return $url;
                                             }
                                             if ($action === 'delete') {
-                                                $url ='?r=delivery-order/delete-column&id='.$model->id;
+                                                $url ='?r=delivery-order/delete&id='.$model->id;
+                                                return $url;
+                                            }
+                                            if ($action === 'remove') {
+                                                $url ='?r=delivery-order/remove&id='.$model->id;
+                                                return $url;
+                                            }
+                                            if ($action === 'attachment') {
+                                                $url ='uploads/do/'.$model->value;
                                                 return $url;
                                             }
                                         }

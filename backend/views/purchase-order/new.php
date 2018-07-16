@@ -25,6 +25,8 @@ $isEdit = false;
         'supplierAttention' => $supplierAttention,
         'supplierAddresses' => $supplierAddresses,
         'poAttachment' => $poAttachment,
+            'dataPartNonReuse' => $dataPartNonReuse,
+            'supplier_id' => $supplier_id,
         'subTitle' => $subTitle,
         'isEdit' => $isEdit,
     ]) ?>

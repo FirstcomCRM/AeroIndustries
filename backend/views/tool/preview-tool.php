@@ -13,12 +13,12 @@ use common\models\Supplier;
 use common\models\StorageLocation;
 use common\models\Part;
 use common\models\PartCategory;
-use common\models\GeneralPo;
+use common\models\ToolPo;
 use common\models\Unit;
 use common\models\SearchStock;
 
 
-$dataPO = ArrayHelper::map(GeneralPo::find()->all(), 'id', 'purchase_order_no');
+$dataPO = ArrayHelper::map(ToolPo::find()->all(), 'id', 'purchase_order_no');
 $dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'company_name');
 $dataStorage = ArrayHelper::map(StorageLocation::find()->all(), 'id', 'name');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
@@ -41,20 +41,16 @@ $gridColumns = [
             'class' => 'tool-checkbox',
         ],
     ],
-    [
-        'attribute' => 'status',
-        'format' => 'text',
-        'value' => function($model, $index, $column) {
-            return $model->status == 1 ? 'Active' : 'Inactive' ;
-        },
-        
-        'label' => 'Status',
-    ],
+    'status',
     [
         'format' => 'raw',
-        'attribute' => 'general_po_id',
+        'attribute' => 'tool_po_id',
         'value' => function($model, $index, $column) {
-            return Html::a(Html::encode( GeneralPo::getGPONoById($model->general_po_id) ),'?r=general-po/preview&id='.$model->general_po_id);
+            if ($model->tool_po_id!=0) {
+                return Html::a(Html::encode( ToolPo::getTPONoById($model->tool_po_id) ),'?r=tool-po/preview&id='.$model->tool_po_id);
+            } else {
+                return 'N/A';      
+            }
         },
         'label' => 'PO No.',
     ],

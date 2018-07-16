@@ -6,11 +6,11 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\SearchUphosteryArc */
+/* @var $model common\models\SearchWorkOrderArc */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="uphostery-order-arc-search">
+<div class="work-order-arc-search">
 
     <div class="box">
         <div class="box-header with-border">
@@ -23,7 +23,7 @@ use yii\helpers\Url;
                 ]); ?>
 
             <div class='col-sm-3 col-xs-12'>
-                <?= $form->field($model, 'uphostery_no')->textInput(['placeholder' => 'Uphostery No.'])->label(false) ?>
+                <?= $form->field($model, 'work_order_no')->textInput(['placeholder' => 'Work Order No.'])->label(false) ?>
             </div>
             <div class='col-sm-3 col-xs-12'>
                 <?= $form->field($model, 'date')->textInput(['placeholder' => 'Date','id' => 'datepicker'])->label(false) ?>

@@ -73,8 +73,8 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                                 <?php if ( $loop % 3 == 0 ) {  
                                     echo "</tr><tr>";
                                  } ?>
-                                <td style="padding: 5px;">
-                                    <img src="uploads/work_order/<?= $at['value'] ?>" style="height: 150px">
+                                <td style="padding: 5px;" align="center">
+                                    <img src="uploads/receiving/<?= $at['value'] ?>" style="height: 150px">
                                 </td>
                                 <?php $loop ++; ?>
                             <?php endforeach ; ?>

@@ -30,6 +30,7 @@ use common\models\Setting;
 /* @var $form yii\widgets\ActiveForm */
 $dataCustomer = Customer::dataCustomer();
 $dataStaff = Staff::dataStaff();
+$dataStaffId = Staff::dataStaffId();
 $dataStaffTechnician = Staff::dataStaffTechnician();
 $dataCurrency = Currency::dataCurrency();
 $dataPart = Part::dataPart();
@@ -125,7 +126,7 @@ if ( $data['model']->work_scope && $data['model']->work_type ) {
                                 <div class="col-sm-12 col-xs-12">    
                                     <?= $form->field($data['eworkOrderPart'], 'repair_supervisor', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                         <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                        '])->textInput() 
+                                        '])->dropDownList($dataStaffId) 
                                         ?>
                                     </div>  
 

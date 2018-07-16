@@ -58,7 +58,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
-            
+        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Uphostery</a>
         <br>
         <br>
         <!-- /.box-header -->

@@ -34,8 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-sm-12 text-right export-menu">
                         <br>
                         <?= Html::a('<i class=\'fa fa-plus\'></i> New Gpo Supplier', ['create'], ['class' => 'btn btn-default']) ?>
-                        <?= Html::a('<i class=\'fa fa-plus\'></i> Dummy', ['dummy'], ['class' => 'btn btn-default']) ?>
-
                         <br>
                         <br>
                         </div>
@@ -50,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                                     'company_name',
-                                    'addr',
+                                    // 'addr',
                                     'contact_person',
                                     'email:email',
                                     'contact_no',

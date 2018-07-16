@@ -40,11 +40,11 @@ isset($getModelName[0])?$modelName = $getModelName[0]:$modelName = '';
 
                     <div class="box-body ">
 				    <?php $form = ActiveForm::begin(); ?>
+				    	<input type="hidden" name="isDropdown" value="1">
 				    	<div class="row">
 					    	<div class="col-sm-3 col-xs-12">
 								<select id="controllerName" name="controllerName" class="form-control">
 						    	<?php foreach ( $controllerList as $cName => $cL ) {  ?>
-
 						    		<?php  $selected = $controllerNameChosen == $cName ?  'selected' : ''?>
 						    		<option value="<?= $cName ?>" <?= $selected ?>><?= $cName ?></option>
 					    		<?php } ?>

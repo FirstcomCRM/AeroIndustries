@@ -67,7 +67,7 @@ use common\models\Setting;
                 <tr>
                     <td class="" valign="top">
                         <label>Uphostery:</label><br>
-                        &nbsp;&nbsp;<?=$upNumber?>
+                        &nbsp;&nbsp;<?=$woNumber?>
                     </td>
                     <td class="" colspan="2" valign="top">
                         <label>Date Received: </label><br>

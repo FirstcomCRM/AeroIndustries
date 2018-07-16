@@ -72,7 +72,10 @@ if ( $model->work_scope == 'Production') {
             <td align="left" colspan="2"  width="250" valign="top" class="border-all">
                 3. Form Tracking Number<br>
                 <div style="text-align:center; margin-top:15px;">
-                    <?php echo $woNumber; ?>-<?=$arc->reprint?>
+                    <?php echo $woNumber; ?>
+                    <?php if ($arc->is_tracking_no) { ?>
+                    -<?=$arc->reprint?>
+                    <?php } ?>
                 </div>
             </td>
         </tr>

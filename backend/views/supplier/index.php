@@ -38,7 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <!-- /.box-header -->
 
                         <div class="box-body table-responsive">
-
                             <?= GridView::widget([
                                 'dataProvider' => $dataProvider,
                                 // 'filterModel' => $searchModel,
@@ -47,11 +46,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     'status',
                                     'company_name',
-
-                                    [
-                                        'attribute' => 'addr',
-                                        'label' => 'Address',
-                                    ],
+                                    
+                                    // [
+                                    //     'attribute' => 'addr',
+                                    //     'format' => 'html',
+                                    //     'label' => 'Address',
+                                    // ],
                                     'contact_person',
                                     'email:email',
                                     'contact_no',
@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     // ['class' => 'yii\grid\ActionColumn'],
                                     [
                                       'class' => 'yii\grid\ActionColumn',
-                                      'template' => '{preview}{amend}{remove}',
+                                      'template' => '{preview}{amend}{delete}',
                                       'buttons' => [
                                         'preview' => function ($url, $model) {
                                             return Html::a(' <span class="glyphicon glyphicon-eye-open"></span> ', $url, [
@@ -96,13 +96,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         'title' => Yii::t('app', 'Amend'),
                                             ]);
                                         },
-                                        'remove' => function ($url, $model) {
+                                        'delete' => function ($url, $model) {
                                             return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
-                                                        'title' => Yii::t('app', 'Remove'),
-                                                        'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
-                                                        // 'data-method' => 'post',
+                                                        'title' => Yii::t('app', 'Delete'),
+                                                        'data' => [
+                                                            'confirm' => 'Are you sure you want to delete this setting?',
+                                                        ],
                                             ]);
-                                        }
+                                        },
 
                                       ],
                                       'urlCreator' => function ($action, $model, $key, $index) {
@@ -114,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             $url ='?r=supplier/update&id='.$model->id;
                                             return $url;
                                         }
-                                        if ($action === 'remove') {
+                                        if ($action === 'delete') {
                                             $url ='?r=supplier/delete-column&id='.$model->id;
                                             return $url;
                                         }

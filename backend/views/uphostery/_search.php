@@ -10,12 +10,12 @@ use common\models\Setting;
 /* @var $this yii\web\View */
 /* @var $model common\models\SearchUphostery */
 /* @var $form yii\widgets\ActiveForm */
-$dataUphosteryType = Setting::dataUphosteryType();
-$dataUphosteryScope = Setting::dataUphosteryScope();
-$dataUphosteryStatus = Setting::dataUphosteryStatus();
+$dataWorkType = Setting::dataWorkType();
+$dataWorkScope = Setting::dataWorkScope();
+$dataWorkStatus = Setting::dataWorkStatus();
 ?>
 
-<div class="uphostery-order-search">
+<div class="uphostery-search">
 
     <div class="box">
         <div class="box-header with-border">
@@ -30,16 +30,16 @@ $dataUphosteryStatus = Setting::dataUphosteryStatus();
 
         
             <div class="col-sm-2 col-xs-12">    
-                <?= $form->field($model, 'uphostery_type')->dropDownList($dataUphosteryType,['prompt' => 'All Uphostery Type'])->label(false) ?>
+                <?= $form->field($model, 'uphostery_type')->dropDownList($dataWorkType,['prompt' => 'All Work Type'])->label(false) ?>
             </div>  
 
         
             <div class="col-sm-2 col-xs-12">    
-                <?= $form->field($model, 'uphostery_scope')->dropDownList($dataUphosteryScope,['prompt' => 'All Uphostery Scope'])->label(false) ?>
+                <?= $form->field($model, 'uphostery_scope')->dropDownList($dataWorkScope,['prompt' => 'All Work Scope'])->label(false) ?>
             </div>   
 
             <div class='col-sm-2 col-xs-12'>    
-                <?= $form->field($model, 'uphostery_no')->textInput(['autocomplete' => 'off', 'placeholder' => 'Uphostery No.'])->label(false) ?>
+                <?= $form->field($model, 'uphostery_no')->textInput(['autocomplete' => 'off', 'placeholder' => 'Work Order No.'])->label(false) ?>
 
             </div>
 
@@ -65,7 +65,7 @@ $dataUphosteryStatus = Setting::dataUphosteryStatus();
             </div>    
 
             <div class='col-sm-2 col-xs-12'>    
-                <?= $form->field($model, 'status')->dropDownList($dataUphosteryStatus,['class' => 'select2'])->label(false) ?>
+                <?= $form->field($model, 'status')->dropDownList($dataWorkStatus,['prompt' => 'All Status'])->label(false) ?>
             </div>    
             
     <?php // echo $form->field($model, 'date') ?>

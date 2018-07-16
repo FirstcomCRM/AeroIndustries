@@ -113,11 +113,10 @@ if ( $data['model']->work_scope && $data['model']->work_type ) {
 
                                 <div class="box-body ">
 
-
                                     <div class="col-sm-12 col-xs-12">    
                                         <?= $form->field($data['workOrderPart'], 'hidden_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                             <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-                                            '])->textInput(['id' => 'datepicker9','readonly' => true]) 
+                                            '])->textInput(['id' => 'datepicker9','readonly' => true, 'value' => $data['eworkOrderPart']['hidden_date']]) 
                                         ?>
                                     </div>  
 
@@ -164,35 +163,7 @@ if ( $data['model']->work_scope && $data['model']->work_type ) {
                                                     </div>  
                                                 <?php } ?>
 
-                                               
-                                                <div class='col-sm-3 text-right'>
-                                                </div>
-                                               
-
-                                                <div class="col-sm-9 col-xs-12">
-
-                                                <?php if ( !empty ( $data['currHidAtt'] ) ) { ?> 
-                                                    <?php foreach ( $data['currHidAtt'] as $at ) { 
-                                                        $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
-                                                        <?php 
-                                                            $fileNameOnlyEx = explode('-', $at->value);
-
-                                                        ?>
-                                                        <div class="col-sm-3 col-xs-12">
-                                                            <a href="<?= 'uploads/hidden_damage/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
-                                                             <?= Html::a(' <i class="fa fa-close"></i> ', ['work-order/remove-woa', 'id' => $at->id], [
-                                                                'data' => [
-                                                                    'confirm' => 'Are you sure you want to remove this attachment?',
-                                                                ],
-                                                            ]) ?>
-                                                        </div>
-                                                    <?php } ?> 
-                                                <?php } else { ?> 
-                                                        <div class="col-sm-12 col-xs-12">
-                                                            No attachment found!
-                                                        </div>
-                                                <?php } ?> 
-                                                </div>
+                                           
 
                                             <?php endforeach; ?>
                                         <?php } ?>
@@ -237,6 +208,35 @@ if ( $data['model']->work_scope && $data['model']->work_type ) {
                                             'options' => ['accept' => 'image/*'],
                                         ])->fileInput(['multiple' => true,])->label('Hidden Damage Attachment(s)') ?>
                                     </div>  
+                                        
+                                    <div class='col-sm-3 text-right'>
+                                    </div>
+                                   
+
+                                    <div class="col-sm-9 col-xs-12">
+
+                                    <?php if ( !empty ( $data['currHidAtt'] ) ) { ?> 
+                                        <?php foreach ( $data['currHidAtt'] as $at ) { 
+                                            $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
+                                            <?php 
+                                                $fileNameOnlyEx = explode('-', $at->value);
+
+                                            ?>
+                                            <div class="col-sm-3 col-xs-12">
+                                                <a href="<?= 'uploads/hidden_damage/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
+                                                 <?= Html::a(' <i class="fa fa-close"></i> ', ['work-order/remove-woa', 'id' => $at->id], [
+                                                    'data' => [
+                                                        'confirm' => 'Are you sure you want to remove this attachment?',
+                                                    ],
+                                                ]) ?>
+                                            </div>
+                                        <?php } ?> 
+                                    <?php } else { ?> 
+                                            <div class="col-sm-12 col-xs-12">
+                                                No attachment found!
+                                            </div>
+                                    <?php } ?> 
+                                    </div>
                                 </div>  
                             </div>  
                         </div>  

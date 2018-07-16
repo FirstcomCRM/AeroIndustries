@@ -13,6 +13,7 @@ use common\models\Currency;
 use common\models\Customer;
 use common\models\Part;
 use common\models\User;
+use common\models\Address;
 
 
 $quoNumber = "QUO-" . sprintf("%008d", $model->quotation_no);
@@ -23,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $dataCustomer = ArrayHelper::map(Customer::find()->all(), 'id', 'name');
 $dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
+$dataAddress = ArrayHelper::map(Address::find()->all(), 'id', 'address');
 $dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
 $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
@@ -105,7 +107,7 @@ $currencyId = $model->p_currency;
                                 <label>Customer Order No:</label>
                             </td>
                             <td valign="top">
-                                <?= $model->customer_po ?>
+                                <?= $model->reference ?>
                             </td>
                         </tr>
                         <tr>
@@ -113,7 +115,7 @@ $currencyId = $model->p_currency;
                                 <label>Address</label>
                             </td>
                             <td rowspan="3" valign="top">
-                                <?= nl2br($model->address) ?>
+                                <?= !empty($model->address)?(isset($dataAddress[$model->address])?nl2br($dataAddress[$model->address]):''):'' ?>
                             </td>
                             <td valign="top">
                                 <label>Lead Time:</label>

@@ -65,7 +65,7 @@ $dataWorkStatus = Setting::dataWorkStatus();
             </div>    
 
             <div class='col-sm-2 col-xs-12'>    
-                <?= $form->field($model, 'status')->dropDownList($dataWorkStatus,['class' => 'select2'])->label(false) ?>
+                <?= $form->field($model, 'status')->dropDownList($dataWorkStatus,['prompt' => 'All Status'])->label(false) ?>
             </div>    
             
     <?php // echo $form->field($model, 'date') ?>

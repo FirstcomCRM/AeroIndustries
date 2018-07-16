@@ -15,14 +15,14 @@ use common\models\Part;
 use common\models\User;
 use common\models\Setting;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 
 
 $id = $model->id;
-$this->title = $upNumber;
+$this->title = $woNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -54,7 +54,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         <tr class="">
             <td colspan="3" align="center">
                 <h1>
-                    <strong><?= Html::encode($upNumber) ?></strong>
+                    <strong><?= Html::encode($woNumber) ?></strong>
                 </h1>
             </td>
         </tr>
@@ -73,7 +73,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                                 <?php if ( $loop % 3 == 0 ) {  
                                     echo "</tr><tr>";
                                  } ?>
-                                <td style="padding: 5px;">
+                                <td style="padding: 5px;" align="center">
                                     <img src="uploads/uphostery/<?= $at['value'] ?>" style="height: 150px">
                                 </td>
                                 <?php $loop ++; ?>
@@ -97,7 +97,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         </tr>
         <tr>
             <td colspan="3">
-                <table class="box-body preview-po uphostery-order-table receiving-table " width="100%">
+                <table class="box-body preview-po uphostery-table receiving-table " width="100%">
                     <tr>
                         <td class="" colspan="2" valign="top" width="50%">
                             <label>Customer's Documents</label><br>

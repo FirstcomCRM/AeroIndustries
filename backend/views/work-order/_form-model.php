@@ -148,22 +148,22 @@ use kartik\file\FileInput;
 
                                             </div>
 
-																						<div class="col-sm-12 col-xs-12">
-																						<!---edr if the work order is cancelled, status cannot be edited unless user is super admin--->
-																						<?php if ($data['model']['status']=='cancelled'): ?>
-																							<?php if ($files->user_group_id == 1): ?>
-																								<?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
-																										<div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-																										'])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control'])
-																								?>
-																							<?php endif; ?>
-																						<?php else: ?>
-																							<?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
-																									<div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
-																									'])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control'])
-																							?>
-																						<?php endif; ?>
-																						</div>
+    										<div class="col-sm-12 col-xs-12">
+    										<!---edr if the work order is cancelled, status cannot be edited unless user is super admin-->
+    										<?php if ($data['model']['status']=='cancelled'): ?>
+    											<?php if ($files->user_group_id == 1): ?>
+    												<?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+    														<div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
+    														'])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control'])
+    												?>
+    											<?php endif; ?>
+    										<?php else: ?>
+    											<?= $form->field($data['model'], 'status', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+    													<div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
+    													'])->dropDownList($dataWorkStatus, ['class' => 'select2 form-control'])
+    											?>
+    										<?php endif; ?>
+    										</div>
 
                                             <div class="col-sm-12 col-xs-12">
                                                 <?= $form->field($data['model'], 'complaint', ['template' => '<div class="col-sm-3 text-right">{label}</div>
@@ -418,7 +418,7 @@ use kartik\file\FileInput;
                                                     <?php foreach ( $data['eworkOrderPart'] as $eworkOrderPart) : ?>
                                                         <tr class="part-<?=$n?>">
                                                             <td>
-                                                                <?= $eworkOrderPart['part_no'] ?>
+                                                                <span class="display-part-no-<?=$n?>"><?= $eworkOrderPart['part_no'] ?></span>
                                                                 <input type='hidden' name='WorkOrderPart[id][]' class="edit-id-<?=$n?>" value='<?=$eworkOrderPart['id']?>'>
                                                                 <input type='hidden' name='WorkOrderPart[part_no][]' class="edit-part_no-<?=$n?>" value='<?=$eworkOrderPart['part_no']?>'>
                                                                 <input type='hidden' name='WorkOrderPart[desc][]' class="edit-desc-<?=$n?>" value='<?=$eworkOrderPart['desc']?>'>
@@ -436,13 +436,13 @@ use kartik\file\FileInput;
                                                                 <input type='hidden' name='WorkOrderPart[productive_hour][]' class="edit-productive_hour-<?=$n?>" value='<?=$eworkOrderPart['productive_hour']?>'>
                                                                 <input type='hidden' name='WorkOrderPart[new_part_no][]' class="edit-new_part_no-<?=$n?>" value='<?=$eworkOrderPart['new_part_no']?>'>
                                                             </td>
-                                                            <td>
+                                                            <td class="display-manufacturer-<?=$n?>">
                                                                 <?= $eworkOrderPart['manufacturer'] ?>
                                                             </td>
-                                                            <td>
+                                                            <td class="display-model-<?=$n?>">
                                                                 <?= $eworkOrderPart['model'] ?>
                                                             </td>
-                                                            <td>
+                                                            <td class="display-quantity-<?=$n?>">
                                                                 <?= $eworkOrderPart['quantity'] ?>
                                                             </td>
                                                             <td>

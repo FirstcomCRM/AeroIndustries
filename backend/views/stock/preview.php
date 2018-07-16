@@ -49,8 +49,8 @@ use kartik\file\FileInput;
     </section>
     <div class="col-sm-12 text-right">
             <?= Html::a('<i class="fa fa-edit"></i> Edit', ['edit', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('<i class="fa fa-print"></i> Receiver', ['receiver', 'id' => $model->receiver_no], ['class' => 'btn btn-warning']) ?>
-            <?= Html::a('<i class="fa fa-print"></i> Sticker', ['print-sticker', 'id' => $model->receiver_no], ['class' => 'btn btn-danger']) ?>
+            <?= $model->purchase_order_id!=0?Html::a('<i class="fa fa-print"></i> Receiver', ['receiver', 'id' => $model->receiver_no], ['class' => 'btn btn-warning']) : '' ?>
+            <?= $model->purchase_order_id!=0?Html::a('<i class="fa fa-print"></i> Sticker', ['print-sticker', 'id' => $model->receiver_no], ['class' => 'btn btn-danger']) : '' ?>
             <?php Html::a('<i class="fa fa-trash"></i> Delete', ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-danger',
                 'data' => [
@@ -206,7 +206,7 @@ use kartik\file\FileInput;
                                         <label>PO No.:</label>
                                     </div>
                                     <div class="col-sm-7">
-                                        <strong><?= PurchaseOrder::getPONoById($model->purchase_order_id) ?></strong>
+                                        <strong><?= $model->purchase_order_id!=0?PurchaseOrder::getPONoById($model->purchase_order_id):'N/A' ?></strong>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-xs-12">
@@ -264,19 +264,49 @@ use kartik\file\FileInput;
                             </div>
                         </div>
                     </div>
-              
-                <?php /* attachment*/ ?>
+
+                <?php /* po stock in attachment*/ ?>
                     <div class="box box-danger">
 
                         <div class="box-header with-border">
-                          <h3 class="box-title">Attachments</h3>
+                          <h3 class="box-title">Stock Received Attachments</h3>
                         </div>
 
                         <div class="box-body preview-po">
                             <div class="row">
 
                                 <div class="col-sm-6">
-                                    <h5>Stock attachments:</h5>
+                                    <h5>Stock Received Attachments:</h5>
+                                <?php if ( !empty ( $stockAttachment ) ) { ?> 
+                                    <?php foreach ( $stockAttachment as $at ) { 
+                                        $attachmentClass = explode('\\', get_class($at))[2]; ?>
+                                        <div class="col-sm-3 col-xs-12 shorten-text ">
+                                            <a href="<?= 'uploads/'.$attachmentClass . '/' .$at->value ?>" target="_blank" style="text-overflow:ellipsis"><?= $at->value ?></a>
+                                        </div>
+                                    <?php } ?> 
+                                <?php } else { ?> 
+                                    <i>No attachment found!</i>
+                                <?php } ?> 
+                                </div>
+
+                             
+
+                            </div>
+                        </div>
+                    </div>
+                <?php /* attachmente */ ?>
+              
+                <?php /* attachment*/ ?>
+                    <div class="box box-danger">
+
+                        <div class="box-header with-border">
+                          <h3 class="box-title"><?= Html::encode($this->title) ?> Attachments</h3>
+                        </div>
+
+                        <div class="box-body preview-po">
+                            <div class="row">
+
+                                <div class="col-sm-6">
                                 <?php if ( !empty ( $oldAttachment ) ) { ?> 
                                     <?php foreach ( $oldAttachment as $at ) { 
                                         $attachmentClass = explode('\\', get_class($at))[2]; ?>

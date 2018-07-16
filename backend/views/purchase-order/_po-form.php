@@ -6,8 +6,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 
-
-
 $backUrlFull = Yii::$app->request->referrer;
 $exBackUrlFull = explode('?r=', $backUrlFull);
 $backUrl = '#';
@@ -31,24 +29,24 @@ $dataCurrencyRate = Currency::dataCurrencyRate();
 
 $dataUnit = Unit::dataUnit();
 $dataPart = Part::dataPart();
-$dataPartNonReuse = Part::dataPartStock();
 $dataWorkOrder = WorkOrder::dataWorkOrder();
 
 $firstCurrencyId = array_keys($dataCurrency)[0];
 $firstCurrency = $dataCurrencyISO[$firstCurrencyId];
 use imanilchaudhari\CurrencyConverter\CurrencyConverter;
 $rate = 0;
-$converter = new CurrencyConverter();
-try{
-    $rate = $converter->convert($firstCurrency, 'USD');
-}catch (Exception $e) {
+// $converter = new CurrencyConverter();
+// try{
+//     $rate = $converter->convert($firstCurrency, 'USD');
+// }catch (Exception $e) {
     $rate = $dataCurrencyRate[$firstCurrencyId];
-}
+// }
 
+// $rate == 0 ? $rate = $dataCurrencyRate[$firstCurrencyId]:0;
 
 if ($isEdit) {
     $rate = $model->conversion;
-} 
+}
 
 /*plugins*/
 use kartik\file\FileInput;
@@ -71,15 +69,38 @@ use kartik\file\FileInput;
                     <div class="box-body ">
 
                         <div class="row">
-                            <div class="col-sm-6 col-xs-12">    
-                                <?= $form->field($model, 'supplier_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
-                                <div class="col-sm-9 col-xs-12">{input}{error}</div>
-                                {hint}
-                                '])->dropDownList($dataSupplier,['class' => 'select2 form-control po-supplier',])->label('Supplier') ?>
-                            </div>
 
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <?php if ( $isEdit == true ) { ?>
+
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-3 text-right">
+                                        <label>Supplier</label>
+
+                                    </div>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <input type="text" value="<?=$dataSupplier[$model->supplier_id]?>" class="form-control" readonly>
+                                    </div>
+                                    
+                                    <?= $form->field($model, 'supplier_id')->hiddenInput()->label(false) ?>
+                                </div>
+
+
+                            <?php } else { 
+                                if (isset($_GET['supplier_id'])) {
+                                    $model->supplier_id = $_GET['supplier_id'];
+                                }
+                                ?>
+                                <div class="col-sm-6 col-xs-12">
+                                    <?= $form->field($model, 'supplier_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                    <div class="col-sm-9 col-xs-12">{input}{error}</div>
+                                    {hint}
+                                    '])->dropDownList($dataSupplier,['class' => 'select2 form-control po-supplier'])->label('Supplier') ?>
+                                </div>
+
+                            <?php } ?>
+
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'supplier_ref_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -91,14 +112,14 @@ use kartik\file\FileInput;
                         <div class="row">
 
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'payment_addr', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->dropDownList($supplierAddresses, ['class' => 'form-control quo_cust_addr po_pay_addr']) ?>
                             </div>
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'attention', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -109,7 +130,7 @@ use kartik\file\FileInput;
 
                         <div class="row">
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'issue_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -117,7 +138,7 @@ use kartik\file\FileInput;
                             </div>
 
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'delivery_date', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -127,32 +148,32 @@ use kartik\file\FileInput;
                         </div>
 
                         <div class="row">
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'p_currency', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->dropDownList($dataCurrency,['class' => 'select2 form-control currency-selection',]) ?>
                             </div>
-                            
-                            <div class="col-sm-6 col-xs-12">    
+
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'q_currency', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
-                                '])->dropDownList($dataCurrency,['class' => 'select2 form-control currency-selection',]) ?>
+                                '])->dropDownList($dataCurrency,['class' => 'select2 form-control',]) ?>
                             </div>
                         </div>
 
                         <div class="row">
-                            
 
-                            <div class="col-sm-6 col-xs-12">    
+
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'authorized_by', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->textInput(['maxlength' => true]) ?>
                             </div>
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'p_term', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -163,14 +184,14 @@ use kartik\file\FileInput;
 
                         <div class="row">
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'ship_to', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
                                 '])->textArea(['maxlength' => true,'rows' => 4]) ?>
                             </div>
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'remark', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -181,7 +202,7 @@ use kartik\file\FileInput;
 
                         <div class="row">
 
-                            <div class="col-sm-6 col-xs-12">    
+                            <div class="col-sm-6 col-xs-12">
                                 <?= $form->field($model, 'ship_via', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}{error}</div>
                                 {hint}
@@ -194,33 +215,33 @@ use kartik\file\FileInput;
                                 ->widget(FileInput::classname(), [
                                     'options' => ['accept' => 'image/*'],
                                 ])->fileInput(['multiple' => true,])->label('Attachment') ?>
-                            </div>   
+                            </div>
 
                         </div>
                          <div class="col-sm-9 col-xs-12">
-                            <?php if ( !empty ( $data['currAttachment'] ) ) { ?> 
-                                <?php foreach ( $data['currAttachment'] as $at ) { 
+                            <?php if ( !empty ( $currAttachment ) ) { ?>
+                                <?php foreach ( $currAttachment as $at ) {
                                     $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
-                                    <?php 
+                                    <?php
                                     $fileNameOnlyEx = explode('-', $at->value);
 
                                     ?>
                                     <div class="col-sm-3 col-xs-12">
                                         <a href="<?= 'uploads/PurchaseOrderAttachment/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
-                                        <?= Html::a(' <i class="fa fa-close"></i> ', ['work-order/remove-woa', 'id' => $at->id], [
+                                        <?= Html::a(' <i class="fa fa-close"></i> ', ['purchase-order/remove-attachment', 'id' => $at->id], [
                                             'data' => [
                                             'confirm' => 'Are you sure you want to remove this attachment?',
                                             ],
                                             ]) ?>
                                     </div>
-                                <?php } ?> 
-                            <?php } else { ?> 
+                                <?php } ?>
+                            <?php } else { ?>
                                 <div class="col-sm-12 col-xs-12">
                                     No attachment found!
                                 </div>
-                            <?php } ?> 
+                            <?php } ?>
                         </div>
-                       
+
 
 
 
@@ -240,6 +261,11 @@ use kartik\file\FileInput;
 
                     <div class="box-body">
                         <div class="po-form">
+                            <?php if ( $isEdit == true ) { ?>
+                                <input type="hidden" id="isEdit" value="<?=$model->id?>">
+                            <?php } else { ?>
+                                <input type="hidden" id="isEdit" value="0">
+                            <?php } ?>
                             <?php if ( $isEdit == false ) { ?>
                                 <small>
                                     The conversion rate today: <strong> 1 <span id="currencyText"><?= $firstCurrency ?></span></strong> is <strong><span id="rateText"><?= $rate ?></span> <strong>USD</strong> </strong>
@@ -289,25 +315,25 @@ use kartik\file\FileInput;
                                                 </select>
                                                 <span class="stock-result"></span>
                                                 <div class="help-block"></div>
-                                            </div>                                    
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="form-group field-qty">
                                                 <input type="text" id="qty" class="form-control" placeholder="Qty" onchange="updatePOSubTotal()" autocomplete="off">
                                                 <div class="help-block"></div>
-                                            </div>                                    
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="form-group field-unit">
                                                 <input type="text" id="unit" class="form-control" placeholder="0.00" onchange="convert()" autocomplete="off">
                                                 <div class="help-block"></div>
-                                            </div>                                    
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="form-group field-unit_converted">
                                                 <input type="text" id="converted_unit" class="form-control" placeholder="0.00" onchange="updatePOSubTotal()" autocomplete="off">
                                                 <div class="help-block"></div>
-                                            </div>                                    
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="form-group field-um">
@@ -319,7 +345,7 @@ use kartik\file\FileInput;
                                                 </select>
 
                                                 <div class="help-block"></div>
-                                            </div>                                    
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="form-group field-purchaseorderdetail-subtotal">
@@ -336,40 +362,40 @@ use kartik\file\FileInput;
                                         <?php foreach ( $oldDetail as $dd ) { ?>
                                             <?php if (isset($dd->part_id)) { ?>
                                                 <tr class="item-<?= $n ?>">
-                                                    <td>    
+                                                    <td>
                                                         <div class="form-group field-purchaseorderdetail-part_id">
                                                             <input type="text" class="form-control" id="selected-<?= $n ?>-part" value="<?= $dataPart[$dd->part_id]?>" readonly>
                                                             <input type="hidden" class="form-control" name="PurchaseOrderDetail[<?= $n ?>][part_id]" value="<?= $dd->part_id ?>" readonly>
-                                                        </div>                                    
+                                                        </div>
                                                     </td>
-                                                    <td> 
+                                                    <td>
                                                         <div class="form-group field-qty0">
                                                             <input type="text" class="form-control" id="selected-<?= $n ?>-qty" name="PurchaseOrderDetail[<?= $n ?>][quantity]" value="<?= $dd->quantity ?>" readonly onchange="updatePOSubtotal(<?= $n ?>)">
-                                                        </div>                                    
+                                                        </div>
                                                     </td>
-                                                    <td> 
+                                                    <td>
                                                         <div class="form-group field-unit">
                                                             <input type="text" class="form-control unitGroup" name="PurchaseOrderDetail[<?= $n ?>][unit_price]" id="selected-<?= $n ?>-unit" value="<?= number_format((float)$dd->unit_price / $rate, 2, '.', '')?>" readonly onchange="updatePOSubtotal(<?= $n ?>)">
-                                                        </div>                                    
+                                                        </div>
                                                     </td>
-                                                    <td> 
+                                                    <td>
                                                         <div class="form-group field-unit">
                                                             <input type="text" class="form-control converted_unit" id="selected-<?= $n ?>-converted_unit" value="<?= $dd->unit_price ?>" readonly onchange="updatePOSubtotal(<?= $n ?>)">
-                                                        </div>                                    
+                                                        </div>
                                                     </td>
-                                                    <td> 
+                                                    <td>
                                                         <div class="form-group field-unit-m">
                                                             <input type="text" class="form-control" id="selected-<?= $n ?>-unitm" value="<?=$dataUnit[$dd->unit_id]?>" readonly>
                                                             <input type="hidden" name="PurchaseOrderDetail[<?= $n ?>][unit_id]" value="<?= $dd->unit_id ?>" readonly>
-                                                        </div>                                    
+                                                        </div>
                                                     </td>
-                                                    <td> 
+                                                    <td>
                                                         <div class="form-group field-purchaseorderdetail-unit_price">
                                                             <input type="text" class="form-control subTotalGroup" id="selected-<?= $n ?>-subTotal" name="PurchaseOrderDetail[<?= $n ?>][subTotal]" value="<?= $dd->subtotal ?>" readonly>
                                                         </div>
                                                     </td>
-                                                    <td> 
-                                                        <?php /* <span class="edit-button<?= $n ?> edit-button"> 
+                                                    <td>
+                                                        <?php /* <span class="edit-button<?= $n ?> edit-button">
                                                             <a href="javascript:editPOItem(<?= $n ?>)"><i class="fa fa-pencil"></i> Edit</a>
                                                         </span> */ ?>
                                                         <span class="save-button<?= $n ?> save-button hidden">
@@ -397,7 +423,7 @@ use kartik\file\FileInput;
                                     <td>
                                         <input type="text" id="total" class="form-control" name="PurchaseOrder[subtotal]" placeholder="0.00" value="<?=isset($model->subtotal)?$model->subtotal:0?>">
                                         <div class="help-block"></div>
-                                    </td> 
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td align="right">
@@ -417,7 +443,7 @@ use kartik\file\FileInput;
                                         <div class="help-block"></div>
                                         <input type="hidden" id='n' value="0">
                                         <input type="hidden" id='currencyRate' name="PurchaseOrder[conversion]" value="<?= $rate ?>">
-                                    </td> 
+                                    </td>
                                 </tr>
                             </table>
                         </div>

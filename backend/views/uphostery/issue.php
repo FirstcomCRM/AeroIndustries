@@ -58,6 +58,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
+        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Uphostery Order</a>
         <br>
         <br>
         <!-- /.box-header -->
@@ -66,28 +67,6 @@ use kartik\file\FileInput;
         <?php $form = ActiveForm::begin(); ?>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Please fill in the following details</h3>
-                        </div>
-
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <?= $form->field($req, 'uphostery_id',['template' => 
-                                        '<div class="col-sm-3 text-right">{label}</div>
-                                        <div class="col-sm-9 col-xs-12">{input}{error}</div> 
-                                        {hint}'])->dropDownList($dataWO,
-                                        [
-                                            'class' => 'select2 form-control selected-up',
-                                            'prompt' => 'Please select Uphostery', 
-                                            'options' => [isset($_GET['uphostery'])&&!empty($_GET['uphostery'])?$_GET['uphostery']:''  => ['Selected'=>'selected']]
-                                        ])->label('Uphostery') ?>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                    </div>
                     <?php /* required parts */ ?>
                         <div class="modal fade modal-edit-stock" id="editStockId" tabindex="-1" role="dialog" aria-labelledby="editStockLabel">
                             <div class="modal-dialog" role="document">
@@ -130,7 +109,8 @@ use kartik\file\FileInput;
                                             <td>Stock Out</td>
                                             <td>Quantity Required</td>
                                             <td>Quantity Issued</td>
-                                            <td>Issued</td>
+                                            <td>UoM</td>
+                                            <td>To Issue</td>
                                             <td>Issued Date</td>
                                             <td>Issued Time</td>
                                             <td>Issued By</td>
@@ -140,7 +120,7 @@ use kartik\file\FileInput;
                                     <tbody class="selected-parts">
                                         <?php foreach ( $requisition as $reqq ) : ?>
 
-                                            <?php if ( $reqq->qty_issued < $reqq->qty_required ) { ?>
+                                            <?php /* if ( $reqq->qty_issued < $reqq->qty_required ) {*/ ?>
                                                 <tr>
                                                     <td width="">
                                                         <?php if($dataPartReusable[$reqq->part_id]==1){ ?>
@@ -159,14 +139,17 @@ use kartik\file\FileInput;
                                                         <input type="hidden" name="UphosteryStockRequisition[stock_id][]" value="<?=$reqq->stock_id?>">
                                                         <input type="hidden" name="UphosteryStockRequisition[part_id][]" value="<?=$reqq->part_id?>">
                                                     </td>
-                                                    <td width="12%">
+                                                    <td width="6%">
                                                         <input type="text" class="form-control" readonly value="<?=$reqq->qty_required?>">
                                                     </td>
-                                                    <td width="12%">
-                                                        <input type="text" name="UphosteryStockRequisition[qty_issued][]" class="form-control" value="<?=$reqq->qty_issued?$reqq->qty_issued:($reqq->qty_required?$reqq->qty_required:'')?>" readonly >
+                                                    <td width="6%">
+                                                        <input type="text" name="UphosteryStockRequisition[qty_issued][]" class="form-control" value="<?=!empty($reqq->qty_issued)&&$reqq->qty_issued>0?$reqq->qty_issued:'0'?>" readonly >
                                                     </td>
-                                                    <td width="11%">
-                                                        <input type="text" name="UphosteryStockRequisition[issue_qty][]" class="form-control" value="<?= $reqq->qty_required - ($reqq->qty_issued>0?$reqq->qty_issued:0)?>" >
+                                                    <td width="6%">
+                                                        <input type="text" name="UphosteryStockRequisition[qty_issued][]" class="form-control" value="<?=!empty($reqq->uom)?$reqq->uom:''?>" readonly >
+                                                    </td>
+                                                    <td width=7%">
+                                                        <input type="text" name="UphosteryStockRequisition[issue_qty][]" class="form-control" value="<?= $reqq->qty_required - ($reqq->qty_issued>0?$reqq->qty_issued:0)?>" <?=($reqq->qty_issued)>=($reqq->qty_required)?'readonly="readonly"':''?>>
                                                     </td>
                                                     <td width="11%">
                                                         <input type="text" id="datepicker" name="UphosteryStockRequisition[issued_date][]" class="form-control so-issued_date" value="<?=date('Y-m-d')?>">
@@ -210,7 +193,7 @@ use kartik\file\FileInput;
                                                     </tr>
                                                 <?php } ?>
 
-                                            <?php } ?>
+                                            <?php /* } */ ?>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
@@ -221,6 +204,9 @@ use kartik\file\FileInput;
                                 </table>
                                 <div class="row"> 
                                     <div class="col-sm-12 text-right">
+                                        <?php if ($reqq->status == 'issued') { ?>
+                                           <a class="btn btn-success" href="?r=uphostery/pick-list&id=<?php echo $_GET['id']; ?>&uphostery_part_id=<?php echo $_GET['uphostery_part_id']; ?>"><i class="fa fa-file"></i> Pick List</a>
+                                        <?php } ?>
                                        <a class="btn btn-primary submit-btn" href="javascript:;"><i class="fa fa-save"></i> Issue</a>
                                     </div>
                                 </div>

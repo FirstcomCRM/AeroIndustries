@@ -11,12 +11,12 @@ use yii\helpers\Url;
 
 use common\models\Setting;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 
-$this->title = $upNumber . ' (Sticker) ' ;
+$this->title = $woNumber . ' (Sticker) ' ;
 if ( isset($_GET['start']) && isset( $_GET['no'] ) && isset($_GET['icon']) ) {
     $start = $_GET['start'];
     $no = $_GET['no'];
@@ -93,7 +93,7 @@ if ( isset($_GET['start']) && isset( $_GET['no'] ) && isset($_GET['icon']) ) {
                                                     W/O:
                                                 </td>
                                                 <td>    
-                                                    <?= $upNumber ?>
+                                                    <?= $woNumber ?>
                                                 </td>
                                             </tr>
                                             <tr>

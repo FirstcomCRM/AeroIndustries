@@ -58,7 +58,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
-            
+        <a class="btn btn-default" href="?r=work-order/preview&id=<?php echo $_GET['id']; ?> ">Back to Work Order</a>
         <br>
         <br>
         <!-- /.box-header -->

@@ -14,7 +14,7 @@ $backUrl = $exBackUrlFull[1];
 use common\models\Part;
 use common\models\StorageLocation;
 use common\models\Unit;
-use common\models\GeneralPo;
+use common\models\ToolPo;
 use common\models\Supplier;
 /* @var $this yii\web\View */
 /* @var $model common\models\Tool */
@@ -23,12 +23,12 @@ $dataSupplier = ArrayHelper::map(Supplier::find()->where(['<>','status','inactiv
 $dataStorage = ArrayHelper::map(StorageLocation::find()->where(['<>', 'deleted', 1])->andWhere(['<>','status','inactive'])->all(), 'id', 'name');
 $dataPart = ArrayHelper::map(Part::find()->where(['<>','status','inactive'])->all(), 'id', 'part_no');
 $dataUnit = ArrayHelper::map(Unit::find()->where(['<>','status','inactive'])->all(), 'id', 'unit');
-$dataAllGPO = GeneralPo::dataAllGPO();
-$dataAllGPOCreated = GeneralPo::dataAllGPOCreated();
+$dataAllTPO = ToolPo::dataAllTPO();
+$dataAllTPOCreated = ToolPo::dataAllTPOCreated();
 
-foreach ( $dataAllGPO as $id => $dp) {
-    $created = $dataAllGPOCreated[$id];
-    $dataGeneralPo[$id] = GeneralPo::getGPONo($dp,$created);
+foreach ( $dataAllTPO as $id => $dp) {
+    $created = $dataAllTPOCreated[$id];
+    $dataToolPo[$id] = ToolPo::getTPONo($dp,$created);
 }
 /*plugins*/
 use kartik\file\FileInput;
@@ -69,10 +69,10 @@ use kartik\file\FileInput;
                                             </label>
                                         </div>
                                         <div class="col-sm-9 col-xs-12">
-                                            <input type="text" class="form-control" value="<?= $dataGeneralPo[$model->general_po_id] ?>" readonly="">
+                                            <input type="text" class="form-control" value="<?= $dataToolPo[$model->tool_po_id] ?>" readonly="">
                                             <div class="help-block"></div>
                                         </div>
-                                        <?= $form->field($model, 'general_po_id')->hiddenInput()->label(false) ?>
+                                        <?= $form->field($model, 'tool_po_id')->hiddenInput()->label(false) ?>
                                     </div>
 
                                     <div class="col-sm-12 col-xs-12">

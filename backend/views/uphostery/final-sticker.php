@@ -11,14 +11,14 @@ use yii\helpers\Url;
 
 use common\models\Setting;
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_order_no);
 }
 
 
 $id = $model->id;
-$this->title = $upNumber . ' (Sticker) ' ;
+$this->title = $woNumber . ' (Sticker) ' ;
 $this->params['breadcrumbs'][] = ['label' => 'Uphosterys', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $icon = 1;
@@ -106,7 +106,7 @@ use kartik\file\FileInput;
                                                                 W/O:
                                                             </td>
                                                             <td>    
-                                                                <?= $upNumber ?>
+                                                                <?= $woNumber ?>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -147,7 +147,7 @@ use kartik\file\FileInput;
 
 
         /*    'type',
-            'uphostery_no',
+            'uphostery_order_no',
             'customer_id',
             'customer_po_no',
             'date',

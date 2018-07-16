@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use kartik\file\FileInput;
 
 $backUrlFull = Yii::$app->request->referrer;
 $exBackUrlFull = explode('?r=', $backUrlFull);
@@ -137,6 +138,38 @@ $dataPartDesc = Part::dataPartDesc();
 
                     </div>    
                     */ ?> 
+
+                     <div class="col-sm-12 col-xs-12" style="padding-top:10px">
+                           <?= $form->field($atta, 'attachment[]', [
+                                  'template' => "<div class='col-sm-3 text-right'>{label}{hint}</div>\n<div class='col-sm-9 col-xs-12'>{input}{error}</div>\n\n"
+                                ])
+                                ->widget(FileInput::classname(), [
+                                'options' => ['accept' => 'image/*'],
+                            ])->fileInput(['multiple' => true,])->label('Upload Attachment(s)') ?>
+                        </div>   
+                        <?php if (isset($currAtta)) { ?>
+                            <div class="col-sm-12">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <?php foreach ($currAtta as $curA) { ?>
+                                        <?php 
+                                            $currentAttachmentClass = explode('\\', get_class($curA))[2];
+                                            $fileNameOnlyEx = explode('-', $curA->value);
+                                        ?>
+                                        <div class="col-sm-3 col-xs-12">
+                                            <a href="<?= 'uploads/calibration/' .$curA->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
+                                            <?= Html::a(' <i class="fa fa-close"></i> ', ['calibration/remove-atta', 'id' => $curA->id], [
+                                                'data' => [
+                                                    'confirm' => 'Are you sure you want to remove this attachment?',
+                                                ],
+                                            ]) ?>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+
                     <div class="col-sm-12 text-right">
 		            <br>
 					    <div class="form-group">

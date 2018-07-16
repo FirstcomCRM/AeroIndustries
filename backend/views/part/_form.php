@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use kartik\file\FileInput;
 
 $backUrlFull = Yii::$app->request->referrer;
 $exBackUrlFull = explode('?r=', $backUrlFull);
@@ -35,14 +36,14 @@ $dataSupplier = Supplier::dataSupplier();
                     <!-- /.box-header -->
 
                     <div class="box-body ">
-				    <?php $form = ActiveForm::begin(); ?>
+				    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 					    <div class="col-sm-12 col-xs-12">
-                            <?php 
+                            <?php
                             echo
                              $form->field($model, 'category_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                             <div class="col-sm-7 col-xs-12">{input}</div><div class="col-sm-2 col-xs-12"><a href="?r=part-category/create" target="_blank">Add New Category</a></div>
                             {hint}
-                            {error}'])->dropDownList($dataCategory,['class' => 'select2 form-control','prompt' => 'Please select category'])->label('Category') 
+                            {error}'])->dropDownList($dataCategory,['class' => 'select2 form-control','prompt' => 'Please select category'])->label('Category')
                             ?>
 
 
@@ -110,10 +111,18 @@ $dataSupplier = Supplier::dataSupplier();
                             {error}'])->dropDownList([ 'active' => 'Active', 'inactive' => 'Inactive' ]) ?>
                         </div>
                         <div class="col-sm-12 col-xs-12">
-                            <?= $form->field($model, 'is_shelf_life', ['template' => '<div class="col-sm-3 text-right">{label}</div>
-                            <div class="col-sm-9 col-xs-12">{input}</div>
-                            {hint}
-                            {error}'])->dropDownList([ '1' => 'Yes', '0' => 'No' ]) ?>
+                            <?= $form->field($model, 'is_shelf_life', [
+															'template' => '<div class="col-sm-3 text-right">{label}</div><div class="col-sm-9 col-xs-12">{input}</div>{hint}{error}'])
+															->dropDownList([ '1' => 'Yes', '0' => 'No' ]) ?>
+                        </div>
+
+												<div class="col-sm-12 col-xs-12">
+													<?= $form->field($attachment, 'attachment[]', [
+															'template' =>'<div class="col-sm-3 text-right">{label}</div><div class="col-sm-9 col-xs-12">{input}</div>{hint}{error}'
+													])
+													->widget(FileInput::classname(), [
+															'options' => ['accept' => 'image/*','multiple'=>true],
+													]) ?>
                         </div>
 
                         <div class="col-sm-12 text-right">

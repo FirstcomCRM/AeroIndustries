@@ -13,15 +13,18 @@ use common\models\Currency;
 use common\models\Customer;
 use common\models\Part;
 use common\models\User;
+use common\models\Address;
 
 
-$doNumber = "DO-" . sprintf("%008d", $model->delivery_order_no);
+// $doNumber = "DO-" . sprintf("%008d", $model->delivery_order_no);
+$doNumber = $model->delivery_order_no;
 $id = $model->id;
 $this->title = "DO-" . sprintf("%008d", $model->delivery_order_no);
 $this->params['breadcrumbs'][] = ['label' => 'Delivery Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $dataCustomer = ArrayHelper::map(Customer::find()->all(), 'id', 'name');
+$dataAddress = ArrayHelper::map(Address::find()->all(), 'id', 'address');
 $dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
 $dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
@@ -89,11 +92,25 @@ $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td style="vertical-align: top">
                                 <label>Ship To:</label>
                             </td>
                             <td>
-                                <?= $model->ship_to ?>
+                                <?= !empty($model->ship_to)?(isset($dataAddress[$model->ship_to])?nl2br($dataAddress[$model->ship_to]):''):'' ?>
+                            </td>
+                            <td style="vertical-align: top">
+                                <label>SCO No:</label>
+                            </td>
+                            <td style="vertical-align: top">
+                                <?= $model->sco_no ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Tel:</label>
+                            </td>
+                            <td>
+                                <?= $model->contact_no ?>
                             </td>
                             <td>
                                 <label>Date:</label>
@@ -110,14 +127,6 @@ $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
                                     $issueDate = $time[2] . ' ' .$monthName . ' ' .$time[0] ;
                                 ?>
                                 <?= $issueDate ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Tel:</label>
-                            </td>
-                            <td>
-                                <?= $model->contact_no ?>
                             </td>
                         </tr>
                     </table>
@@ -239,6 +248,6 @@ $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
         <button class="btn btn-danger form-control print-button">Print</button>
     </div>
     <div class="col-sm-2"><br>
-        <button class="btn btn-default form-control back-button">Back</button>
+        <button class="btn btn-default form-control close-button">Close</button>
     </div>
 </div>

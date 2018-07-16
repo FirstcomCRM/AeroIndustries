@@ -19,6 +19,7 @@ $subTitle = 'Update ' . $model->id;
 		    <?= $this->render('_form', [
 		        'model' => $model,
 		        'subTitle' => $subTitle,
+            'attachment'=>$attachment,
 		    ]) ?>
 
 </div>

@@ -32,7 +32,7 @@
                 <label class="control-label" for="uphosterypreliminary-corrective">Hidden Damage Attachment(s)</label>
             </div>
             <div class="col-sm-9 col-xs-12">
-                <input type="file" name="UphosteryAttachment[attachment][hidden_damage][][]">
+                <input type="file" name="UphosteryOrderAttachment[attachment][hidden_damage][][]">
                 <div class="help-block">
                 </div>
             </div>

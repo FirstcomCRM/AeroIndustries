@@ -105,7 +105,7 @@ $gridColumns =
         <div class="inner">
           <h3><?=$totalWorkOrderInProgress?></h3>
 
-          <p>Work in progress</p>
+          <p>Work Order in progress</p>
         </div>
         <div class="icon">
           <i class="ion ion-stats-bars"></i>
@@ -120,7 +120,7 @@ $gridColumns =
         <div class="inner">
           <h3><?=$totalWorkOrderCompleted?></h3>
 
-          <p>Work Completed</p>
+          <p>Work Order Completed</p>
         </div>
         <div class="icon">
           <i class="ion ion-checkmark-round"></i>
@@ -128,7 +128,53 @@ $gridColumns =
         <a href="?r=work-order" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
       </div>
     </div>
+
+
+    <!-- ./col --><!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-red">
+        <div class="inner">
+          <h3><?=$totalUphostery?></h3>
+
+          <p>Uphostery</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-pie-graph"></i>
+        </div>
+        <a href="?r=work-order" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
     <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-green">
+        <div class="inner">
+          <h3><?=$totalUphosteryInProgress?></h3>
+
+          <p>Uphostery in progress</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-stats-bars"></i>
+        </div>
+        <a href="?r=work-order" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-yellow">
+        <div class="inner">
+          <h3><?=$totalUphosteryCompleted?></h3>
+
+          <p>Uphostery Completed</p>
+        </div>
+        <div class="icon">
+          <i class="ion ion-checkmark-round"></i>
+        </div>
+        <a href="?r=work-order" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
   </div>
   <!-- /.row -->
   
@@ -199,14 +245,3 @@ $gridColumns =
 </div>
 </section>
 <!-- /.content -->
-
-<script type="text/javascript">
-
-function notify() {
-  $.notify("Hello", {
-      globalPosition: 'bottom right',
-    }
-  );
-}
-    notify();
-</script>

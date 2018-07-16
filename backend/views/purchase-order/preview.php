@@ -64,7 +64,7 @@ use kartik\file\FileInput;
                         'confirm' => 'Are you sure you want to approve this PO?',
                     ],
                 ]) ?>
-            <?php } ?>
+            <?php } ?> 
 
             <?php if ( $model->approved != 'cancelled' && $model->approved != 'closed' ) { ?>
                 <?= Html::a('<i class="fa fa-ban"></i> Cancel', ['cancel', 'id' => $model->id], [
@@ -73,7 +73,7 @@ use kartik\file\FileInput;
                         'confirm' => 'Are you sure you want to cancel this PO?',
                     ],
                 ]) ?>
-            <?php } ?>
+            <?php } ?> 
     </div>
     <div class="col-sm-8 text-right">
 
@@ -94,7 +94,7 @@ use kartik\file\FileInput;
                       <h3 class="box-title"><?= Html::encode($poNumber) ?></h3>
                     </div>
 
-
+                    
 
                     <div class="box-body preview-po">
                         <div class="row">
@@ -129,10 +129,10 @@ use kartik\file\FileInput;
                                     <label>PO Date:</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <?php
+                                    <?php 
                                         $exIssue = explode(' ',$model->issue_date);
                                         $is = $exIssue[0];
-
+                                        
                                         $time = explode('-', $is);
                                         $monthNum = $time[1];
                                         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -157,10 +157,10 @@ use kartik\file\FileInput;
                                     <label>Delivery Date:</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <?php
+                                    <?php 
                                         $exDelivery = explode(' ',$model->delivery_date);
                                         $dd = $exDelivery[0];
-
+                                        
                                         $time = explode('-', $dd);
                                         $monthNum = $time[1];
                                         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -239,12 +239,12 @@ use kartik\file\FileInput;
                                     <label>Status:</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <?php
+                                    <?php 
                                         if ( $model->status == 1 ) {
                                             echo 'Fully Paid';
                                         }  else if ( $model->status == 2) {
                                             echo 'Partially Paid';
-                                        } else {
+                                        } else { 
                                             echo 'Unpaid';
                                         }
                                     ?>
@@ -329,7 +329,7 @@ use kartik\file\FileInput;
                                 <strong>GST (<?= $model->gst_rate ?> %)</strong>
                             </div>
                             <div class="col-sm-3">
-                            <?php
+                            <?php 
                                 $gstCharges = $total * $model->gst_rate / 100;
                             ?>
                                 <strong><?= $dataCurrencyISO[$model->p_currency] ?> <?= number_format((float)$gstCharges, 2, '.', '')?></strong>
@@ -346,22 +346,22 @@ use kartik\file\FileInput;
                                 <strong><?= $dataCurrencyISO[$model->p_currency] ?> <?= number_format((float)$total+$gstCharges, 2, '.', '')?></strong>
                             </div>
                         </div>
-
+                        
                     </div>
 
 
                 </div>
                 <?php /* product ordered e*/ ?>
-                <?php /* po payment */ ?>
+                <?php /* po payment   ?>
                 <div class="box box-warning">
 
                     <div class="box-header with-border">
                       <h3 class="box-title">Payment History</h3>
                     </div>
                     <div class="box-body po-table">
-                        <?php /*left*/ ?>
+                        <?php /*left ?>
                         <div class="col-sm-8">
-                            <?php
+                            <?php 
                             // $totalAmount = $total + $gstCharges;
                             $totalAmount = $model->usd_total;
                             $balance =  number_format((float)$totalAmount, 2, '.', '');
@@ -386,16 +386,16 @@ use kartik\file\FileInput;
                                         </div>
                                     </div>
                                 </div>
-                                <?php foreach ( $oldPayment as $oP ) { ?>
+                                <?php foreach ( $oldPayment as $oP ) { ?>                            
                                     <div class="row">
                                         <div class="col-sm-3">
-                                        <?php
+                                        <?php 
                                             $deliveryDate = '';
                                             if ( $oP->time_paid ) {
 
                                                 $exDelivery = explode(' ',$oP->time_paid);
                                                 $dd = $exDelivery[0];
-
+                                                
                                                 $time = explode('-', $dd);
                                                 $monthNum = $time[1];
                                                 $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -422,23 +422,23 @@ use kartik\file\FileInput;
                                         </div>
                                     </div>
                                 <?php } ?>
-                            <?php } /*if old payment */ else { ?>
+                            <?php } /*if old payment  else { ?>
                                 No Payment History
-                            <?php }?>
+                            <?php } ?>
                         </div>
-                        <?php /*right*/ ?>
+                        <?php /*right  ?>
                         <div class="col-sm-4">
                             <div class="col-sm-5">
-                                Total Payable:
+                                Total Payable: 
                             </div>
                             <div class="col-sm-7">
-                                <?= $dataCurrencyISO[$model->p_currency] ?> <?= number_format((float)$balance, 2, '.', '') <= 0 ? '0.00' : number_format((float)$balance, 2, '.', '')?>
+                                <?= $dataCurrencyISO[$model->p_currency] ?> <?= number_format((float)$balance, 2, '.', '') <= 0 ? '0.00' : number_format((float)$balance, 2, '.', '')?> 
                             </div>
                             <div class="col-sm-5">
-                                Total Paid:
+                                Total Paid: 
                             </div>
                             <div class="col-sm-7">
-                                <?= $dataCurrencyISO[$model->p_currency] ?> <?= number_format((float)$paid, 2, '.', '')?>
+                                <?= $dataCurrencyISO[$model->p_currency] ?> <?= number_format((float)$paid, 2, '.', '')?> 
                             </div>
                             <?php if ( number_format((float)$balance, 2, '.', '') > 0 ) { ?>
                             <div class="col-sm-12">
@@ -450,15 +450,15 @@ use kartik\file\FileInput;
                                     <?= $form->field($payment, 'purchase_order_id')->hiddenInput(['value' => $id])->label(false) ?>
                                     <?= $form->field($payment, 'paid_by')->hiddenInput(['value' => Yii::$app->user->identity->id ])->label(false) ?>
                                     <div class="col-sm-12 col-xs-12">
-                                        <?= $form->field($payment, 'amount',
+                                        <?= $form->field($payment, 'amount', 
                                             ['template' => '<div class="col-sm-3 text-right">{label}</div><div class="col-sm-9 col-xs-12">{input}</div>
                                             {hint}{error}'])->textInput(['maxlength' => true]) ?>
                                     </div>
                                     <div class="col-sm-12 col-xs-12">
-                                        <?= $form->field($payment, 'remark',
+                                        <?= $form->field($payment, 'remark', 
                                             ['template' => '<div class="col-sm-3 text-right">{label}</div><div class="col-sm-9 col-xs-12">{input}</div>
                                             {hint}{error}'])->textInput(['maxlength' => true]) ?>
-                                    </div>
+                                    </div> 
 
                                 <div class="col-sm-12 text-right">
                                     <br>
@@ -469,13 +469,45 @@ use kartik\file\FileInput;
                                 <?php ActiveForm::end(); ?>
                             </div>
                             <?php } ?>
-
+                           
                         </div>
 
                     </div>
+                        
+
+                </div> */ ?>
 
 
-                </div>
+                <?php /* po stock in attachment*/ ?>
+                    <div class="box box-danger">
+
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Attachments</h3>
+                        </div>
+
+                        <div class="box-body preview-po">
+                            <div class="row">
+
+                                <div class="col-sm-6">
+                                    <h5>Attachments:</h5>
+                                <?php if ( !empty ( $currAttachment ) ) { ?> 
+                                    <?php foreach ( $currAttachment as $at ) { 
+                                        $attachmentClass = explode('\\', get_class($at))[2]; ?>
+                                        <div class="col-sm-3 col-xs-12 shorten-text ">
+                                            <a href="<?= 'uploads/'.$attachmentClass . '/' .$at->value ?>" target="_blank" style="text-overflow:ellipsis"><?= $at->value ?></a>
+                                        </div>
+                                    <?php } ?> 
+                                <?php } else { ?> 
+                                    <i>No attachment found!</i>
+                                <?php } ?> 
+                                </div>
+
+                             
+
+                            </div>
+                        </div>
+                    </div>
+                <?php /* attachmente */ ?>
 
 
             </div>

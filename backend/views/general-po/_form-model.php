@@ -48,9 +48,12 @@ try{
 
 
 if ($isEdit && !empty($model->conversion)) {
-    $rate = $model->conversion;
+
+  //  $rate = $model->conversion;
+      $rate = 1;//edr Temporary due to divided by zero error
 }
 
+//die($rate);
 
 /*plugins*/
 use kartik\file\FileInput;
@@ -62,7 +65,7 @@ use kartik\file\FileInput;
         <div class="row">
             <div class="col-xs-12">
 
-              
+
 <?php /* BASIC INFO  */ ?>
                 <div class="box">
                     <div class="box-header with-border">
@@ -241,13 +244,9 @@ use kartik\file\FileInput;
                                     <tr>
                                         <td>
                                             <div class="form-group field-generalpodetail-part_id">
-                                                <select id="generalpodetail-part_id" class="form-control select2">
-                                                    <option>Please select part</option>
-                                                    <?php foreach ($dataPartReuse as $id => $dP ) {  ?>
-                                                        <option value="<?= $id ?>"><?= $dP ?></option>
-                                                    <?php } ?>
 
-                                                </select>
+                                                    <input type="text" id="generalpodetail-part_id" class="form-control" placeholder="Parts" >
+
                                                 <span class="stock-result"></span>
                                                 <div class="help-block"></div>
                                             </div>
@@ -297,7 +296,7 @@ use kartik\file\FileInput;
                                                 <tr class="item-<?= $n ?>">
                                                     <td>
                                                         <div class="form-group field-generalpodetail-part_id">
-                                                            <input type="text" class="form-control" id="selected-<?= $n ?>-part" value="<?= $dataPart[$dd->part_id]?>" readonly>
+                                                            <input type="text" class="form-control" id="selected-<?= $n ?>-part" value="<?= $dd->part_id?>" readonly>
                                                             <input type="hidden" class="form-control" name="generalpodetail[<?= $n ?>][part_id]" value="<?= $dd->part_id ?>" readonly>
                                                         </div>
                                                     </td>
@@ -356,7 +355,8 @@ use kartik\file\FileInput;
                                         <label>Total</label>
                                     </td>
                                     <td>
-                                        <input type="text" id="total" class="form-control" name="GeneralPo[subtotal]" placeholder="0.00">
+                                        <!---<input type="text" id="total" class="form-control" name="GeneralPo[subtotal]" placeholder="0.00">--->
+                                        <?php echo $form->field($model, 'subtotal')->textInput(['id'=>'total', 'placeholder'=>'0.00'])->label(false)  ?>
                                         <div class="help-block"></div>
                                     </td>
                                 </tr>
@@ -365,7 +365,8 @@ use kartik\file\FileInput;
                                         <label>GST (%)</label>
                                     </td>
                                     <td>
-                                        <input type="text" id="gst" class="form-control" name="GeneralPo[gst_rate]" value="7" placeholder="0.00" onchange="getPoTotal()">
+                                        <!---<input type="text" id="gst" class="form-control" name="GeneralPo[gst_rate]" value="7" placeholder="0.00" onchange="getPoTotal()">--->
+                                          <?php echo $form->field($model, 'gst_rate')->textInput(['id'=>'gst', 'placeholder'=>'0.00', 'onchange'=>'getPoTotal()'])->label(false)  ?>
                                         <div class="help-block"></div>
                                     </td>
                                 </tr>
@@ -374,7 +375,8 @@ use kartik\file\FileInput;
                                         <label>Grand Total</label>
                                     </td>
                                     <td>
-                                        <input type="text" id="totalGST" class="form-control" name="GeneralPo[grand_total]" placeholder="0.00">
+                                      <!---  <input type="text" id="totalGST" class="form-control" name="GeneralPo[grand_total]" placeholder="0.00">--->
+                                        <?php echo $form->field($model, 'grand_total')->textInput(['id'=>'totalGST', 'placeholder'=>'0.00'])->label(false)  ?>
                                         <div class="help-block"></div>
                                         <input type="hidden" id='n' value="0">
                                         <input type="hidden" id='currencyRate' name="GeneralPo[conversion]" value="<?= $rate ?>">

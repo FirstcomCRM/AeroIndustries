@@ -36,28 +36,28 @@ $dataPart = Part::dataPart();
 $dataPartDesc = Part::dataPartDesc();
 $dataPartUnit = Part::dataPartUnit();
 $dataTemplate = Template::dataTemplate();
-$dataUphosteryType = Setting::dataUphosteryType();
-$dataUphosteryScope = Setting::dataUphosteryScope();
+$dataWorkType = Setting::dataWorkType();
+$dataWorkScope = Setting::dataWorkScope();
 $dataIDType = Setting::dataIDType();
 $dataIdentifyFrom = Setting::dataIdentifyFrom();
 $dataPartNo = Capability::dataPartNo();
 $dataUnit = Unit::dataUnit();
 $dataTraveler = Traveler::dataTraveler();
 $dataLocation = StorageLocation::dataLocation();
-$dataUphosteryStatus = Setting::dataUphosteryStatus();
+$dataWorkStatus = Setting::dataWorkStatus();
 $dataArcStatus = Setting::dataArcStatus();
 /*plugins*/
 use kartik\file\FileInput;
 /* k6 */
 
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($data['model']->uphostery_type,$data['model']->uphostery_scope,$data['model']->uphostery_no);
+    $woNumber = Setting::getWorkNo($data['model']->uphostery_type,$data['model']->uphostery_scope,$data['model']->uphostery_no);
 }
 
 ?>
 
-<div class="uphostery-order-form">
+<div class="uphostery-form">
 	<section class="content">
         <?php $form = ActiveForm::begin(); ?>
             <div class="form-group text-right">
@@ -68,7 +68,7 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
             </div>
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab">Uphostery <?= $upNumber ?></a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Uphostery <?= $woNumber ?></a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_rece">
@@ -78,7 +78,7 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                     <label>Uphostery No.</label>
                                 </div>
                                 <div class="col-sm-3 col-xs-6">
-                                    <?= $upNumber ?>
+                                    <?= $woNumber ?>
                                 </div>
                                 <div class="col-sm-3 col-xs-6">
                                     <label>Part No.</label>
@@ -188,7 +188,7 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                         </div>  
 
                                         <div class="col-sm-12 col-xs-12">
-                                           <?= $form->field($data['upAttachment'], 'attachment[uphostery][]', [
+                                           <?= $form->field($data['woAttachment'], 'attachment[uphostery][]', [
                                                   'template' => "<div class='col-sm-3 text-right'>{label}{hint}</div>\n<div class='col-sm-9 col-xs-12'>{input}{error}</div>\n\n"
                                                 ])
                                                 ->widget(FileInput::classname(), [
@@ -208,7 +208,7 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                                 ?>
                                                 <div class="col-sm-3 col-xs-12">
                                                     <a href="<?= 'uploads/uphostery/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
-                                                    <?= Html::a(' <i class="fa fa-close"></i> ', ['uphostery-order/remove-upa', 'id' => $at->id], [
+                                                    <?= Html::a(' <i class="fa fa-close"></i> ', ['uphostery/remove-woa', 'id' => $at->id], [
                                                         'data' => [
                                                             'confirm' => 'Are you sure you want to remove this attachment?',
                                                         ],

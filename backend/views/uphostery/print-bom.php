@@ -15,9 +15,9 @@ use common\models\Unit;
 use common\models\Stock;
 
 $this->title = 'Bill of Materials';
-$upNumber = 'Uphostery No Missing';
+$woNumber = 'Uphostery No Missing';
 if ( $model->uphostery_scope && $model->uphostery_type ) {
-    $upNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
+    $woNumber = Setting::getUphosteryNo($model->uphostery_type,$model->uphostery_scope,$model->uphostery_no);
 }
 $dataPart = Part::dataPart();
 $dataPartDesc = Part::dataPartDesc();
@@ -44,7 +44,7 @@ $dataUnit = Unit::dataUnit();
                     Part Number: 
                 </td>
                 <td class="border-bottom" align="center"> 
-                    <?=$model->part_no?>
+                    <?=$uphosteryOrderPart->part_no?>
                 </td>
                 <td width="5%">
                   
@@ -53,7 +53,7 @@ $dataUnit = Unit::dataUnit();
                     Uphostery: 
                 </td>
                 <td class="border-bottom" align="center"> 
-                    <?=$upNumber?>
+                    <?=$woNumber?>
                 </td>
                 <td width="5%">
                   
@@ -64,7 +64,7 @@ $dataUnit = Unit::dataUnit();
                     Description:
                 </td>
                 <td class="border-bottom" align="center"> 
-                    <?=$model->desc?>
+                    <?=$uphosteryOrderPart->desc?>
                 </td>
                 <td width="5%">
                   
@@ -84,7 +84,7 @@ $dataUnit = Unit::dataUnit();
                     Quantity:
                 </td>
                 <td class="border-bottom" align="center"> 
-                    <?=$model->quantity?>
+                    <?=$uphosteryOrderPart->quantity?>
                 </td>
                 <td width="5%">
                   

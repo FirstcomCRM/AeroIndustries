@@ -15,7 +15,7 @@ use common\models\Part;
 use common\models\StorageLocation;
 use common\models\Unit;
 use common\models\PurchaseOrder;
-use common\models\GeneralPo;
+use common\models\ToolPo;
 use common\models\Currency;
 use common\models\Supplier;
 /* @var $this yii\web\View */
@@ -37,12 +37,12 @@ foreach ( $dataPo as $id => $dp) {
     $created = $dataAllPOCreated[$id];
     $dataPurchaseOrder[$id] = PurchaseOrder::getPONo($dp,$created);
 }
-$dataGPo = GeneralPo::dataGPO();
-$dataAllGPOCreated = GeneralPO::dataAllGPOCreated();
-$dataGeneralPO = [];
+$dataGPo = ToolPo::dataTPO();
+$dataAllTPOCreated = ToolPO::dataAllTPOCreated();
+$dataToolPO = [];
 foreach ( $dataGPo as $id => $dp) {
-    $created = $dataAllGPOCreated[$id];
-    $dataGeneralPO[$id] = GeneralPo::getGPONo($dp,$created);
+    $created = $dataAllTPOCreated[$id];
+    $dataToolPO[$id] = ToolPo::getTPONo($dp,$created);
 }
 
 /*plugins*/
@@ -76,7 +76,8 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                             <div class="box">
                                 <div class="box-header with-border">
                                     <?php if ( $purchaseOrder && $purchaseOrderDetail ) { ?>
-                                        <h3 class="box-title"><?php echo "PO-" . sprintf("%008d", $purchaseOrder->purchase_order_no); ?></h3>
+                                    <?php $poNumber = PurchaseOrder::getPONo($purchaseOrder->purchase_order_no,$purchaseOrder->created); ?>
+                                        <h3 class="box-title"><?php echo $poNumber; ?></h3>
                                     <?php } else { ?>
                                         <h3 class="box-title">Please select PO Number</h3>
                                     <?php } ?>
@@ -104,8 +105,8 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                             <option value="<?= $id ?>-part" <?=$selected1?>><?=$dataP?></option>
                                                         <?php } ?>
                                                     </optgroup>
-                                                    <optgroup label="General PO">
-                                                        <?php foreach ($dataGeneralPO as $id => $dataP) {  ?>
+                                                    <optgroup label="Tool PO">
+                                                        <?php foreach ($dataToolPO as $id => $dataP) {  ?>
                                                             <?php $selected2 = $varSelected == $id . '-tool' ?'selected':'';?>
                                                             <option value="<?= $id ?>-tool" <?=$selected2?>><?=$dataP?></option>
                                                         <?php } ?>
@@ -128,7 +129,12 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                     </div>
                                                 </div>
                                             </div>
-
+                                           <?= $form->field($poAttachment, 'attachment[]', [
+                                                  'template' => "<div class='col-sm-3 text-right'>{label}{hint}</div>\n<div class='col-sm-9 col-xs-12'>{input}{error}</div>\n\n"
+                                                ])
+                                                ->widget(FileInput::classname(), [
+                                                'options' => ['accept' => 'image/*'],
+                                            ])->fileInput(['multiple' => true,])->label('Upload Attachment(s)') ?>
                                         <?php }  ?>
 
                                     </div>
@@ -301,9 +307,16 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                         <th width="140px">Qty per unit item</th>
                                                         <th width="80px">Freight</th>
                                                         <th width="80px">Unit Price (USD)</th>
+                                                        <?php if (isset( $_GET['ty'] ) && $_GET['ty'] == 'tool') { ?>
                                                         <th width="80px">Last Calibration</th>
                                                         <th width="80px">Next Calibration</th>
+                                                        <?php } else { ?>
+                                                        <th width="80px"></th>
+                                                        <th width="80px"></th>
+                                                        <?php } ?>
+                                                        <?php /*
                                                         <th width="80px">Update Stock?</th>
+                                                        */ ?>
                                                     </tr>
                                                     <tr>
                                                         <td>
@@ -346,11 +359,11 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                                 ['template' => '{input}{error}{hint}'])
                                                             ->hiddenInput(['value' => $purchaseOrder->p_currency ])->label(false) ?>
                                                         </td>
+                                                        <?php if (isset( $_GET['ty'] ) && $_GET['ty'] == 'tool') { ?>
                                                         <td>
                                                             <?= $form->field($model, 'last_cali[]',
                                                                 ['template' => '{input}{error}{hint}'])
                                                             ->textInput(['id' => 'datepicker4','placeholder' => 'Last Calibration'])->label(false) ?>
-
                                                         </td>
                                                         <td>
                                                             <?= $form->field($model, 'next_cali[]',
@@ -358,11 +371,15 @@ if ( isset ( $_GET['id'] ) && !empty ( $_GET['id'] )  ) {
                                                             ->textInput(['id' => 'datepicker5','placeholder' => 'Next Calibration'])->label(false) ?>
 
                                                         </td>
-                                                        <td>
+                                                        <?php } else { ?>
+                                                        <td><?= $form->field($model, 'last_cali[]')->hiddenInput()->label(false)?></td>
+                                                        <td><?= $form->field($model, 'next_cali[]')->hiddenInput()->label(false)?></td>
+                                                        <?php } ?>
+                                                        <?php /*<td>
 
-                                                            <input type="checkbox" name="stock_in[<?=$key?>]" class="">
+                                                            <input type="checkbox" name="stock_in[<?=$key?>]" class="" checked="checked">
 
-                                                        </td>
+                                                        </td>*/ ?>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="7"><hr></td>

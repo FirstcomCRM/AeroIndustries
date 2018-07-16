@@ -20,6 +20,7 @@ $oldAttachment = false;
         </section>
 
     <?= $this->render('_stock-new', [
+            'poAttachment' => $poAttachment,
         'model' => $model,
         'subTitle' => $subTitle,
         'purchaseOrder' => $purchaseOrder,

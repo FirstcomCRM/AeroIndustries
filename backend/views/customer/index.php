@@ -24,25 +24,17 @@ $gridColumns =
         'contentOptions' => ['class' => 'capitalize'],
         'headerOptions' => ['class' => 'capitalize']
     ],
+    'code',
     [
         'attribute' => 'name',
         'value' => 'name',
         'contentOptions' => ['class' => 'capitalize'],
         'headerOptions' => ['class' => 'capitalize']
     ],
-    
-    [
-        'attribute' => 'addr_1',
-        'label' => 'Address 1',
-    ],
-    [
-        'attribute' => 'addr_2',
-        'label' => 'Address 2',
-    ],
     'contact_person',
-    // 'email:email',
+    'email:email',
     'contact_no',
-    // 'title',
+    'fax',
     // 's_addr_1',
     // 's_addr_2',
     // 'b_addr_1',
@@ -54,7 +46,7 @@ $gridColumns =
 
     [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{preview}{amend}{remove}',
+        'template' => '{amend}{remove}',
         'buttons' => [
         'preview' => function ($url, $model) {
             return Html::a(' <span class="glyphicon glyphicon-eye-open"></span> ', $url, [

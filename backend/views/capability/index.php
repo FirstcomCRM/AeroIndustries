@@ -23,6 +23,7 @@ $gridColumns =
     'workscope',
     'ata_chapter',
     'rating',
+    'ref_document_no',
     // 'deleted',
     // 'created',
     // 'created_by',

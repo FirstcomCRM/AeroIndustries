@@ -13,7 +13,7 @@ use common\models\Setting;
 $this->title = 'Uphostery Arcs';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="uphostery-order-arc-index">
+<div class="uphostery-arc-index">
 
     <section class="content-header">
         <h1>
@@ -52,12 +52,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 $uphostery_id = $model->uphostery_id;
                 $uphostery = Uphostery::getUphostery($uphostery_id);
                 if ( $uphostery->uphostery_scope && $uphostery->uphostery_type ) {
-                    $upNumber = Setting::getUphosteryNo($uphostery->uphostery_type,$uphostery->uphostery_scope,$uphostery->uphostery_no);
+                    $woNumber = Setting::getUphosteryNo($uphostery->uphostery_type,$uphostery->uphostery_scope,$uphostery->uphostery_no);
                 }
-                return Html::a(Html::encode($upNumber),'?r=uphostery-order/preview&id='.$uphostery_id, ['target'=>'_blank']);
+                return Html::a(Html::encode($woNumber),'?r=uphostery/preview&id='.$uphostery_id, ['target'=>'_blank']);
             },
         ],
-            [
+            
+    [
         'attribute' => 'date',
         'format' => 'text',
         'value' => function($model, $index, $column) {
@@ -92,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
                                     'title' => Yii::t('app', 'Delete'),
                                     'data' => [
-                                        'confirm' => 'Are you sure you want to delete this uphostery order?',
+                                        'confirm' => 'Are you sure you want to delete this uphostery?',
                                     ],
                         ]);
                     },
@@ -102,21 +103,27 @@ $this->params['breadcrumbs'][] = $this->title;
                         $uphostery_id = $model->uphostery_id;
                         $uphostery = Uphostery::getUphostery($uphostery_id);
                         if ( $model->type == 'EASA' ) {
-                            $url ='?r=uphostery-order-arc/print-easa&id='.$uphostery_id;
+                            $url ='?r=uphostery-arc/print-easa&id='.$uphostery_id;
                         }
                         if ( $model->type == 'FAA' ) {
-                            $url ='?r=uphostery-order-arc/print-faa&id='.$uphostery_id;
+                            $url ='?r=uphostery-arc/print-faa&id='.$uphostery_id;
                         }
                         if ( $model->type == 'CAAS' ) {
-                            $url ='?r=uphostery-order-arc/print-caa&id='.$uphostery_id;
+                            $url ='?r=uphostery-arc/print-caa&id='.$uphostery_id;
                         }
                         if ( $model->type == 'COC' ) {
-                            $url ='?r=uphostery-order-arc/print-coc&id='.$uphostery_id;
+                            $url ='?r=uphostery-arc/print-coc&id='.$uphostery_id;
+                        }
+                        if ( $model->type == 'CAAV' ) {
+                            $url ='?r=uphostery-arc/print-caav&id='.$uphostery_id;
+                        }
+                        if ( $model->type == 'DCAM' ) {
+                            $url ='?r=uphostery-arc/print-dcam&id='.$uphostery_id;
                         }
                         return $url;
                     }  
                     if ($action === 'delete') {
-                        $url ='?r=uphostery-order/delete-column&id='.$model->id;
+                        $url ='?r=uphostery/delete-column&id='.$model->id;
                         return $url;
                     }
                 }

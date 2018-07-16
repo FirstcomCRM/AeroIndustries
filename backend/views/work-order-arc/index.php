@@ -75,7 +75,6 @@ $this->params['breadcrumbs'][] = $this->title;
         },
     ],
             'type',
-            'created',
             // 'first_check',
             // 'second_check',
             // 'form_tracking_no',
@@ -87,6 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'preview' => function ($url, $model) {
                         return Html::a(' <span class="glyphicon glyphicon-eye-open"></span> ', $url, [
                                     'title' => Yii::t('app', 'Preview'),
+                                    'target' => '_blank'
                         ]);
                     },
                     'delete' => function ($url, $model) {
@@ -101,18 +101,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 'urlCreator' => function ($action, $model, $key, $index) {
                     if ($action === 'preview') {
                         $work_order_id = $model->work_order_id;
-                        $workOrder = WorkOrder::getWorkOrder($work_order_id);
+                        $work_order_part_id = $model->work_order_part_id;
                         if ( $model->type == 'EASA' ) {
-                            $url ='?r=work-order-arc/print-easa&id='.$work_order_id;
+                            $url ='?r=work-order-arc/print-easa&id='.$work_order_id.'&work_order_part_id='.$work_order_part_id;
                         }
                         if ( $model->type == 'FAA' ) {
-                            $url ='?r=work-order-arc/print-faa&id='.$work_order_id;
+                            $url ='?r=work-order-arc/print-faa&id='.$work_order_id.'&work_order_part_id='.$work_order_part_id;
                         }
                         if ( $model->type == 'CAAS' ) {
-                            $url ='?r=work-order-arc/print-caa&id='.$work_order_id;
+                            $url ='?r=work-order-arc/print-caa&id='.$work_order_id.'&work_order_part_id='.$work_order_part_id;
                         }
                         if ( $model->type == 'COC' ) {
-                            $url ='?r=work-order-arc/print-coc&id='.$work_order_id;
+                            $url ='?r=work-order-arc/print-coc&id='.$work_order_id.'&work_order_part_id='.$work_order_part_id;
+                        }
+                        if ( $model->type == 'CAAV' ) {
+                            $url ='?r=work-order-arc/print-caav&id='.$work_order_id.'&work_order_part_id='.$work_order_part_id;
+                        }
+                        if ( $model->type == 'DCAM' ) {
+                            $url ='?r=work-order-arc/print-dcam&id='.$work_order_id.'&work_order_part_id='.$work_order_part_id;
                         }
                         return $url;
                     }  

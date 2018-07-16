@@ -17,6 +17,9 @@ AppAsset::register($this);
         $isPartnCat = false;
         $isPartCat = false;
         $isPart= false;
+        $isPartImport= false;
+        $isStockImport= false;
+        $isToolImport= false;
         $isStock= false;
         $isStockHistory= false;
         $isInventoryReport= false;
@@ -24,11 +27,13 @@ AppAsset::register($this);
         $isStorage= false;
         $isSupplier = false;
         $isGpoSupplier = false;
+        $isTpoSupplier = false;
         $isUser = false;
         $isUsernGroup = false;
         $isRfq= false;
         $isPO = false;
         $isGeneralPO = false;
+        $isToolPO = false;
         $isUserGroup = false;
         $isStaffnGroup = false;
         $isStaff = false;
@@ -73,6 +78,16 @@ AppAsset::register($this);
               $isPart = true;
               $isPartnCat = true;
             }
+            if ( $getClass == 'part' && $getAction == 'import-excel' ) {
+              $isPartImport = true;
+              $isPart = false;
+            }
+            if ( $getClass == 'stock' && $getAction == 'import-excel' ) {
+              $isStockImport = true;
+              $isStock = false;
+            }
+
+
             if ( $getClass == 'stock' ) {
               $isStock = true;
               $isStockReceive = true;
@@ -131,13 +146,24 @@ AppAsset::register($this);
               $isGpoSupplier = true;
             }
 
+            if ( $getClass == 'tpo-supplier') {
+              $isTpoSupplier = true;
+            }
+
             if ( $getClass == 'purchase-order') {
               $isPO = true;
             }
             if ( $getClass == 'general-po') {
               $isGeneralPO = true;
             }
+            if ( $getClass == 'tool-po') {
+              $isToolPO = true;
+            }
 
+            if ( $getClass == 'tool' && $getAction == 'import-excel' ) {
+              $isToolImport = true;
+              $isTool = false;
+            }
             if ( $getClass == 'rfq') {
               $isRfq= true;
             }
@@ -307,13 +333,13 @@ AppAsset::register($this);
                     </a>
                   </li>
                   <li>
-                    <a href="?r=general-po/new">
-                      <i class="fa fa-file-text-o text-yellow"></i> For Non-aviation parts
+                    <a href="?r=tool-po/new">
+                      <i class="fa fa-file-text-o text-yellow"></i> For Aviation tools
                     </a>
                   </li>
                   <li>
-                    <a href="?r=currency">
-                      <i class="fa fa-dollar text-red"></i> Currency Setting
+                    <a href="?r=general-po/new">
+                      <i class="fa fa-file-text-o text-yellow"></i> For Non-aviation parts
                     </a>
                   </li>
                 </ul>
@@ -650,29 +676,32 @@ AppAsset::register($this);
         <li class="<?php if ( $isQuotation ) { echo 'active'; }?>"><a href="?r=quotation"><i class="fa fa-quote-right"></i> <span>Quotation</span></a></li>
         <li class="<?php if ( $isDO ) { echo 'active'; }?>"><a href="?r=delivery-order"><i class="fa fa-truck"></i> <span>Delivery Order</span></a></li>
 
-        <li class="treeview <?php if ( $isRfq || $isPO || $isGeneralPO) { echo 'active'; }?>">
+        <li class="treeview <?php if ( $isRfq || $isPO || $isGeneralPO || $isToolPO) { echo 'active'; }?>">
           <a href="#">
             <i class="fa fa-plane"></i> <span>Documents</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
             <li class="<?php if ( $isRfq ) { echo 'active'; }?>"><a href="?r=rfq"><i class="fa fa-circle-o"></i> Request for Quotation</a></li>
-            <li class="<?php if ( $isPO ) { echo 'active'; }?>"><a href="?r=purchase-order"><i class="fa fa-circle-o"></i> Purchase Order</a></li>
+            <li class="<?php if ( $isPO ) { echo 'active'; }?>"><a href="?r=purchase-order"><i class="fa fa-circle-o"></i> Aviation Parts PO</a></li>
+            <li class="<?php if ( $isToolPO ) { echo 'active'; }?>"><a href="?r=tool-po"><i class="fa fa-circle-o"></i> Tools PO</a></li>
             <li class="<?php if ( $isGeneralPO ) { echo 'active'; }?>"><a href="?r=general-po"><i class="fa fa-circle-o"></i> General PO</a></li>
           </ul>
         </li>
 
-        <li class="treeview <?php if ( $isStock || $isInventoryReport || $isStockHistory || $isTool || $isPartCat || $isPart ) { echo 'active'; }?>">
+        <li class="treeview <?php if ( $isStock || $isInventoryReport || $isStockHistory || $isTool || $isPartCat || $isPart || $isPartImport || $isToolImport) { echo 'active'; }?>">
           <a href="#">
             <i class="fa fa-plane"></i> <span>Stock Room</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
-            <li class="<?php if ( $isStock ) { echo 'active'; }?>"><a href="?r=stock/stock"><i class="fa fa-circle-o"></i> Aviation stock</a></li>
-            <li class="<?php if ( $isTool ) { echo 'active'; }?>"><a href="?r=tool/tool"><i class="fa fa-circle-o"></i> Non-aviation stock</a></li>
+            <li class="<?php if ( $isStock ) { echo 'active'; }?>"><a href="?r=stock/stock"><i class="fa fa-circle-o"></i> Aviation Parts</a></li>
+            <li class="<?php if ( $isTool ) { echo 'active'; }?>"><a href="?r=tool/tool"><i class="fa fa-circle-o"></i> Aviation Tools</a></li>
             <li class="<?php if ( $isStockHistory ) { echo 'active'; }?>"><a href="?r=stock-history"><i class="fa fa-circle-o"></i> Stock history</a></li>
             <li class="<?php if ( $isInventoryReport ) { echo 'active'; }?>"><a href="?r=stock/inventory-report"><i class="fa fa-circle-o"></i> Inventory Report</a></li>
             <li class="<?php if ( $isPartCat ) { echo 'active'; }?>"><a href="?r=part-category"><i class="fa fa-circle-o"></i> Category</a></li>
             <li class="<?php if ( $isPart ) { echo 'active'; }?>"><a href="?r=part"><i class="fa fa-circle-o"></i> Part</a></li>
-            <li class="<?php if ( $isPart ) { echo 'active'; }?>"><a href="?r=part/import-excel"><i class="fa fa-circle-o"></i> Import Parts</a></li>
+            <li class="<?php if ( $isPartImport ) { echo 'active'; }?>"><a href="?r=part/import-excel"><i class="fa fa-circle-o"></i> Import Part Settings</a></li>
+            <li class="<?php if ( $isStockImport ) { echo 'active'; }?>"><a href="?r=stock/import-excel"><i class="fa fa-circle-o"></i> Import Aviation Parts</a></li>
+            <li class="<?php if ( $isToolImport ) { echo 'active'; }?>"><a href="?r=tool/import-excel"><i class="fa fa-circle-o"></i> Import Aviation Tools</a></li>
           </ul>
         </li>
 
@@ -696,6 +725,7 @@ AppAsset::register($this);
         <li class="<?php if ( $isSupplier ) { echo 'active'; }?>"><a href="?r=supplier"><i class="fa fa-cart-arrow-down"></i> <span>Supplier</span></a></li>
 
         <li class="<?php if ( $isGpoSupplier ) { echo 'active'; }?>"><a href="?r=gpo-supplier"><i class="fa fa-cart-arrow-down"></i> <span>GPO Supplier</span></a></li>
+        <?php /* <li class="<?php if ( $isTpoSupplier ) { echo 'active'; }?>"><a href="?r=tpo-supplier"><i class="fa fa-cart-arrow-down"></i> <span>Tools Supplier</span></a></li> */ ?>
 
         <li class="<?php if ( $isTraveler ) { echo 'active'; }?>"><a href="?r=traveler"><i class="fa fa-file"></i> <span>Worksheet</span></a></li>
 

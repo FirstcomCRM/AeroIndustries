@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 
+use common\models\TravelerLog;
 use kartik\export\ExportMenu;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SearchTraveller */
@@ -33,11 +34,22 @@ $gridColumns = [
     'effectivity',
     'revision_no',
      [
+        'attribute' => 'revision_no',
+        'format' => 'text',
+        'value' => function($model, $index, $column) {
+            $travelerLog = TravelerLog::getLatestTravelerLog($model->id);
+            if ( !empty($travelerLog->revision_no) ) {
+                return $travelerLog->revision_no;
+            }
+        },
+    ],
+     [
         'attribute' => 'revision_date',
         'format' => 'text',
         'value' => function($model, $index, $column) {
-            if ( !empty($model->revision_date) ) {
-                $exDate = explode(' ',$model->revision_date);
+            $travelerLog = TravelerLog::getLatestTravelerLog($model->id);
+            if ( !empty($travelerLog->date) ) {
+                $exDate = explode(' ',$travelerLog->date);
                 $is = $exDate[0];
                 $time = explode('-', $is);
                 $monthNum = $time[1];

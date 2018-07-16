@@ -13,6 +13,7 @@ use common\models\Currency;
 use common\models\Customer;
 use common\models\Part;
 use common\models\User;
+use common\models\Staff;
 use common\models\Setting;
 
 $woNumber = 'Work Order No Missing';
@@ -30,6 +31,7 @@ $dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
 $dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
 $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
+$dataStaffId = Staff::dataStaffId();
 $serial = false;
 $batch = false;
 if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) { 
@@ -152,7 +154,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                  Repair Supervisor
             </td>
             <td colspan="2">
-                <?= $workOrderPart->repair_supervisor?>
+                <?= $dataStaffId[$workOrderPart->repair_supervisor] ?>
             </td>
         </tr>
     </table>

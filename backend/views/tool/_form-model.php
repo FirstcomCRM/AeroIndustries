@@ -46,7 +46,7 @@ $dataUnit = Unit::dataUnit();
                         </div>    
  
                         <div class="col-sm-12 col-xs-12">    
-                            <?= $form->field($model, 'general_po_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                            <?= $form->field($model, 'tool_po_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                 <div class="col-sm-9 col-xs-12">{input}</div>
                                 {hint}
                                 {error}'])->textInput() ?>

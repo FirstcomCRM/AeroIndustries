@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use common\models\Setting;
-$dataUphosteryStatus = Setting::dataUphosteryStatus();
+$dataWorkStatus = Setting::dataWorkStatus();
 $dataArcStatus = Setting::dataArcStatus();
 
 $backUrlFull = Yii::$app->request->referrer;
@@ -21,7 +21,7 @@ $backUrl = $exBackUrlFull[1];
 ?>
 
 <div class="uphostery-arc-form">
-    <section class="content">
+	<section class="content">
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
@@ -31,7 +31,7 @@ $backUrl = $exBackUrlFull[1];
                     <!-- /.box-header -->
 
                     <div class="box-body ">
-                    <?php $form = ActiveForm::begin(); ?>                
+				    <?php $form = ActiveForm::begin(); ?>                
 
                         <div class="col-sm-12 col-xs-12">    
 
@@ -101,11 +101,18 @@ $backUrl = $exBackUrlFull[1];
                             '])->checkbox() ?>
 
                         </div>    
+                        <div class="col-sm-12 col-xs-12">    
+
+                            <?= $form->field($model, 'is_tracking_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                            <div class="col-sm-9 col-xs-12">{input}{hint}{error}</div>
+                            '])->checkbox() ?>
+
+                        </div>    
                         
                         <div class="col-sm-12 text-right">
 
-                        <br>
-                            <div class="form-group">
+    		            <br>
+    					    <div class="form-group">
                             <?= Html::submitButton('<i class="fa fa-save"></i> Generate', [
                                     'class' => 'btn btn-primary',
                                     'data' => [
@@ -113,15 +120,15 @@ $backUrl = $exBackUrlFull[1];
                                     ],
                                 ]) ?>
 
-                                <?= Html::a( 'Cancel', Url::to('?r='.$backUrl), array('class' => 'btn btn-default')) ?>
-                            </div>
-                        </div>
+    		                    <?= Html::a( 'Cancel', Url::to('?r='.$backUrl), array('class' => 'btn btn-default')) ?>
+    					    </div>
+    				    </div>
 
-                    <?php ActiveForm::end(); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+				    <?php ActiveForm::end(); ?>
+				    </div>
+			    </div>
+		    </div>
+	    </div>
     </section>
 </div>
 

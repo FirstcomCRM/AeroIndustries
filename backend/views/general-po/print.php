@@ -10,7 +10,7 @@ use yii\helpers\Url;
 /* @var $model common\models\PurchaseOrder */
 
 use common\models\Currency;
-use common\models\Supplier;
+use common\models\GpoSupplier;
 use common\models\Part;
 use common\models\User;
 use common\models\Unit;
@@ -22,9 +22,9 @@ $this->title = $poNumber;
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-$dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'company_name');
+$dataSupplier = ArrayHelper::map(GpoSupplier::find()->all(), 'id', 'company_name');
 $dataUnit = ArrayHelper::map(Unit::find()->all(), 'id', 'unit');
-$dataSupplierAtt = ArrayHelper::map(Supplier::find()->all(), 'id', 'contact_person');
+$dataSupplierAtt = ArrayHelper::map(GpoSupplier::find()->all(), 'id', 'contact_person');
 $dataCurrency = ArrayHelper::map(Currency::find()->all(), 'id', 'name');
 $dataCurrencyISO = ArrayHelper::map(Currency::find()->all(), 'id', 'iso');
 $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
@@ -35,7 +35,7 @@ $currencyId = $model->p_currency;
     <!-- Content Header (Page header) -->
 <div class="print-area">
     <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-bottom:1rem; font-size: 12px">
-        
+
         <tr>
             <td width="50%">
                 <img src="images/logo.png">
@@ -72,7 +72,7 @@ $currencyId = $model->p_currency;
             <td colspan="2">
                 <div class="box">
 
-                    
+
                     <table class="box-body preview-po" width="100%" >
                         <tr>
                             <td valign="top" width="25%">
@@ -85,10 +85,10 @@ $currencyId = $model->p_currency;
                                 <label>Date:</label>
                             </td>
                             <td width="25%">
-                                <?php 
+                                <?php
                                     $exIssue = explode(' ',$model->issue_date);
                                     $is = $exIssue[0];
-                                    
+
                                     $time = explode('-', $is);
                                     $monthNum = $time[1];
                                     $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -109,10 +109,10 @@ $currencyId = $model->p_currency;
                                 <label>Delivery Date:</label>
                             </td>
                             <td valign="top">
-                                <?php 
+                                <?php
                                     $exIssue = explode(' ',$model->delivery_date);
                                     $is = $exIssue[0];
-                                    
+
                                     $time = explode('-', $is);
                                     $monthNum = $time[1];
                                     $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -199,7 +199,7 @@ $currencyId = $model->p_currency;
                                     <?= $loop ?>
                                 </td>
                                 <td>
-                                    <?= $dataPart[$d->part_id] ?>
+                                    <?= $d->part_id ?>
                                 </td>
                                 <td align="left">
                                     <?= $dataUnit[$d->unit_id]?>
@@ -262,7 +262,7 @@ $currencyId = $model->p_currency;
                             <strong>Add 7 % GST</strong>
                         </td>
                         <td align="right" width="20%" class="pototal">
-                            <?php 
+                            <?php
                               $gstCharges = $total * $model->gst_rate / 100;
                             ?>
                             <strong>USD <?= number_format((float)$gstCharges, 2, '.', '')?></strong>
@@ -292,7 +292,7 @@ $currencyId = $model->p_currency;
                 </table>
             </td>
         </tr>
-        
+
     </table>
 </div>
 

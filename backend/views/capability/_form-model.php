@@ -81,6 +81,14 @@ $backUrl = $exBackUrlFull[1];
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
+    </div>     
+    <div class="col-sm-12 col-xs-12">    
+
+        <?= $form->field($model, 'ref_document_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+<div class="col-sm-9 col-xs-12">{input}</div>
+{hint}
+{error}'])->textInput(['maxlength' => true]) ?>
+
     </div>             
 
     <div class="col-sm-12 text-right">

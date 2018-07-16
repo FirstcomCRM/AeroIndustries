@@ -14,6 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 use common\models\Part;
 use common\models\Tool;
 use common\models\StorageLocation;
+use common\models\CalibrationAttachment;
 
 
 $gridColumns =
@@ -81,13 +82,26 @@ $gridColumns =
     ],
 
     'con_approval',
+
+    [
+        'attribute' => 'attachment',
+        'format' => 'text',
+        'value' => function($model, $index, $column) {
+            $calibrationAttachment = CalibrationAttachment::getCalibrationAttachment($model->id);
+            if ($calibrationAttachment){
+                return 'Yes';
+            } else {
+                return 'No';
+            }
+        },
+    ],
     // 'con_limitation',
     // 'created',
     // 'updated',
 
     [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{remove}',
+        'template' => '{amend}{remove}',
         'buttons' => [
             'preview' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-eye-open"></span> ', $url, [
@@ -147,7 +161,7 @@ $gridColumns =
 
                         <div class="col-sm-12 text-right export-menu">
                         <br>
-                        <?= Html::a('<i class=\'fa fa-plus\'></i> New Calibration', ['new'], ['class' => 'btn btn-default']) ?>
+                        <?php Html::a('<i class=\'fa fa-plus\'></i> New Calibration', ['new'], ['class' => 'btn btn-default']) ?>
                         <?php
 
                                 /*Renders a export dropdown menu*/

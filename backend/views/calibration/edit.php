@@ -19,6 +19,11 @@ $subTitle = 'Update ' . $model->id;
 		    <?= $this->render('_form-model', [
 		        'model' => $model,
 		        'subTitle' => $subTitle,
+	            'atta' => $atta,
+            'tool' => $tool,
+            'currAtta' => $currAtta,
+            'partId' => $partId,
+            'serialNo' => $serialNo,
 		    ]) ?>
 
 </div>

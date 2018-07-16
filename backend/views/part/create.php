@@ -21,6 +21,7 @@ $subTitle = 'Create Part';
     <?= $this->render('_form', [
         'model' => $model,
         'subTitle' => $subTitle,
+        'attachment'=>$attachment,
     ]) ?>
 
 </div>
