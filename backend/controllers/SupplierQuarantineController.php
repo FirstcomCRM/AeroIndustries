@@ -3,8 +3,8 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Capability;
-use common\models\SearchCapability;
+use common\models\SupplierQuarantine;
+use common\models\SearchSupplierQuarantine;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,11 +13,12 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\UserGroup;
 use common\models\UserPermission;
+use common\models\Stock;
 
 /**
- * CapabilityController implements the CRUD actions for Capability model.
+ * SupplierQuarantineController implements the CRUD actions for SupplierQuarantine model.
  */
-class CapabilityController extends Controller
+class SupplierQuarantineController extends Controller
 {
     /**
      * @inheritdoc
@@ -27,7 +28,7 @@ class CapabilityController extends Controller
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
        
         foreach ( $userGroupArray as $uGId => $uGName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Capability'])->andWhere(['user_group_id' => $uGId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'SupplierQuarantine'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -83,12 +84,12 @@ class CapabilityController extends Controller
     }
 
     /**
-     * Lists all Capability models.
+     * Lists all SupplierQuarantine models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchCapability();
+        $searchModel = new SearchSupplierQuarantine();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -98,15 +99,15 @@ class CapabilityController extends Controller
     }
 
     /**
-     * Finds the Capability model based on its primary key value.
+     * Finds the SupplierQuarantine model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Capability the loaded model
+     * @return SupplierQuarantine the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Capability::findOne($id)) !== null) {
+        if (($model = SupplierQuarantine::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -116,21 +117,26 @@ class CapabilityController extends Controller
 
 
     /**
-     * Creates a new Capability .
+     * Creates a new SupplierQuarantine .
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionNew()
+    public function actionNew($s_id,$qty)
     {
-        $model = new Capability();
+        $model = new SupplierQuarantine();
 
         if ($model->load(Yii::$app->request->post()) ) {
-
+            $postData = Yii::$app->request->post();
+            $id = $s_id;
+            $stock = Stock::getStock($id);
+            $quantityDeduct = $model->quantity;
+            $stock->quantity = $stock->quantity - $quantityDeduct;
+            $stock->save();
+            
             $model->created_by = Yii::$app->user->identity->id;
-            $currentDateTime = date("Y-m-d H:i:s");
-            $model->created = $currentDateTime;
-
+            $model->created = date("Y-m-d H:i:s");
             if ($model->save()) {
+                Yii::$app->getSession()->setFlash('success', 'Quarantine updated!');
                 return $this->redirect(['index']);
             }
         } 
@@ -141,7 +147,7 @@ class CapabilityController extends Controller
     }
 
     /**
-     * Edit an existing Capability .
+     * Edit an existing SupplierQuarantine .
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -150,15 +156,12 @@ class CapabilityController extends Controller
     {
         $model = $this->findModel($id);
 
-
-            $model->updated_by = Yii::$app->user->identity->id;
-            $currentDateTime = date("Y-m-d H:i:s");
-            $model->updated = $currentDateTime;
-
         if ($model->load(Yii::$app->request->post()) ) {
-
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->updated = date("Y-m-d H:i:s");
             if ($model->save()) {
-                return $this->redirect(['preview', 'id' => $model->id]);
+                Yii::$app->getSession()->setFlash('success', 'Quarantine updated!');
+                return $this->redirect(['index']);
             }
         } 
         return $this->render('edit', [
@@ -168,7 +171,7 @@ class CapabilityController extends Controller
     }
 
     /**
-     * Displays a single Capability .
+     * Displays a single SupplierQuarantine .
      * @param integer $id
      * @return mixed
      */
@@ -181,7 +184,7 @@ class CapabilityController extends Controller
 
 
     /**
-     * Deletes an existing Capability model by changing the delete status to 1 .
+     * Deletes an existing SupplierQuarantine model by changing the delete status to 1 .
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -189,11 +192,11 @@ class CapabilityController extends Controller
     public function actionRemove($id)
     {
         $model = $this->findModel($id);
-        $model->deleted = 1;
+        $model->status = 0;
         if ( $model->save() ) {
-            Yii::$app->getSession()->setFlash('success', 'Capability deleted');
+            Yii::$app->getSession()->setFlash('success', 'Quarantine deleted');
         } else {
-            Yii::$app->getSession()->setFlash('danger', 'Unable to delete Capability');
+            Yii::$app->getSession()->setFlash('danger', 'Unable to delete Quarantine');
         }
 
         return $this->redirect(['index']);

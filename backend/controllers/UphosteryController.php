@@ -32,6 +32,8 @@ use common\models\Stock;
 use common\models\Unit;
 use common\models\FinalInspection;
 use common\models\Capability;
+use common\models\Quarantine;
+use common\models\Customer;
 use yii\web\UploadedFile;
 /**
  * UphosteryController implements the CRUD actions for Uphostery model.
@@ -44,8 +46,8 @@ class UphosteryController extends Controller
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'Uphostery'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -58,7 +60,7 @@ class UphosteryController extends Controller
                 $allow[$uGName] = true;
             }
 
-        }       
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -69,7 +71,6 @@ class UphosteryController extends Controller
                         'allow' => $allow['admin'],
                         'roles' => ['admin'],
                     ],
-
                     [
                         'actions' => $action['engineer'],
                         'allow' => $allow['engineer'],
@@ -81,9 +82,9 @@ class UphosteryController extends Controller
                         'roles' => ['mechanic'],
                     ],
                     [
-                        'actions' => $action['purchasing'],
-                        'allow' => $allow['purchasing'],
-                        'roles' => ['purchasing'],
+                        'actions' => $action['quality'],
+                        'allow' => $allow['quality'],
+                        'roles' => ['quality'],
                     ],
                 ],
             ],
@@ -155,7 +156,7 @@ class UphosteryController extends Controller
         $woAttachment = new UphosteryAttachment();
         $uphosteryPart = new UphosteryPart();
         $staff = new UphosteryStaff();
-       
+
         $data['model'] = $model;
         $data['woAttachment'] = $woAttachment;
         $data['uphosteryPart'] = $uphosteryPart;
@@ -168,9 +169,9 @@ class UphosteryController extends Controller
                 $uphosteryId = Uphostery::saveWo($model);
                 $this->saveStaff($staff,$uphosteryId);
                 UphosteryPart::saveWo($uphosteryPart,$uphosteryId);
-                Yii::$app->getSession()->setFlash('success', 'Uphostery Order Created!');
+                Yii::$app->getSession()->setFlash('success', 'Uphostery Created!');
                 return $this->redirect(['preview', 'id' => $model->id]);
-        } 
+        }
         return $this->render('new', [
             'data' => $data
         ]);
@@ -183,7 +184,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionEdit($id)
-    {   
+    {
         $data = array();
         $model = $this->findModel($id);
         $uphosteryPart = new UphosteryPart();
@@ -219,14 +220,14 @@ class UphosteryController extends Controller
                 $uphosteryPart->load(Yii::$app->request->post());
                 UphosteryPart::saveWo($uphosteryPart,$id);
                 $this->saveStaff($staff,$id);
-                Yii::$app->getSession()->setFlash('success', 'Uphostery Order Updated!');
+                Yii::$app->getSession()->setFlash('success', 'Uphostery Updated!');
                 return $this->redirect(['preview', 'id' => $model->id]);
             }
             /* after save, proceed to next part */
             /* allow them to assign parts for fix later */
-            Yii::$app->getSession()->setFlash('success', 'Uphostery Order Created! Please fill up the bill of material');
+            Yii::$app->getSession()->setFlash('success', 'Uphostery Created! Please fill up the bill of material');
             return $this->redirect(['index']);
-        } 
+        }
         return $this->render('edit', [
             'data' => $data,
         ]);
@@ -276,7 +277,7 @@ class UphosteryController extends Controller
             $euphosteryPart->created_by = Yii::$app->user->identity->id;
             $this->saveWoAttachment($woAttachment, $id,$uphostery_part_id);
             $currentDateTime = date("Y-m-d H:i:s");
-            $euphosteryPart->created = $currentDateTime; 
+            $euphosteryPart->created = $currentDateTime;
             $euphosteryPart->save();
 
             Yii::$app->getSession()->setFlash('success', 'Receiving Inspection Updated!');
@@ -306,7 +307,7 @@ class UphosteryController extends Controller
         $data['woAttachment'] = $woAttachment;
         $data['currPreAtt'] = $currPreAtt;
         $data['currDisAtt'] = $currDisAtt;
-        
+
         $data['uphosteryPreliminary'] = $uphosteryPreliminary;
 
         if ( $euphosteryPart->load(Yii::$app->request->post()) ) {
@@ -388,7 +389,7 @@ class UphosteryController extends Controller
             'data' => $data,
         ]);
     }
- 
+
 /* saving function */
         public function saveWoAttachment($woAttachment,$uphosteryId,$uphosteryPartId){
             if ( $woAttachment->load(Yii::$app->request->post()) ) {
@@ -575,7 +576,7 @@ class UphosteryController extends Controller
         }
         public function saveUphosteryStockRequisition($uphosteryId){
             d(Yii::$app->request->post());exit;
-            if ( isset(Yii::$app->request->post()['used']) ){ 
+            if ( isset(Yii::$app->request->post()['used']) ){
                 $useds = Yii::$app->request->post()['used'];
                 foreach ( $useds as $wPUId => $used ) {
                     $UphosteryStockRequisition = UphosteryStockRequisition::getOneUphosteryStockRequisition($wPUId);
@@ -601,14 +602,41 @@ class UphosteryController extends Controller
         // $currFinalAtt = UphosteryAttachment::getUphosteryAttachmentF($id);
         $UphosteryStockRequisition = UphosteryStockRequisition::getWSRByUphosteryId($id);
         $uphosteryParts = UphosteryPart::getUphosteryPart($id);
-
-        $uphosteryArc = UphosteryArc::getUphosteryArc($id);
+        foreach($uphosteryParts as $uphosteryPart):
+            $uphosteryArc[$uphosteryPart->id] = UphosteryArc::getUphosteryArc($id,$uphosteryPart->id);
+        endforeach;
         $model = $this->findModel($id);
+        $customer = Customer::getCustomer($model->customer_id);
         $supervisor = UphosteryStaff::getSupervisor($id);
         $finalInspector = UphosteryStaff::getFinalInspector($id);
         $technician = UphosteryStaff::getTechnician($id);
         $inspector = UphosteryStaff::getInspector($id);
 
+
+        if ( Yii::$app->request->post() ){
+            $postData = Yii::$app->request->post();
+            $uphostery_part_id = $postData['uphostery_part_id'];
+            $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+            $checklist = $postData['checklist'];
+            $length = count($checklist);
+            $uphosteryPart->is_processing = 0;
+            $uphosteryPart->is_receiving = 0;
+            $uphosteryPart->is_preliminary = 0;
+            $uphosteryPart->is_hidden = 0;
+            $uphosteryPart->is_traveler = 0;
+            $uphosteryPart->is_final = 0;
+            foreach ( $checklist as $key => $c ) {
+
+                $uphosteryPart[$key] = 1;
+            }
+            if ( $length == 6 ) {
+                $uphosteryPart->status = 'Completed';
+            } else {
+                $uphosteryPart->status = 'Pending';
+            }
+            $uphosteryPart->save();
+            return $this->redirect(['preview','id' => $id]);
+        }
 
         return $this->render('preview', [
             'model' => $model,
@@ -617,7 +645,7 @@ class UphosteryController extends Controller
             'inspector' => $inspector,
             'finalInspector' => $finalInspector,
             'technician' => $technician,
-            // 'currFinalAtt' => $currFinalAtt,
+            'customer' => $customer,
             // 'currPreAtt' => $currPreAtt,
             // 'currDisAtt' => $currDisAtt,
             // 'currWoAtt' => $currWoAtt,
@@ -639,16 +667,16 @@ class UphosteryController extends Controller
         $model = $this->findModel($id);
         $model->status = 'cancelled';
         if ( $model->save() ) {
-            Yii::$app->getSession()->setFlash('success', 'Uphostery Order Cancelled');
+            Yii::$app->getSession()->setFlash('success', 'Uphostery Cancelled');
         } else {
-            Yii::$app->getSession()->setFlash('danger', 'Unable to cancel the Uphostery Order');
+            Yii::$app->getSession()->setFlash('danger', 'Unable to cancel the Uphostery');
         }
 
         return $this->redirect(Yii::$app->request->referrer);
     }
     /**
      * remove wo attachment
-     * @param integer $id = uphostery_attachment id 
+     * @param integer $id = uphostery_attachment id
      * @return mixed
      */
     public function actionRemoveWoa($id)
@@ -671,7 +699,7 @@ class UphosteryController extends Controller
     }
 
 /**
- * printing 
+ * printing
 */
     /**
      * print a single Uphostery .
@@ -679,7 +707,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrint($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -690,7 +718,7 @@ class UphosteryController extends Controller
 
         $uphosteryPreliminary = UphosteryPreliminary::getUphosteryPreliminary($id,$uphostery_part_id);
         $hiddenDamage = UphosteryHiddenDamage::getUphosteryHiddenDamage($id,$uphostery_part_id);
-       
+
         $att = UphosteryAttachment::find()->where( ['uphostery_id' => $id] )->andWhere( ['type' => 'hidden_damage'] )->all();
 
 
@@ -712,7 +740,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintReceiving($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -745,7 +773,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintDisposition($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -757,7 +785,7 @@ class UphosteryController extends Controller
         $disAttachment = UphosteryAttachment::getUphosteryAttachmentD($id,$uphostery_part_id);
         $uphosteryPreliminary = UphosteryPreliminary::getUphosteryPreliminary($id,$uphostery_part_id);
         $hiddenDamage = UphosteryHiddenDamage::getUphosteryHiddenDamage($id,$uphostery_part_id);
-        
+
         return $this->render('print-disposition', [
             'model' => $model,
             'supervisor' => $supervisor,
@@ -777,7 +805,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintTraveler($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print-traveler';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -786,7 +814,7 @@ class UphosteryController extends Controller
 
         $value = $traveler->value;
         return $this->redirect('uploads/traveler/'.$value);
-        
+
         return $this->render('print-traveler', [
             'model' => $model,
             'traveler' => $traveler,
@@ -798,7 +826,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionRepairableSticker($id,$uphostery_part_id)
-    {   
+    {
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
         return $this->render('repairable-sticker', [
@@ -813,7 +841,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintFinal($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -828,7 +856,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionFinalSticker($id,$uphostery_part_id)
-    {   
+    {
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
         return $this->render('final-sticker', [
@@ -843,7 +871,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintCaa($id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         return $this->render('print-caa', [
@@ -857,7 +885,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintBom($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -875,7 +903,7 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionPrintMrf($id,$uphostery_part_id)
-    {   
+    {
         $this->layout = 'print';
         $model = $this->findModel($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
@@ -891,7 +919,7 @@ class UphosteryController extends Controller
 
 /**
 *  ajax function
-*/    
+*/
 
     /* to enable ajax function */
     public function beforeAction($action) {
@@ -904,7 +932,7 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionGetTemplate()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $partNoTemp = Yii::$app->request->post()['partNoTemp'];
@@ -923,7 +951,7 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionGetDesc()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $partNoTemp = Yii::$app->request->post()['partNoTemp'];
@@ -944,7 +972,7 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionGetTechnician()
-    {   
+    {
         $this->layout = false;
         // if ( Yii::$app->request->post() ) {
             $staffTechnician = Staff::find()->where(['<>','status','inactive'])->all();
@@ -959,7 +987,7 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionAjaxGetfinal()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -979,7 +1007,7 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionAddDiscrepancy()
-    {   
+    {
         $this->layout = false;
         return $this->render('add-discrepancy');
     }
@@ -988,7 +1016,7 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionAddHdiscrepancy()
-    {   
+    {
         $this->layout = false;
         $getStaff = Staff::find()->where(['<>','status',0])->all();
         return $this->render('add-hdiscrepancy',['getStaff' => $getStaff]);
@@ -998,13 +1026,13 @@ class UphosteryController extends Controller
      * AJAX FUNCTION.
      */
     public function actionUpdateStatus()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $dataPost = Yii::$app->request->post();
-            $uphosteryorderids = $dataPost['uphosteryorderids'];
+            $uphosteryids = $dataPost['uphosteryids'];
             $status = $dataPost['status'];
-            foreach ( $uphosteryorderids as $uphosteryId ) {
+            foreach ( $uphosteryids as $uphosteryId ) {
                 if ( !empty ($uphosteryId) ) {
                     $uphostery = Uphostery::getUphostery($uphosteryId);
                     $uphostery->status = $status;
@@ -1027,12 +1055,13 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionRequisition($id,$uphostery_part_id)
-    {   
+    {
         $stockQuery = $this->getStockQuantity();
         $requisition = new UphosteryStockRequisition();
         $currRequisition = UphosteryStockRequisition::getWSRByUphosteryPartId($uphostery_part_id);
+
         if ( $requisition->load(Yii::$app->request->post() ) ) {
-            dx(Yii::$app->request->post());
+            // d(Yii::$app->request->post());exit;
             Uphostery::saveStockUsed($requisition,$id,$uphostery_part_id);
             Yii::$app->getSession()->setFlash('success', 'Parts Required Updated!');
             return $this->redirect(['requisition','id' => $id,'uphostery_part_id' => $uphostery_part_id]);
@@ -1042,23 +1071,23 @@ class UphosteryController extends Controller
             'requisition' => $requisition,
             'currRequisition' => $currRequisition,
         ]);
-    } 
+    }
 
 
     public function getStockQuantity() {
 
         $dataUnit = ArrayHelper::map(Unit::find()->where(['status' => 'active'])->all(), 'id', 'unit');
         $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
-        
-        $sqlQuery = "  
-                    SELECT 
+
+        $sqlQuery = "
+                    SELECT
                         s.id,
                         s.part_id,
                         p.part_no
-                    FROM 
+                    FROM
                         stock s,
                         part p
-                    WHERE 
+                    WHERE
                         s.part_id = p.id AND
                         s.status = 'active'
                     GROUP by
@@ -1070,14 +1099,14 @@ class UphosteryController extends Controller
         /* custom sql query for grand total only */
             foreach ( $stockQuery as $key => $sQ){
                 $partId = $sQ['part_id'];
-                $sqlQueryTotal = "  
-                            SELECT 
+                $sqlQueryTotal = "
+                            SELECT
                                 sum(quantity) sumsQ,
                                 unit_id
-                            FROM 
+                            FROM
                                 stock s
                             WHERE
-                                s.status = 'active' AND 
+                                s.status = 'active' AND
                                 s.part_id = $partId
                         ";
                 $stockQtyTotal = Yii::$app->db->createCommand($sqlQueryTotal)->queryOne();
@@ -1094,28 +1123,41 @@ class UphosteryController extends Controller
 *  stock issue
 */
 
-    /**
+       /**
      * Stock out
      * @param integer $id
      * @return mixed
      */
     public function actionIssue($id,$uphostery_part_id)
-    {   
+    {
         $stockQuery = $this->getStockQuantity();
         $req = new UphosteryStockRequisition();
         $requisition = UphosteryStockRequisition::getWSRByUphosteryPartId($uphostery_part_id);
         if ( $req->load(Yii::$app->request->post() ) ) {
             Uphostery::saveStockIssued($req,$id,$uphostery_part_id);
             Yii::$app->getSession()->setFlash('success', 'Parts Issued! Stock Deducted');
-            return $this->redirect(['issue','id' => $id,'uphostery_part_id' => $uphostery_part_id]);
+            return $this->redirect(['pick-list','id' => $id,'uphostery_part_id' => $uphostery_part_id]);
         }
         return $this->render('issue', [
             'req' => $req,
             'stockQuery' => $stockQuery,
             'requisition' => $requisition,
         ]);
-    } 
+    }
 
+    public function actionPickList($id,$uphostery_part_id){
+        $this->layout = 'print';
+        $stockQuery = $this->getStockQuantity();
+        $model = $this->findModel($id);
+        $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+        $uphosteryStockRequisition = UphosteryStockRequisition::getWSRByUphosteryPartId($uphostery_part_id);
+        return $this->render('pick-list', [
+            'uphosteryStockRequisition' => $uphosteryStockRequisition,
+            'uphosteryPart' => $uphosteryPart,
+            'model' => $model,
+            'stockQuery' => $stockQuery,
+        ]);
+    }
 
 /**
 *  stock in
@@ -1126,12 +1168,13 @@ class UphosteryController extends Controller
      * @return mixed
      */
     public function actionReturn($id,$uphostery_part_id)
-    {   
+    {
         $stockQuery = $this->getStockQuantity();
         $requisition = false;
         $req = new UphosteryStockRequisition();
         $requisition = UphosteryStockRequisition::getWSRByUphosteryPartId($uphostery_part_id);
         if ( $req->load(Yii::$app->request->post() ) ) {
+            // dx(Yii::$app->request->post());
             Uphostery::saveStockReturned($req,$id,$uphostery_part_id);
             Yii::$app->getSession()->setFlash('success', 'Parts Returned!');
             return $this->redirect(['return','id' => $id,'uphostery_part_id' => $uphostery_part_id]);
@@ -1142,16 +1185,16 @@ class UphosteryController extends Controller
             'stockQuery' => $stockQuery,
             'req' => $req,
         ]);
-    }  
+    }
 
 
     /**
      * save stock id
-     * 
+     *
      */
-    
+
     public function actionSaveStockid()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -1168,11 +1211,11 @@ class UphosteryController extends Controller
 
     /**
      * save stock id
-     * 
+     *
      */
-    
+
     public function actionSearchPart()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -1186,8 +1229,34 @@ class UphosteryController extends Controller
             'getCapability' => $getCapability,
         ]);
     }
+
+    public function actionGetChecklist()
+    {
+        $this->layout = false;
+        if ( Yii::$app->request->post() ) {
+            $postData = Yii::$app->request->post();
+            $uphostery_part_id = $postData['uphostery_part_id'];
+            $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+            $is_processing = $uphosteryPart['is_processing'];
+            $is_receiving = $uphosteryPart['is_receiving'];
+            $is_preliminary = $uphosteryPart['is_preliminary'];
+            $is_hidden = $uphosteryPart['is_hidden'];
+            $is_traveler = $uphosteryPart['is_traveler'];
+            $is_final = $uphosteryPart['is_final'];
+
+            return $this->render('get-checklist', [
+                'uphostery_part_id' => $uphostery_part_id,
+                'is_processing' => $is_processing,
+                'is_receiving' => $is_receiving,
+                'is_preliminary' => $is_preliminary,
+                'is_hidden' => $is_hidden,
+                'is_traveler' => $is_traveler,
+                'is_final' => $is_final,
+            ]);
+        }
+    }
     public function actionAddPart()
-    {   
+    {
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $postData = Yii::$app->request->post();
@@ -1197,6 +1266,31 @@ class UphosteryController extends Controller
         }
     }
 
+    /**
+     * Move quarantined parts back to  the uphostery order status, temporarily set status back to pending
+     * Parts created at quarantined table is deleted
+     */
+    public function actionRemoveQuarantined($uphostery_part_id){
+        $part = UphosteryPart::find()->where(['id'=>$uphostery_part_id])->one();
+        $part->status = 'pending';
+        $part->save(false);
+        $qua =Quarantine::find()->where(['uphostery_part_id'=>$uphostery_part_id])->one();
+        $qua->delete();
+      //  $qua->save(false);
+        Yii::$app->getSession()->setFlash('success', 'Part removed from quarantined!');
+        return $this->redirect(['preview', 'id' => $part->uphostery_id]);
+    }
+
+    /*
+    * Set selected part to returned. Just like scrapped, cannot be undone as it has been set
+    */
+    public function actionReturnBack($uphostery_part_id){
+        $part = UphosteryPart::find()->where(['id'=>$uphostery_part_id])->one();
+        $part->status = 'returned';
+        $part->save(false);
+        Yii::$app->getSession()->setFlash('success', 'Part returned to customer');
+        return $this->redirect(['preview', 'id' => $part->uphostery_id]);
+    }
+
 
 }
-

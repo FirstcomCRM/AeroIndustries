@@ -276,7 +276,7 @@ class WorkOrderArcController extends Controller
         $workOrderId = $id;
         $model = new WorkOrderArc();
         $workOrder = WorkOrder::find()->where(['id' => $id])->one();
-        $typeArr = [ 'EASA' => 'EASA', 'FAA' => 'FAA', 'CAAS' => 'CAAS', 'COC' => 'COD'];
+        $typeArr = [ 'EASA' => 'EASA', 'FAA' => 'FAA', 'CAAS' => 'CAAS', 'COC' => 'COC', 'CAAV' => 'CAAV', 'DCAM' => 'DCAM'];
         $dataType = [];
         foreach ( $typeArr as $key => $name ) {
             // $checkExistance = WorkOrderArc::find()->where(['type' => $key])->andWhere(['work_order_id' => $id])->exists();
@@ -285,7 +285,6 @@ class WorkOrderArcController extends Controller
             // }
         }
         if ($model->load(Yii::$app->request->post()) ) {
-            // dx(Yii::$app->request->post());
             $type = $model->type; 
             $reprint = 0;
             $isGenerated = WorkOrderArc::find()->where(['work_order_id' => $workOrderId, 'work_order_part_id' => $work_order_part_id, 'type' => $type])->exists();
@@ -301,7 +300,7 @@ class WorkOrderArcController extends Controller
                     $previousNo = $fTN->form_tracking_no;
                     $formTrackNo = $previousNo+1;
                 }
-                $model->form_tracking_no = $formTrackNo;
+                // $model->form_tracking_no = $formTrackNo;
             } 
             $model->work_order_id = $workOrderId;
             $model->work_order_part_id = $work_order_part_id;
@@ -309,7 +308,9 @@ class WorkOrderArcController extends Controller
             $currentDateTime = date("Y-m-d H:i:s");
             $model->created = $currentDateTime;
             if ( $isGenerated ) {
-                $model->reprint = $reprint + 1;
+                if ($model->is_tracking_no){
+                    $model->reprint = $reprint + 1;
+                }
             }    
             if ( $model->save() ) {
                 Yii::$app->getSession()->setFlash('success', "ARC for $type generated");
@@ -384,9 +385,37 @@ class WorkOrderArcController extends Controller
         $this->layout = 'print-arc';
         $model = WorkOrder::find()->where(['id' => $id])->one();
         $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
-        $arc = WorkOrderArc::find()->where(['type' => 'EASA'])->andWhere(['work_order_id' => $id])->one();
+        $arc = WorkOrderArc::find()->where(['type' => 'COC'])->andWhere(['work_order_id' => $id])->one();
         $inspector = WorkOrderStaff::find()->where(['work_order_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
         return $this->render('print-coc', [
+            'workOrderPart' => $workOrderPart,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
+    public function actionPrintCaav($id,$work_order_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = WorkOrder::find()->where(['id' => $id])->one();
+        $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
+        $arc = WorkOrderArc::find()->where(['type' => 'CAAV'])->andWhere(['work_order_id' => $id])->one();
+        $inspector = WorkOrderStaff::find()->where(['work_order_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-caav', [
+            'workOrderPart' => $workOrderPart,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
+    public function actionPrintDcam($id,$work_order_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = WorkOrder::find()->where(['id' => $id])->one();
+        $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
+        $arc = WorkOrderArc::find()->where(['type' => 'DCAM'])->andWhere(['work_order_id' => $id])->one();
+        $inspector = WorkOrderStaff::find()->where(['work_order_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-dcam', [
             'workOrderPart' => $workOrderPart,
             'model' => $model,
             'arc' => $arc,

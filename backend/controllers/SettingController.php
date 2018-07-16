@@ -121,6 +121,7 @@ class SettingController extends Controller
         if ($model->load(Yii::$app->request->post()) ) {
 
             if ($model->save()) {
+                Yii::$app->getSession()->setFlash('success', 'Setting updated!');
                 return $this->redirect(['index', 'id' => $model->id]);
             }
         } 
@@ -143,6 +144,7 @@ class SettingController extends Controller
         if ($model->load(Yii::$app->request->post()) ) {
 
             if ($model->save()) {
+                Yii::$app->getSession()->setFlash('success', 'Setting updated!');
                 return $this->redirect(['index', 'id' => $model->id]);
             }
         } 
@@ -158,10 +160,13 @@ class SettingController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actisonDelete($id)
+    public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->deleted = 1;
+        $model->save();
 
+        Yii::$app->getSession()->setFlash('success', 'Setting deleted!');
         return $this->redirect(['index']);
     }
 

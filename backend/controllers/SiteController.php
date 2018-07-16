@@ -13,6 +13,7 @@ use common\models\UserGroup;
 use common\models\UserPermission;
 use yii\web\UploadedFile;
 use common\models\WorkOrder;
+use common\models\Uphostery;
 use common\models\Quotation;
 use common\models\Unit;
 use common\models\Part;
@@ -117,6 +118,11 @@ class SiteController extends Controller
         $totalWorkOrder = count(WorkOrder::getWorkOrder());
         $totalWorkOrderInProgress = count(WorkOrder::getWorkOrderInProgress());
         $totalWorkOrderCompleted = count(WorkOrder::getWorkOrderCompleted());
+
+        $totalUphostery = count(Uphostery::getUphostery());
+        $totalUphosteryInProgress = count(Uphostery::getUphosteryInProgress());
+        $totalUphosteryCompleted = count(Uphostery::getUphosteryCompleted());
+        
         return $this->render('index',[
             'dataProvider' => $dataProvider,
             'stockQuery' => $stockQuery,
@@ -124,6 +130,9 @@ class SiteController extends Controller
             'totalWorkOrder' => $totalWorkOrder,
             'totalWorkOrderInProgress' => $totalWorkOrderInProgress,
             'totalWorkOrderCompleted' => $totalWorkOrderCompleted,
+            'totalUphostery' => $totalUphostery,
+            'totalUphosteryInProgress' => $totalUphosteryInProgress,
+            'totalUphosteryCompleted' => $totalUphosteryCompleted,
         ]);
     }
 

@@ -20,7 +20,8 @@ use common\models\UserPermission;
 use common\models\Customer;
 use common\models\WorkOrder;
 use common\models\Address;
-
+use common\models\Setting;
+use common\models\Uphostery;
 
 /**
  * QuotationController implements the CRUD actions for Quotation model.
@@ -410,6 +411,40 @@ class QuotationController extends Controller
             ]);
         }
     }
+    public function actionAjaxWorkorder()
+    {   
+        $this->layout = false;
+        if ( Yii::$app->request->post() ) {
+            $dataWorkOrder = WorkOrder::dataWorkOrder();
+            $dataWorkO = [];
+            foreach ( $dataWorkOrder as $id => $dwo ) {
+                $workOrder = WorkOrder::getWorkOrder($id);
+                if ( $workOrder->work_scope && $workOrder->work_type ) {
+                    $woNumber = Setting::getWorkNo($workOrder->work_type,$workOrder->work_scope,$workOrder->work_order_no);
+                    $dataWorkO[$id] = $woNumber;
+                }
+            }
+            return $this->render('ajax-workorder', [
+                'dataWorkO' => $dataWorkO,
+            ]);
+        }
+    }
+    public function actionAjaxUphostery()
+    {   
+        $this->layout = false;
+        $dataUphostery = Uphostery::dataUphostery();
+        $dataUphoster = [];
+        foreach ( $dataUphostery as $id => $dU ) {
+            $uphostery = Uphostery::getUphostery($id);
+            if ( $uphostery->uphostery_scope && $uphostery->uphostery_type ) {
+                $upNumber = Setting::getUphosteryNo($uphostery->uphostery_type,$uphostery->uphostery_scope,$uphostery->uphostery_no);
+                $dataUphoster[$id] = $upNumber;
+            }
+        }
+        return $this->render('ajax-uphostery', [
+            'dataUphoster' => $dataUphoster,
+        ]);
+    }
     /**
      * Get addresses based on customer id selected.
      * 
@@ -420,8 +455,14 @@ class QuotationController extends Controller
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $woId = Yii::$app->request->post()['woId'];
-            $workOrder = WorkOrder::find()->where(['id' => $woId])->one();
-            return $workOrder->customer_id;
+            $quotation_type = Yii::$app->request->post()['quotation_type'];
+            if ($quotation_type == 'work_order'){
+                $workOrder = WorkOrder::find()->where(['id' => $woId])->one();
+                return $workOrder->customer_id;
+            } else {
+                $uphostery = Uphostery::find()->where(['id' => $woId])->one();
+                return $uphostery->customer_id;
+            }
         }
     }
 

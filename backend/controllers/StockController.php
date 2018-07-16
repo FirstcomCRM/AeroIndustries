@@ -18,11 +18,16 @@ use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\Unit;
 use common\models\Part;
+use common\models\PartAttachment;
 use common\models\PurchaseOrder;
 use common\models\PurchaseOrderDetail;
-use common\models\GeneralPo;
-use common\models\GeneralPoDetail;
+use common\models\PurchaseOrderAttachment;
+use common\models\ToolPo;
+use common\models\ToolPoDetail;
 use common\models\Setting;
+use common\models\Supplier;
+use common\models\StorageLocation;
+use common\models\Currency;
 
 use yii\data\ArrayDataProvider;
 /**
@@ -269,6 +274,7 @@ class StockController extends Controller
     public function actionNew( $id = null )
     {
         $model = new Stock();
+        $poAttachment = new PurchaseOrderAttachment();
         $purchaseOrder = false;
         $purchaseOrderDetail = false;
         $allReceivedStatus = true;
@@ -281,9 +287,7 @@ class StockController extends Controller
 
         if ( $model->load(Yii::$app->request->post()) ) {
         /* if load model */
-        // echo '<pre>';
-      //    print_r(gettype($purchaseOrder));
-      //    echo '</pre>';die();
+            // dx(Yii::$app->request->post());
             if ( !empty ( $model->part_id ) ) {
                     $freight = 0;
                     $previousNo = 0;
@@ -326,13 +330,14 @@ class StockController extends Controller
 
                         $purchaseOrder->approved = 'closed';
                         $purchaseOrder->save();
+                       
                         if($stockType == 'part') {
-                            Yii::$app->getSession()->setFlash('success', "Stock updated! All the item from PO-" . sprintf("%008d", $purchaseOrder->purchase_order_no) . ' were received, PO Closed!');
+                            Yii::$app->getSession()->setFlash('success', "Stock updated! All the item from " . PurchaseOrder::getPONo($purchaseOrder->purchase_order_no,$purchaseOrder->created) . ' were received, PO Closed!');
                         } else {
-                            Yii::$app->getSession()->setFlash('success', "Stock updated! All the item from GPO-" . sprintf("%008d", $purchaseOrder->purchase_order_no) . ' were received, PO Closed!');
+                            Yii::$app->getSession()->setFlash('success', "Stock updated! All the item from " . ToolPo::getTPONo($purchaseOrder->purchase_order_no,$purchaseOrder->created). ' were received, PO Closed!');
                         }
                         //edrEmailCompose
-                        $this->composeEmail($purchaseOrder);
+                        // $this->composeEmail($purchaseOrder);
                         $allReceivedStatus = true;
                     } else {
                         Yii::$app->getSession()->setFlash('success', 'Stock updated!');
@@ -344,6 +349,7 @@ class StockController extends Controller
         }
 
         return $this->render('new', [
+            'poAttachment' => $poAttachment,
             'model' => $model,
             'purchaseOrder' => $purchaseOrder,
             'purchaseOrderDetail' => $purchaseOrderDetail,
@@ -412,7 +418,7 @@ class StockController extends Controller
         $attachment = new StockAttachment();
         $oldAttachment = StockAttachment::find()->where(['stock_id' => $id])->all();
         $model = $this->findModel($id);
-
+        $stockAttachment = PurchaseOrderAttachment::find()->where(['purchase_order_id' => $model->purchase_order_id ])->andWhere(['type' => 'stock_in_attachment'])->all();
         $otherBatches = Stock::find()->where(['part_id' => $model->part_id])->andWhere(['<>','id', $id])->all();
 
         $otherBatchesQty = 0;
@@ -445,6 +451,7 @@ class StockController extends Controller
         return $this->render('preview', [
             'model' => $model,
             'attachment' => $attachment,
+            'stockAttachment' => $stockAttachment,
             'oldAttachment' => $oldAttachment,
             'otherBatchesQty' => $otherBatchesQty,
             'otherBatchesTotalQty' => $otherBatchesTotalQty,
@@ -488,11 +495,11 @@ class StockController extends Controller
             $po = PurchaseOrder::find()->where(['id' => $poId])->one();
         } else if ($model2 ) {
             $isTool = true;
-            $poId = $model2[0]->general_po_id;
+            $poId = $model2[0]->tool_po_id;
             $reNumber = $model2[0]->receiver_no;
             $supplierId = $model2[0]->supplier_id;
             $receiveDate = $model2[0]->received;
-            $po = GeneralPo::find()->where(['id' => $poId])->one();
+            $po = ToolPo::find()->where(['id' => $poId])->one();
         }
 
         return $this->render('receiver', [
@@ -559,9 +566,9 @@ class StockController extends Controller
             $po = PurchaseOrder::find()->where(['id' => $poId])->one();
         } else {
             $model = Tool::find()->where(['id' => $id])->one();
-            $poId = $model->general_po_id;
+            $poId = $model->tool_po_id;
             $receiverNo = $model->receiver_no;
-            $po = GeneralPo::find()->where(['id' => $poId])->one();
+            $po = ToolPo::find()->where(['id' => $poId])->one();
         }
 
         return $this->render('sticker', [
@@ -737,9 +744,145 @@ class StockController extends Controller
       ->setSubject('Stocks Received')
     //  ->setHtmlBody($message)
       ->send();
+    }
+
+    public function actionPartImage($id){
+      $parts = PartAttachment::find()->where(['part_id'=>$id])->asArray()->all();
+      return $this->renderAjax('part-image',[
+        'id'=>$id,
+        'parts'=>$parts,
+      ]);
+    }
+    public function actionImportExcel() {
+        $model = new Stock();
+        if ( $model->load( Yii::$app->request->post() ) ) {
+            $model->attachment = UploadedFile::getInstances($model, 'attachment');
+            foreach ($model->attachment as $file) {
+                $fileName = md5(date("YmdHis")).'-'.$file->name;
+                $file->saveAs('uploads/stock/'.$fileName);
+            }
+            $inputFile = "uploads/stock/$fileName";
+            try {
+                $inputFileType = \PHPExcel_IOFactory::identify($inputFile);
+                $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+                $objPHPExcel = $objReader->load($inputFile);
+            } catch (Exception $e){
+                die('ERROR');
+            }
+            $sheet = $objPHPExcel->getSheet(0);
+            $highestRow = $sheet->getHighestRow();
+            $highestColumn = $sheet->getHighestColumn();
+            $data = [];
+
+            $dataSupplier = Supplier::dataSupplier();
+            $dataLocation = StorageLocation::dataLocation();
+            $dataUnit = Unit::dataUnit();
+            $dataPart = Part::dataPart();
+            $dataCurrencyISO = Currency::dataCurrencyISO();
+
+            for ( $row = 2 ; $row <= $highestRow ; $row ++ ) {
+                $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+                $data = $rowData[0];
+
+                $supplier_name = $data[0];
+                $storage_location = $data[1];
+                $part_name = $data[2];
+                $unit = $data[7];
+                $currency = $data[8];
+                $supplier_id = 0;
+                $unit_id = 0;
+                $part_id = 0;
+                $category_id = 0;
+                $storage_location_id = 0;
+                $error = array();
+
+                if (!in_array(trim($supplier_name), $dataSupplier)){
+                    $error[] = true;
+                } else {
+                    $supplier_id = array_search(trim($supplier_name), $dataSupplier);
+                }
+                
+                if (!in_array(trim($storage_location), $dataLocation)){
+                    $error[] = true;
+                } else {
+                    $storage_location_id = array_search(trim($storage_location), $dataLocation);
+                }
+                
+                if (!in_array(trim($part_name), $dataPart)){
+                    $error[] = true;
+                } else {
+                    $part_id = array_search(trim($part_name), $dataPart);
+                }
+
+                if (!in_array(trim($unit), $dataUnit)){
+                    $error[] = true;
+                } else {
+                    $unit_id = array_search(trim($unit), $dataUnit);
+                }
+
+                if (!in_array(trim($currency), $dataCurrencyISO)){
+                    $error[] = true;
+                } else {
+                    $currency_id = array_search(trim($currency), $dataCurrencyISO);
+                }
 
 
+                $previousNo = 0;
+                $rec1 = 0;
+                $rec2 = 0;
+                $recNo = Stock::find()->where(['status'=>'active'])->orderBy('receiver_no DESC')->limit(1)->one();
+                $toolrecNo = Tool::find()->where(['status'=>'active'])->orderBy('receiver_no DESC')->limit(1)->one();
+                if ( !empty ( $recNo ) ) {
+                    $rec1 = $recNo->receiver_no;
+                }
+                if ( !empty ( $toolrecNo ) ) {
+                    $rec2 = $toolrecNo->receiver_no;
+                }
+                if ( $rec1 >= $rec2 ) {
+                    $previousNo = $rec1;
+                } else if ( $rec2 >= $rec1 ){
+                    $previousNo = $rec2;
+                } else {
+                    $previousNo = 0;
+                }
+                $previousNo += 1;
 
+                if( !in_array(true, $error) ) {
+                    $expiration_date = date('Y-m-d',strtotime($data[12]));
+                    $stock = new Stock();
+                    $stock->supplier_id = $supplier_id;
+                    $stock->storage_location_id = $storage_location_id;
+                    $stock->purchase_order_id = 0;
+                    $stock->receiver_no = $previousNo;
+                    $stock->part_id = $part_id;
+                    $stock->desc = $data[3];
+                    $stock->batch_no = $data[4];
+                    $stock->note = $data[5];
+                    $stock->quantity = $data[6];
+                    $stock->unit_id = $unit_id;
+                    $stock->currency_id = $currency_id;
+                    $stock->unit_price = $data[9];
+                    $stock->usd_price = $data[10];
+                    $stock->freight = $data[11];
+                    $stock->expiration_date = $expiration_date;
+                    $stock->hour_used = $data[13];
+                    $stock->shelf_life = $data[14];
+                    $stock->status = $data[15];
+                    $stock->created = date("Y-m-d H:i:s");
+                    $stock->created_by = Yii::$app->user->identity->id;
+                    $stock->save();
+                }
+            }
+            if( !in_array(true, $error) ) {
+                Yii::$app->getSession()->setFlash('success', 'Import Completed');
+            } else {
+                Yii::$app->getSession()->setFlash('danger', 'Import Incomplete');
+            }
+            return $this->redirect(['import-excel']);
+        }
+        return $this->render('import-excel',[
+            'model' => $model
+        ]);
     }
 
 }

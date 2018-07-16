@@ -16,6 +16,7 @@ use common\models\UserPermission;
 use common\models\Supplier;
 use common\models\Unit;
 use common\models\PartCategory;
+use common\models\PartAttachment;
 use yii\web\UploadedFile;
 
 /**
@@ -29,8 +30,8 @@ class PartController extends Controller
     public function behaviors()
     {
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
-       
-        foreach ( $userGroupArray as $uGId => $uGName ){ 
+
+        foreach ( $userGroupArray as $uGId => $uGName ){
             $permission = UserPermission::find()->where(['controller' => 'Part'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
@@ -43,7 +44,7 @@ class PartController extends Controller
                 $allow[$uGName] = true;
             }
 
-        }     
+        }
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -113,18 +114,25 @@ class PartController extends Controller
     public function actionCreate()
     {
         $model = new Part();
+        $attachment = new PartAttachment();
 
         if ($model->load(Yii::$app->request->post()) ) {
 
             $model->created_by = Yii::$app->user->identity->id;
             $currentDateTime = date("Y-m-d H:i:s");
             $model->created = $currentDateTime;
+            $a_attach = UploadedFile::getInstances($attachment, 'attachment');
 
             if ($model->save()) {
+              $part_id = $model->id;
+              if (!empty($a_attach)) {
+                $this->upload($a_attach,$part_id);
+              }
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } 
+        }
         return $this->render('create', [
+            'attachment'=>$attachment,
             'model' => $model,
         ]);
     }
@@ -137,18 +145,26 @@ class PartController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $attachment = new PartAttachment();
 
         if ($model->load(Yii::$app->request->post()) ) {
 
             $model->updated_by = Yii::$app->user->identity->id;
             $currentDateTime = date("Y-m-d H:i:s");
             $model->updated = $currentDateTime;
-            
+            $a_attach = UploadedFile::getInstances($attachment, 'attachment');
+
             if ($model->save()) {
+                $part_id = $model->id;
+                if (!empty($a_attach)) {
+                  $this->upload($a_attach,$part_id);
+                }
+
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } 
+        }
         return $this->render('update', [
+            'attachment'=>$attachment,
             'model' => $model,
         ]);
     }
@@ -179,13 +195,15 @@ class PartController extends Controller
         $model = $this->findModel($id);
         $model->deleted = 1;
         if ( $model->save() ) {
-            Yii::$app->getSession()->setFlash('success', 'Storage Location deleted');
+            Yii::$app->getSession()->setFlash('success', 'Part deleted');
         } else {
-            Yii::$app->getSession()->setFlash('danger', 'Unable to delete Storage Location');
+            Yii::$app->getSession()->setFlash('danger', 'Unable to delete Part');
         }
 
         return $this->redirect(['index']);
     }
+
+    
     public function actionImportExcel() {
         $model = new Part();
         if ( $model->load( Yii::$app->request->post() ) ) {
@@ -209,28 +227,37 @@ class PartController extends Controller
             $highestRow = $sheet->getHighestRow();
             $highestColumn = $sheet->getHighestColumn();
             $data = [];
+
             for ( $row = 2 ; $row <= $highestRow ; $row ++ ) {
                 $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+
                 $data = $rowData[0];
                 $unit_price = $data[6];
                 $supplier_name = $data[1];
-                $importable = true;
-                if ( in_array($data[1], $dataSupplier) ){
-                    $supplier_id = array_search($data[1], $dataSupplier);
+                $unit = $data[5];
+                $category = $data[2];
+                $supplier_id = 0;
+                $unit_id = 0;
+                $category_id = 0;
+                $error = array();
+
+                if (!in_array(trim($supplier_name), $dataSupplier)){
+                    $error[] = true;
                 } else {
-                    $importable = false;
+                    $supplier_id = array_search(trim($supplier_name), $dataSupplier);
                 }
-                if ( in_array($data[2], $dataPartCategory) ){
-                    $unit_id = array_search($data[2], $dataPartCategory);
+                if (!in_array(trim($category), $dataPartCategory)){
+                    $error[] = true;
                 } else {
-                    $importable = false;
+                    $category_id = array_search(trim($category), $dataPartCategory);
                 }
-                if ( in_array($data[5], $dataUnit) ){
-                    $category_id = array_search($data[5], $dataUnit);
+                if (!in_array(trim($unit), $dataUnit)){
+                    $error[] = true;
                 } else {
-                    $importable = false;
+                    $unit_id = array_search(trim($unit), $dataUnit);
                 }
-                if( $importable ) {
+
+                if( !in_array(true, $error) ) {
                     $part = new Part();
                     $part->type = $data[0];
                     $part->supplier_id = $supplier_id;
@@ -246,11 +273,27 @@ class PartController extends Controller
                     $part->save();
                 }
             }
-            Yii::$app->getSession()->setFlash('success', 'Import Completed');
+            if( !in_array(true, $error) ) {
+                Yii::$app->getSession()->setFlash('success', 'Import Completed');
+            } else {
+                Yii::$app->getSession()->setFlash('danger', 'Import Incomplete');
+            }
             return $this->redirect(['import-excel']);
         }
         return $this->render('import-excel',[
             'model' => $model
         ]);
+    }
+
+    protected function upload($a_attach,$part_id){
+      foreach ($a_attach as $key => $value) {
+        $filename = md5(date("YmdHis")).'-'.$value->name;
+        $value->saveAs(Yii::getAlias('@part_attachment').'/'.$filename);
+        $part_attach = new PartAttachment();
+        $part_attach->part_id = $part_id;
+        $part_attach->file_name = $filename;
+        $part_attach->file_path = Yii::getAlias('@part_attachment').'/'.$filename;
+        $part_attach->save(false);
+      }
     }
 }

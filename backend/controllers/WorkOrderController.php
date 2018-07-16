@@ -33,6 +33,7 @@ use common\models\Unit;
 use common\models\FinalInspection;
 use common\models\Capability;
 use common\models\Quarantine;
+use common\models\Customer;
 use yii\web\UploadedFile;
 /**
  * WorkOrderController implements the CRUD actions for WorkOrder model.
@@ -70,7 +71,6 @@ class WorkOrderController extends Controller
                         'allow' => $allow['admin'],
                         'roles' => ['admin'],
                     ],
-
                     [
                         'actions' => $action['engineer'],
                         'allow' => $allow['engineer'],
@@ -82,9 +82,9 @@ class WorkOrderController extends Controller
                         'roles' => ['mechanic'],
                     ],
                     [
-                        'actions' => $action['purchasing'],
-                        'allow' => $allow['purchasing'],
-                        'roles' => ['purchasing'],
+                        'actions' => $action['quality'],
+                        'allow' => $allow['quality'],
+                        'roles' => ['quality'],
                     ],
                 ],
             ],
@@ -167,6 +167,7 @@ class WorkOrderController extends Controller
             // dx(Yii::$app->request->post());
                 $workOrderPart->load(Yii::$app->request->post());
                 $workOrderId = WorkOrder::saveWo($model);
+                $this->saveWoAttachment($woAttachment, $workOrderId,0);
                 $this->saveStaff($staff,$workOrderId);
                 WorkOrderPart::saveWo($workOrderPart,$workOrderId);
                 Yii::$app->getSession()->setFlash('success', 'Work Order Created!');
@@ -191,6 +192,8 @@ class WorkOrderController extends Controller
         $eworkOrderPart = WorkOrderPart::getWorkOrderPart($id);
         $workOrderId = $id;
         $woAttachment = new WorkOrderAttachment();
+        $currWoAtt = WorkOrderAttachment::getWorkOrderAttachmentW($workOrderId);
+
         $staff = new WorkOrderStaff();
         $finalInspector = WorkOrderStaff::getFinalInspector($workOrderId);
         $inspector = WorkOrderStaff::getInspector($workOrderId);
@@ -207,6 +210,7 @@ class WorkOrderController extends Controller
         $data['supervisor'] = $supervisor;
         $data['technician'] = $technician;
         $data['workOrderPart'] = $workOrderPart;
+        $data['currWoAtt'] = $currWoAtt;
         $data['eworkOrderPart'] = $eworkOrderPart;
         $data['gotTemplate'] = $gotTemplate;
         $data['WorkStockRequisition'] = $WorkStockRequisition;
@@ -217,6 +221,7 @@ class WorkOrderController extends Controller
             $currentDateTime = date("Y-m-d H:i:s");
             $model->updated = $currentDateTime;
             if ( $model->save() ) {
+                $this->saveWoAttachment($woAttachment, $id,0);
                 $workOrderPart->load(Yii::$app->request->post());
                 WorkOrderPart::saveWo($workOrderPart,$id);
                 $this->saveStaff($staff,$id);
@@ -264,7 +269,7 @@ class WorkOrderController extends Controller
         $woAttachment = new WorkOrderAttachment();
         $workOrderPart = new WorkOrderPart();
         $eworkOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
-        $currWoAtt = WorkOrderAttachment::getWorkOrderAttachmentW($id,$work_order_part_id);
+        $currWoAtt = WorkOrderAttachment::getWorkOrderAttachmentR($id,$work_order_part_id);
 
         $data['model'] = $model;
         $data['eworkOrderPart'] = $eworkOrderPart;
@@ -401,8 +406,24 @@ class WorkOrderController extends Controller
                     /* image upload */
                     $woA = new WorkOrderAttachment();
                     $woA->work_order_id = $workOrderId;
-                    $woA->work_order_part_id = $workOrderPartId;
+                    $woA->work_order_part_id = 0;
                     $woA->type = 'work_order';
+                    $woA->value = $fileName;
+                    $woA->created_by = Yii::$app->user->identity->id;
+                    $currentDateTime = date("Y-m-d H:i:s");
+                    $woA->created = $currentDateTime;
+                    $woA->save();
+                }
+                $woAttachment->attachment = UploadedFile::getInstances($woAttachment, 'attachment[receiving]');
+                foreach ($woAttachment->attachment as $file) {
+                    $fileName = md5(date("YmdHis")).'-'.$file->name;
+                    $qAttachmentClass = explode('\\', get_class($woAttachment))[2];
+                    $file->saveAs('uploads/receiving/'.$fileName);
+                    /* image upload */
+                    $woA = new WorkOrderAttachment();
+                    $woA->work_order_id = $workOrderId;
+                    $woA->work_order_part_id = $workOrderPartId;
+                    $woA->type = 'receiving';
                     $woA->value = $fileName;
                     $woA->created_by = Yii::$app->user->identity->id;
                     $currentDateTime = date("Y-m-d H:i:s");
@@ -602,14 +623,40 @@ class WorkOrderController extends Controller
         // $currFinalAtt = WorkOrderAttachment::getWorkOrderAttachmentF($id);
         $WorkStockRequisition = WorkStockRequisition::getWSRByWorkOrderId($id);
         $workOrderParts = WorkOrderPart::getWorkOrderPart($id);
-
-        $workOrderArc = WorkOrderArc::getWorkOrderArc($id);
+        foreach($workOrderParts as $workOrderPart):
+            $workOrderArc[$workOrderPart->id] = WorkOrderArc::getWorkOrderArc($id,$workOrderPart->id);
+        endforeach;
         $model = $this->findModel($id);
+        $customer = Customer::getCustomer($model->customer_id);
         $supervisor = WorkOrderStaff::getSupervisor($id);
         $finalInspector = WorkOrderStaff::getFinalInspector($id);
         $technician = WorkOrderStaff::getTechnician($id);
         $inspector = WorkOrderStaff::getInspector($id);
 
+
+        if ( Yii::$app->request->post() ){
+            $postData = Yii::$app->request->post();
+            $work_order_part_id = $postData['work_order_part_id'];
+            $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
+            $checklist = $postData['checklist'];
+            $length = count($checklist);
+            $workOrderPart->is_processing = 0;
+            $workOrderPart->is_receiving = 0;
+            $workOrderPart->is_preliminary = 0;
+            $workOrderPart->is_hidden = 0;
+            $workOrderPart->is_traveler = 0;
+            $workOrderPart->is_final = 0;
+            foreach ( $checklist as $key => $c ) {
+                $workOrderPart[$key] = 1;
+            }
+            if ( $length == 6 ) {
+                $workOrderPart->status = 'Completed';
+            } else {
+                $workOrderPart->status = 'Pending';
+            }
+            $workOrderPart->save();
+            return $this->redirect(['preview','id' => $id]);
+        }
 
         return $this->render('preview', [
             'model' => $model,
@@ -618,7 +665,7 @@ class WorkOrderController extends Controller
             'inspector' => $inspector,
             'finalInspector' => $finalInspector,
             'technician' => $technician,
-            // 'currFinalAtt' => $currFinalAtt,
+            'customer' => $customer,
             // 'currPreAtt' => $currPreAtt,
             // 'currDisAtt' => $currDisAtt,
             // 'currWoAtt' => $currWoAtt,
@@ -724,8 +771,7 @@ class WorkOrderController extends Controller
 
         $workPreliminary = WorkPreliminary::getWorkPreliminary($id,$work_order_part_id);
         $hiddenDamage = WorkHiddenDamage::getWorkHiddenDamage($id,$work_order_part_id);
-
-        $att = WorkOrderAttachment::find()->where( ['work_order_id' => $id] )->andWhere( ['type' => 'work_order'] )->all();
+        $att = WorkOrderAttachment::getWorkOrderAttachmentR($id,$work_order_part_id);
 
         return $this->render('print-receiving', [
             'model' => $model,
@@ -1096,7 +1142,7 @@ class WorkOrderController extends Controller
 *  stock issue
 */
 
-    /**
+       /**
      * Stock out
      * @param integer $id
      * @return mixed
@@ -1109,7 +1155,7 @@ class WorkOrderController extends Controller
         if ( $req->load(Yii::$app->request->post() ) ) {
             WorkOrder::saveStockIssued($req,$id,$work_order_part_id);
             Yii::$app->getSession()->setFlash('success', 'Parts Issued! Stock Deducted');
-            return $this->redirect(['issue','id' => $id,'work_order_part_id' => $work_order_part_id]);
+            return $this->redirect(['pick-list','id' => $id,'work_order_part_id' => $work_order_part_id]);
         }
         return $this->render('issue', [
             'req' => $req,
@@ -1118,6 +1164,19 @@ class WorkOrderController extends Controller
         ]);
     }
 
+    public function actionPickList($id,$work_order_part_id){
+        $this->layout = 'print';
+        $stockQuery = $this->getStockQuantity();
+        $model = $this->findModel($id);
+        $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
+        $workStockRequisition = WorkStockRequisition::getWSRByWorkOrderPartId($work_order_part_id);
+        return $this->render('pick-list', [
+            'workStockRequisition' => $workStockRequisition,
+            'workOrderPart' => $workOrderPart,
+            'model' => $model,
+            'stockQuery' => $stockQuery,
+        ]);
+    }
 
 /**
 *  stock in
@@ -1134,6 +1193,7 @@ class WorkOrderController extends Controller
         $req = new WorkStockRequisition();
         $requisition = WorkStockRequisition::getWSRByWorkOrderPartId($work_order_part_id);
         if ( $req->load(Yii::$app->request->post() ) ) {
+            // dx(Yii::$app->request->post());
             WorkOrder::saveStockReturned($req,$id,$work_order_part_id);
             Yii::$app->getSession()->setFlash('success', 'Parts Returned!');
             return $this->redirect(['return','id' => $id,'work_order_part_id' => $work_order_part_id]);
@@ -1187,6 +1247,32 @@ class WorkOrderController extends Controller
         return $this->render('search-part', [
             'getCapability' => $getCapability,
         ]);
+    }
+
+    public function actionGetChecklist()
+    {
+        $this->layout = false;
+        if ( Yii::$app->request->post() ) {
+            $postData = Yii::$app->request->post();
+            $work_order_part_id = $postData['work_order_part_id'];
+            $workOrderPart = WorkOrderPart::getWorkOrderPartById($work_order_part_id);
+            $is_processing = $workOrderPart['is_processing'];
+            $is_receiving = $workOrderPart['is_receiving'];
+            $is_preliminary = $workOrderPart['is_preliminary'];
+            $is_hidden = $workOrderPart['is_hidden'];
+            $is_traveler = $workOrderPart['is_traveler'];
+            $is_final = $workOrderPart['is_final'];
+
+            return $this->render('get-checklist', [
+                'work_order_part_id' => $work_order_part_id,
+                'is_processing' => $is_processing,
+                'is_receiving' => $is_receiving,
+                'is_preliminary' => $is_preliminary,
+                'is_hidden' => $is_hidden,
+                'is_traveler' => $is_traveler,
+                'is_final' => $is_final,
+            ]);
+        }
     }
     public function actionAddPart()
     {

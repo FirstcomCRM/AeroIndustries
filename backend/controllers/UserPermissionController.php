@@ -307,13 +307,12 @@ class UserPermissionController extends Controller
             }
         }
 
-        if (Yii::$app->request->post()) {
+        if (Yii::$app->request->post()&& isset( Yii::$app->request->post()['isDropdown'] ) ) {
             // d(Yii::$app->request->post());exit;
             $controllerNameLong = Yii::$app->request->post()['controllerName'];
             $getModelName = explode('Controller', $controllerNameLong);
             $controllerName = $getModelName[0];
             $userGroupId = Yii::$app->request->post()['userGroup'];
-
             $controllerNameChosen = $controllerNameLong;
             $controllerActions = $controllerList[$controllerNameLong];
             $permission = [];
@@ -321,10 +320,12 @@ class UserPermissionController extends Controller
             foreach ( $getPermission as $gP ) {
                 $permission[] = $gP->action;
             }
+            return $this->redirect(['permission-setting','c' => $controllerName, 'u' => $userGroupId]);
+        }
 
-
+  
+        if (Yii::$app->request->post()) {
             if ( isset( Yii::$app->request->post()['checkBox'] ) && !empty ( Yii::$app->request->post()['checkBox'] ) )  {
-            // d(Yii::$app->request->post());exit;
                 UserPermission::deleteAll("user_group_id = $userGroupId AND controller = '$controllerName' ");
                 $checkBox = Yii::$app->request->post()['checkBox'] ;
                 foreach ( $checkBox as $actions => $cB ) {
@@ -334,8 +335,10 @@ class UserPermissionController extends Controller
                     $newPermission->user_group_id = $userGroupId;
                     $newPermission->save();
                 }
-                return $this->redirect(['permission-setting','c' => $controllerName, 'u' => $userGroupId]);
+            } else {
+                UserPermission::deleteAll("user_group_id = $userGroupId AND controller = '$controllerName' ");
             }
+            return $this->redirect(['permission-setting','c' => $controllerName, 'u' => $userGroupId]);
         }
 
         return $this->render('permission-setting', [

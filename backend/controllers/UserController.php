@@ -129,7 +129,6 @@ class UserController extends Controller
             $model->created_by = Yii::$app->user->identity->id;
             $currentDateTime = new \yii\db\Expression('NOW()');
             $model->created_at = $currentDateTime;
-
             if ( $model->save() ) { 
                 $userGroupId = $model->user_group_id;
 
@@ -149,9 +148,19 @@ class UserController extends Controller
                     $userGroup = $auth->getRole('purchasing');
                     $auth->assign($userGroup, $model->id);
                 }
+                if ( $userGroupId == 5) {
+                    $userGroup = $auth->getRole('quality');
+                    $auth->assign($userGroup, $model->id);
+                }
                             
-
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
+            } else {
+                if( $model->getErrors()['username'] ){
+                    Yii::$app->getSession()->setFlash('warning', $model->getErrors()['username'][0]);
+                } else if ( $model->getErrors()['email'] ) {
+                    Yii::$app->getSession()->setFlash('warning', $model->getErrors()['email'][0]);
+                }
+                return $this->redirect(['index']);
             }
         } else {
             return $this->render('create', [

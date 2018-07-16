@@ -11,9 +11,12 @@ use yii\filters\VerbFilter;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
+
 use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\Tool;
+use common\models\CalibrationAttachment;
 use common\models\Setting;
 
 /**
@@ -130,6 +133,7 @@ class CalibrationController extends Controller
     public function actionNew($id=null)
     {
         $model = new Calibration();
+        $atta = new CalibrationAttachment();
         $tool = false;
         $partId = false;
         $serialNo = false;
@@ -143,18 +147,89 @@ class CalibrationController extends Controller
 
         if ($model->load(Yii::$app->request->post()) ) {
 
-
+            // dx(Yii::$app->request->post());
             $model->created_by = Yii::$app->user->identity->id;
             $currentDateTime = date("Y-m-d H:i:s");
             $model->created = $currentDateTime;
 
 
             if ($model->save()) {
-                return $this->redirect(['preview', 'id' => $model->id]);
+                if ($atta->load(Yii::$app->request->post()) ) {
+                    $atta->attachment = UploadedFile::getInstances($atta, 'attachment');
+                    foreach ($atta->attachment as $file) {
+                        $fileName = md5(date("YmdHis")).'-'.$file->name;
+                        $qAttachmentClass = explode('\\', get_class($atta))[2];
+                        $file->saveAs('uploads/calibration/'.$fileName);
+                        /* image upload */
+                        $calibrationAttachment = new CalibrationAttachment();
+                        $calibrationAttachment->calibration_id = $model->id;
+                        $calibrationAttachment->value = $fileName;
+                        $calibrationAttachment->save();
+
+                    }
+                }
+                Yii::$app->getSession()->setFlash('success', 'Calibration created');
+                return $this->redirect(['index']);
             }
         } 
         return $this->render('new', [
             'model' => $model,
+            'atta' => $atta,
+            'tool' => $tool,
+            'partId' => $partId,
+            'serialNo' => $serialNo,
+        ]);
+        
+    }
+
+
+    /**
+     * Creates a new Calibration .
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionEdit($id)
+    {
+        $model = $this->findModel($id);
+        $atta = new CalibrationAttachment();
+        $currAtta = CalibrationAttachment::getCalibrationAttachment($id);
+        $tool_id = $model->tool_id;
+        if ( !empty($id) ) {
+            $tool = Tool::getTool($tool_id);
+            $partId = $tool->part_id;
+            $serialNo = $tool->serial_no;
+        }
+
+        if ($model->load(Yii::$app->request->post()) ) {
+
+                $model->updated_by = Yii::$app->user->identity->id;
+                $currentDateTime = date("Y-m-d H:i:s");
+                $model->updated = $currentDateTime;
+
+            if ($model->save()) {
+                $calibrationId = $model->id;
+                if ($atta->load(Yii::$app->request->post()) ) {
+                    $atta->attachment = UploadedFile::getInstances($atta, 'attachment');
+                    foreach ($atta->attachment as $file) {
+                        $fileName = md5(date("YmdHis")).'-'.$file->name;
+                        $qAttachmentClass = explode('\\', get_class($atta))[2];
+                        $file->saveAs('uploads/calibration/'.$fileName);
+                        /* image upload */
+                        $calibrationAttachment = new CalibrationAttachment();
+                        $calibrationAttachment->calibration_id = $calibrationId;
+                        $calibrationAttachment->value = $fileName;
+                        $calibrationAttachment->save();
+
+                    }
+                }
+                Yii::$app->getSession()->setFlash('success', 'Calibration updated');
+                return $this->redirect(['index']);
+            }
+        } 
+        return $this->render('edit', [
+            'model' => $model,
+            'atta' => $atta,
+            'currAtta' => $currAtta,
             'tool' => $tool,
             'partId' => $partId,
             'serialNo' => $serialNo,
@@ -170,6 +245,7 @@ class CalibrationController extends Controller
     public function actionMultiple()
     {
         $model = new Calibration();
+        $atta = new CalibrationAttachment();
 
         $tidSelected = Yii::$app->request->get()['tid'];
 
@@ -206,12 +282,29 @@ class CalibrationController extends Controller
                 $to->next_cali = $model->due_date[$key];
                 $to->save();
 
+                /* save attachments */
+                if ($atta->load(Yii::$app->request->post()) ) {
+                    $atta->attachment = UploadedFile::getInstances($atta, 'attachment');
+                    foreach ($atta->attachment as $file) {
+                        $fileName = md5(date("YmdHis")).'-'.$file->name;
+                        $qAttachmentClass = explode('\\', get_class($atta))[2];
+                        $file->saveAs('uploads/calibration/'.$fileName);
+                        /* image upload */
+                        $calibrationAttachment = new CalibrationAttachment();
+                        $calibrationAttachment->calibration_id = $cali->id;
+                        $calibrationAttachment->value = $fileName;
+                        $calibrationAttachment->save();
+
+                    }
+                }
             endforeach;
 
+            Yii::$app->getSession()->setFlash('success', 'Calibrations created');
             return $this->redirect(['index']);
         } 
         return $this->render('multiple', [
             'model' => $model,
+            'atta' => $atta,
             'tidDetails' => $tidDetails,
         ]);
         

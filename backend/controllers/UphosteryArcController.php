@@ -267,7 +267,7 @@ class UphosteryArcController extends Controller
     }
     /**
      * Generate ARC .
-     * @param integer $id = uphostery order id 
+     * @param integer $id = uphostery id 
      * @return mixed
      */
     public function actionGenerate($id,$uphostery_part_id)
@@ -276,7 +276,7 @@ class UphosteryArcController extends Controller
         $uphosteryId = $id;
         $model = new UphosteryArc();
         $uphostery = Uphostery::find()->where(['id' => $id])->one();
-        $typeArr = [ 'EASA' => 'EASA', 'FAA' => 'FAA', 'CAAS' => 'CAAS', 'COC' => 'COD'];
+        $typeArr = [ 'EASA' => 'EASA', 'FAA' => 'FAA', 'CAAS' => 'CAAS', 'COC' => 'COC', 'CAAV' => 'CAAV', 'DCAM' => 'DCAM'];
         $dataType = [];
         foreach ( $typeArr as $key => $name ) {
             // $checkExistance = UphosteryArc::find()->where(['type' => $key])->andWhere(['uphostery_id' => $id])->exists();
@@ -285,7 +285,6 @@ class UphosteryArcController extends Controller
             // }
         }
         if ($model->load(Yii::$app->request->post()) ) {
-            // dx(Yii::$app->request->post());
             $type = $model->type; 
             $reprint = 0;
             $isGenerated = UphosteryArc::find()->where(['uphostery_id' => $uphosteryId, 'uphostery_part_id' => $uphostery_part_id, 'type' => $type])->exists();
@@ -309,7 +308,9 @@ class UphosteryArcController extends Controller
             $currentDateTime = date("Y-m-d H:i:s");
             $model->created = $currentDateTime;
             if ( $isGenerated ) {
-                $model->reprint = $reprint + 1;
+                if ($model->is_tracking_no){
+                    $model->reprint = $reprint + 1;
+                }
             }    
             if ( $model->save() ) {
                 Yii::$app->getSession()->setFlash('success', "ARC for $type generated");
@@ -322,17 +323,100 @@ class UphosteryArcController extends Controller
             'dataType' => $dataType,
         ]);
     }
+    /**
+     * print CAA
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionPrintCaa($id,$uphostery_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = Uphostery::find()->where(['id' => $id])->one();
+        $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+        $arc = UphosteryArc::find()->where(['type' => 'CAAS'])->andWhere(['uphostery_id' => $id])->one();
+        $inspector = UphosteryStaff::find()->where(['uphostery_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-caa', [
+            'uphosteryPart' => $uphosteryPart,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
+    /**
+     * print CAA
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionPrintFaa($id,$uphostery_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = Uphostery::find()->where(['id' => $id])->one();
+        $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+        $arc = UphosteryArc::find()->where(['type' => 'FAA'])->andWhere(['uphostery_id' => $id])->one();
+        $inspector = UphosteryStaff::find()->where(['uphostery_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-faa', [
+            'uphosteryPart' => $uphosteryPart,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
+    /**
+     * print CAA
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionPrintEasa($id,$uphostery_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = Uphostery::find()->where(['id' => $id])->one();
+        $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+        $arc = UphosteryArc::find()->where(['type' => 'EASA'])->andWhere(['uphostery_id' => $id])->one();
+        $inspector = UphosteryStaff::find()->where(['uphostery_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-easa', [
+            'uphosteryPart' => $uphosteryPart,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
     public function actionPrintCoc($id,$uphostery_part_id)
     {   
         $this->layout = 'print-arc';
         $model = Uphostery::find()->where(['id' => $id])->one();
-        $uphosteryParts = UphosteryPart::getUphosteryPart($id);
         $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
-        $arc = UphosteryArc::find()->where(['type' => 'EASA'])->andWhere(['uphostery_id' => $id])->one();
+        $arc = UphosteryArc::find()->where(['type' => 'COC'])->andWhere(['uphostery_id' => $id])->one();
         $inspector = UphosteryStaff::find()->where(['uphostery_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
         return $this->render('print-coc', [
             'uphosteryPart' => $uphosteryPart,
-            'uphosteryParts' => $uphosteryParts,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
+    public function actionPrintCaav($id,$uphostery_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = Uphostery::find()->where(['id' => $id])->one();
+        $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+        $arc = UphosteryArc::find()->where(['type' => 'CAAV'])->andWhere(['uphostery_id' => $id])->one();
+        $inspector = UphosteryStaff::find()->where(['uphostery_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-caav', [
+            'uphosteryPart' => $uphosteryPart,
+            'model' => $model,
+            'arc' => $arc,
+            'inspector' => $inspector,
+        ]);
+    }
+    public function actionPrintDcam($id,$uphostery_part_id)
+    {   
+        $this->layout = 'print-arc';
+        $model = Uphostery::find()->where(['id' => $id])->one();
+        $uphosteryPart = UphosteryPart::getUphosteryPartById($uphostery_part_id);
+        $arc = UphosteryArc::find()->where(['type' => 'DCAM'])->andWhere(['uphostery_id' => $id])->one();
+        $inspector = UphosteryStaff::find()->where(['uphostery_id' => $id])->andWhere(['staff_type' => 'final inspector'])->one();
+        return $this->render('print-dcam', [
+            'uphosteryPart' => $uphosteryPart,
             'model' => $model,
             'arc' => $arc,
             'inspector' => $inspector,

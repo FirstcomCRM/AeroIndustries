@@ -8,9 +8,11 @@ use common\models\SearchDeliveryOrder;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use common\models\Address;
 use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\WorkOrder;
@@ -148,28 +150,46 @@ class DeliveryOrderController extends Controller
             $wOcustomerId = $workOrder->customer_id;
 
             $model->customer_id = $wOcustomerId;
-            $model->ship_to = $model->customer->s_addr_1;
+            $customerBillAddress = Address::find()->where(['customer_id' => $wOcustomerId])->andWhere(['address_type' => 'shipping'])->one();
+            $model->ship_to = $customerBillAddress->id;
             $model->contact_no = $model->customer->contact_no;
-            $firstCustomer = Customer::find()->where(['id' => $wOcustomerId])->one();
-            if ( $firstCustomer ) {
-                $customerAddresses[$firstCustomer->addr_1] = $firstCustomer->addr_1;
-                $customerAddresses[$firstCustomer->addr_2] = $firstCustomer->addr_2;
+            // $firstCustomer = Customer::find()->where(['id' => $wOcustomerId])->one();
+            $addressesss = Address::find()->where(['customer_id' => $wOcustomerId])->andWhere(['address_type' => 'shipping'])->all();
+            if ( $addressesss ) {
+                foreach ($addressesss as $address){
+                    $customerAddresses[$address->id] = $address->address;
+                }
             }
         }
         if ($model->load(Yii::$app->request->post()) ) {
-            // d(Yii::$app->request->post());exit;
+            // dx(Yii::$app->request->post());
             /* continue the previous po number */
-            $model->delivery_order_no = 1;
-            $ddo = DeliveryOrder::find()->where(['<>','status', 'cancelled'])->orderBy('delivery_order_no DESC')->limit(1)->one();
-            if ( !empty ( $ddo ) ) {
-                $previousNo = $ddo->delivery_order_no;
-                $model->delivery_order_no = $previousNo+1;
-            }
+            // $model->delivery_order_no = 1;
+            // $ddo = DeliveryOrder::find()->where(['<>','status', 'cancelled'])->orderBy('delivery_order_no DESC')->limit(1)->one();
+            // if ( !empty ( $ddo ) ) {
+            //     $previousNo = $ddo->delivery_order_no;
+            //     $model->delivery_order_no = $previousNo+1;
+            // }
 
             $model->created_by = Yii::$app->user->identity->id;
             $currentDateTime = date("Y-m-d H:i:s");
             $model->created = $currentDateTime;
+            $model->attachment = UploadedFile::getInstances($model, 'attachment');
+            foreach ($model->attachment as $file) {
+                $fileName = md5(date("YmdHis")).'-'.$file->name;
+                $file->saveAs('uploads/do/'.$fileName);
+                $model->value = $fileName;
+                $model->is_attachment = 0;
+                if ( !empty( $fileName ) ) {
+                    $model->is_attachment = 1;
+                }
+                $model->attachment = true;
+            }
             if ($model->save()) {
+                $workOrder->is_do = 1;
+                $workOrder->delivery_order_id = $model->id;
+                $workOrder->save();
+                
                 $deliveryOrderId = $model->id;
 
                 if ($detail->load(Yii::$app->request->post()) ) {
@@ -185,13 +205,14 @@ class DeliveryOrderController extends Controller
                             $newDetail->quantity = $detail->quantity[$key];
                             $newDetail->work_order_no = $detail->work_order_no[$key];
                             $newDetail->remark = $detail->remark[$key];
+                            $newDetail->po_no = $detail->po_no[$key];
                             $newDetail->save();
                         }
 
                     }
                 }
 
-                return $this->redirect(['preview', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         } 
         return $this->render('new', [
@@ -229,11 +250,44 @@ class DeliveryOrderController extends Controller
     public function actionRemove($id)
     {
         $model = $this->findModel($id);
-        $model->status = 0;
+        
+        $workOrder = WorkOrder::find()->where(['delivery_order_id' => $id])->one();
+        $workOrder->delivery_order_id = NULL;
+        $workOrder->is_do = 0;
+        $workOrder->save();
+
+        $model->status = 'voided';
         if ( $model->save() ) {
-            Yii::$app->getSession()->setFlash('success', 'Customer deleted');
+            Yii::$app->getSession()->setFlash('success', 'DO Voided');
         } else {
-            Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
+            Yii::$app->getSession()->setFlash('danger', 'Unable to void DO');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Deletes an existing DeliveryOrder model by changing the delete status to 1 .
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        
+        $workOrder = WorkOrder::find()->where(['delivery_order_id' => $id])->one();
+        if (WorkOrder::find()->where(['delivery_order_id' => $id])->exists()){
+            $workOrder->delivery_order_id = NULL;
+            $workOrder->is_do = 0;
+            $workOrder->save();
+        }
+        $model->deleted = 1;
+
+        if ( $model->save() ) {
+            Yii::$app->getSession()->setFlash('success', 'DO Deleted');
+        } else {
+            Yii::$app->getSession()->setFlash('danger', 'Unable to delete DO');
         }
 
         return $this->redirect(['index']);
@@ -285,7 +339,6 @@ class DeliveryOrderController extends Controller
     
     public function actionAjaxAddress()
     {   
-        $detail = new QuotationDetail();
         $this->layout = false;
         if ( Yii::$app->request->post() ) {
             $customerId = Yii::$app->request->post()['customerId'];

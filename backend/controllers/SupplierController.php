@@ -30,7 +30,7 @@ class SupplierController extends Controller
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
        
         foreach ( $userGroupArray as $uGId => $uGName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'SupplierAttachment'])->andWhere(['user_group_id' => $uGId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'Supplier'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;

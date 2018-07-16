@@ -3,9 +3,9 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\GpoSupplier;
-use common\models\SearchGpoSupplier;
-use common\models\GpoSupplierAttachment;
+use common\models\TpoSupplier;
+use common\models\SearchTpoSupplier;
+use common\models\TpoSupplierAttachment;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,9 +16,9 @@ use common\models\UserGroup;
 use common\models\UserPermission;
 
 /**
- * GpoSupplierController implements the CRUD actions for GpoSupplier model.
+ * TpoSupplierController implements the CRUD actions for TpoSupplier model.
  */
-class GpoSupplierController extends Controller
+class TpoSupplierController extends Controller
 {
     /**
      * @inheritdoc
@@ -28,7 +28,7 @@ class GpoSupplierController extends Controller
         $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'name');
 
         foreach ( $userGroupArray as $uGId => $uGName ){
-            $permission = UserPermission::find()->where(['controller' => 'GpoSupplier'])->andWhere(['user_group_id' => $uGId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'TpoSupplier'])->andWhere(['user_group_id' => $uGId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -84,12 +84,12 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Lists all GpoSupplier models.
+     * Lists all TpoSupplier models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchGpoSupplier();
+        $searchModel = new SearchTpoSupplier();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -99,13 +99,13 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Displays a single GpoSupplier model.
+     * Displays a single TpoSupplier model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-          $oldSA = GpoSupplierAttachment::find()->where(['supplier_id' => $id])->all();
+          $oldSA = TpoSupplierAttachment::find()->where(['supplier_id' => $id])->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
             'oldSA' => $oldSA,
@@ -113,15 +113,15 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Creates a new GpoSupplier model.
+     * Creates a new TpoSupplier model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new GpoSupplier();
+        $model = new TpoSupplier();
         $oldSA = false;
-        $supplierAttachment = new GpoSupplierAttachment();
+        $supplierAttachment = new TpoSupplierAttachment();
 
         if ($model->load(Yii::$app->request->post()) ) {
             $model->created_by = Yii::$app->user->identity->id;
@@ -138,7 +138,7 @@ class GpoSupplierController extends Controller
                     $file->saveAs('uploads/'.$supplierAttachmentClass.'/'.$fileName);
                     /* image upload */
 
-                    $sA = new GpoSupplierAttachment();
+                    $sA = new TpoSupplierAttachment();
                     $sA->supplier_id = $supplierId;
                     $sA->value = $fileName;
                     $sA->save();
@@ -159,7 +159,7 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Updates an existing GpoSupplier model.
+     * Updates an existing TpoSupplier model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -167,8 +167,8 @@ class GpoSupplierController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $oldSA = GpoSupplierAttachment::find()->where(['supplier_id' => $id])->all();
-        $supplierAttachment = new GpoSupplierAttachment();
+        $oldSA = TpoSupplierAttachment::find()->where(['supplier_id' => $id])->all();
+        $supplierAttachment = new TpoSupplierAttachment();
 
         if ($model->load(Yii::$app->request->post()) ) {
 
@@ -181,7 +181,7 @@ class GpoSupplierController extends Controller
                       $file->saveAs('uploads/'.$supplierAttachmentClass.'/'.$fileName);
                       /* image upload */
 
-                      $sA = new GpoSupplierAttachment();
+                      $sA = new TpoSupplierAttachment();
                       $sA->supplier_id = $id;
                       $sA->value = $fileName;
                       $sA->save();
@@ -203,7 +203,7 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Deletes an existing GpoSupplier model.
+     * Deletes an existing TpoSupplier model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -216,15 +216,15 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Finds the GpoSupplier model based on its primary key value.
+     * Finds the TpoSupplier model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return GpoSupplier the loaded model
+     * @return TpoSupplier the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = GpoSupplier::findOne($id)) !== null) {
+        if (($model = TpoSupplier::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -234,13 +234,13 @@ class GpoSupplierController extends Controller
 
 
     /**
-     * Creates a new GpoSupplier .
+     * Creates a new TpoSupplier .
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionNew()
     {
-        $model = new GpoSupplier();
+        $model = new TpoSupplier();
 
         if ($model->load(Yii::$app->request->post()) ) {
 
@@ -255,7 +255,7 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Edit an existing GpoSupplier .
+     * Edit an existing TpoSupplier .
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -277,7 +277,7 @@ class GpoSupplierController extends Controller
     }
 
     /**
-     * Displays a single GpoSupplier .
+     * Displays a single TpoSupplier .
      * @param integer $id
      * @return mixed
      */
@@ -290,7 +290,7 @@ class GpoSupplierController extends Controller
 
 
     /**
-     * Deletes an existing GpoSupplier model by changing the delete status to 1 .
+     * Deletes an existing TpoSupplier model by changing the delete status to 1 .
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed

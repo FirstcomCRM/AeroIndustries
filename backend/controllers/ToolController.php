@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ArrayDataProvider;
+use yii\web\UploadedFile;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -18,6 +19,12 @@ use common\models\WorkPartUsed;
 use common\models\Calibration;
 use common\models\Setting;
 use common\models\Unit;
+use common\models\Supplier;
+use common\models\StorageLocation;
+use common\models\Part;
+use common\models\Currency;
+use common\models\Stock;
+use common\models\TpoAttachment;
 
 /**
  * ToolController implements the CRUD actions for Tool model.
@@ -183,8 +190,11 @@ class ToolController extends Controller
      */
     public function actionPreview($id)
     {
+        $model = $this->findModel($id);
+        $stockAttachment = TpoAttachment::find()->where(['tool_po_id' => $model->tool_po_id ])->andWhere(['type' => 'stock_in_attachment'])->all();
         return $this->render('preview', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'stockAttachment' => $stockAttachment,
         ]);
     }
 
@@ -380,4 +390,133 @@ class ToolController extends Controller
             ->send();
         }
     }
+    public function actionImportExcel() {
+        $model = new Tool();
+        if ( $model->load( Yii::$app->request->post() ) ) {
+            $model->attachment = UploadedFile::getInstances($model, 'attachment');
+            foreach ($model->attachment as $file) {
+                $fileName = md5(date("YmdHis")).'-'.$file->name;
+                $file->saveAs('uploads/tool/'.$fileName);
+            }
+            $inputFile = "uploads/tool/$fileName";
+            try {
+                $inputFileType = \PHPExcel_IOFactory::identify($inputFile);
+                $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+                $objPHPExcel = $objReader->load($inputFile);
+            } catch (Exception $e){
+                die('ERROR');
+            }
+            $sheet = $objPHPExcel->getSheet(0);
+            $highestRow = $sheet->getHighestRow();
+            $highestColumn = $sheet->getHighestColumn();
+            $data = [];
+
+            $dataSupplier = Supplier::dataSupplier();
+            $dataLocation = StorageLocation::dataLocation();
+            $dataUnit = Unit::dataUnit();
+            $dataPart = Part::dataPart();
+            $dataCurrencyISO = Currency::dataCurrencyISO();
+
+            for ( $row = 2 ; $row <= $highestRow ; $row ++ ) {
+                $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+                $data = $rowData[0];
+            // dx($data);
+                $supplier_name = $data[0];
+                $storage_location = $data[1];
+                $part_name = $data[2];
+                $unit = $data[8];
+                $currency = $data[9];
+                $error = array();
+
+                if (!in_array(trim($supplier_name), $dataSupplier)){
+                    $error[] = true;
+                } else {
+                    $supplier_id = array_search(trim($supplier_name), $dataSupplier);
+                }
+
+                if (!in_array(trim($storage_location), $dataLocation)){
+                    $error[] = true;
+                } else {
+                    $storage_location_id = array_search(trim($storage_location), $dataLocation);
+                }
+                
+                if (!in_array(trim($part_name), $dataPart)){
+                    $error[] = true;
+                } else {
+                    $part_id = array_search(trim($part_name), $dataPart);
+                }
+
+                if (!in_array(trim($unit), $dataUnit)){
+                    $error[] = true;
+                } else {
+                    $unit_id = array_search(trim($unit), $dataUnit);
+                }
+
+                if (!in_array(trim($currency), $dataCurrencyISO)){
+                    $error[] = true;
+                } else {
+                    $currency_id = array_search(trim($currency), $dataCurrencyISO);
+                }
+
+                $previousNo = 0;
+                $rec1 = 0;
+                $rec2 = 0;
+                $recNo = Stock::find()->where(['status'=>'active'])->orderBy('receiver_no DESC')->limit(1)->one();
+                $toolrecNo = Tool::find()->where(['status'=>'active'])->orderBy('receiver_no DESC')->limit(1)->one();
+                if ( !empty ( $recNo ) ) {
+                    $rec1 = $recNo->receiver_no;
+                }
+                if ( !empty ( $toolrecNo ) ) {
+                    $rec2 = $toolrecNo->receiver_no;
+                }
+                if ( $rec1 >= $rec2 ) {
+                    $previousNo = $rec1;
+                } else if ( $rec2 >= $rec1 ){
+                    $previousNo = $rec2;
+                } else {
+                    $previousNo = 0;
+                }
+                $previousNo += 1;
+                if( !in_array(true, $error) ) {
+                    for ( $x = 0 ; $x < $data[7] ; $x ++ ) {
+                        $expiration_date = date('Y-m-d',strtotime($data[12]));
+                        $tool = new Tool();
+                        $tool->supplier_id = $supplier_id;
+                        $tool->storage_location_id = $storage_location_id;
+                        $tool->tool_po_id = 0;
+                        $tool->receiver_no = $previousNo;
+                        $tool->part_id = $part_id;
+                        $tool->desc = $data[3];
+                        $tool->batch_no = $data[4];
+                        $tool->serial_no = $data[5];
+                        $tool->note = $data[6];
+                        $tool->quantity = 1;
+                        $tool->unit_id = $unit_id;
+                        $tool->currency_id = $currency_id;
+                        $tool->unit_price = $data[10];
+                        $tool->usd_price = $data[11];
+                        $tool->freight = $data[12];
+                        $tool->expiration_date = $expiration_date;
+                        $tool->hour_used = $data[14];
+                        $tool->time_used = $data[15];
+                        $tool->shelf_life = $data[16];
+                        $tool->status = $data[17];
+                        $tool->created = date("Y-m-d H:i:s");
+                        $tool->created_by = Yii::$app->user->identity->id;
+                        $tool->save();
+                    }
+                }
+            }
+            if( !in_array(true, $error) ) {
+                Yii::$app->getSession()->setFlash('success', 'Import Completed');
+            } else {
+                Yii::$app->getSession()->setFlash('danger', 'Import Incomplete');
+            }
+            return $this->redirect(['import-excel']);
+        }
+        return $this->render('import-excel',[
+            'model' => $model
+        ]);
+    }
+
 }

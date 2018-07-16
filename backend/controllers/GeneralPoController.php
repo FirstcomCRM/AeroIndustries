@@ -132,7 +132,7 @@ class GeneralPoController extends Controller
     {
         $model = new GeneralPo();
         $detail = new GeneralPoDetail();
-
+        $model->gst_rate = 7;
         $firstSupplier = GpoSupplier::find()->one();
         $supplierAddresses = array();
         $supplierAttention = '';
@@ -161,9 +161,9 @@ class GeneralPoController extends Controller
                 $previousNo = $ppo->purchase_order_no;
                 $model->purchase_order_no = $previousNo+1;
             }
-            if ( $model->save() ) {
+            if ($model->save() ) {
                 $generalPOId = $model->id;
-                if ( $detail->load(Yii::$app->request->post()) ) {
+                if ($detail->load(Yii::$app->request->post()) ) {
                     foreach ( Yii::$app->request->post()['GeneralPoDetail'] as $d ) {
                         $poD = new GeneralPoDetail();
                         $poD->general_po_id = $generalPOId;
@@ -205,7 +205,8 @@ class GeneralPoController extends Controller
         $oldDetail = GeneralPoDetail::getGeneralPoDetail($id);
         $supplierId = $model->supplier_id;
         //$firstSupplier = GpoSupplier::getSupplier($supplierId);
-        $firstSupplier = GpoSupplier::find()->where(['id'=>$supplierId]);
+        $firstSupplier = GpoSupplier::find()->where(['id'=>$supplierId])->one();
+
         $supplierAddresses = array();
         $supplierAttention = '';
         if ( $firstSupplier ) {
@@ -241,7 +242,6 @@ class GeneralPoController extends Controller
 
                 }
 
-
                 Yii::$app->getSession()->setFlash('success', 'Purchase order updated!');
                 return $this->redirect(['preview', 'id' => $model->id]);
             } /* save model */ else {
@@ -270,7 +270,8 @@ class GeneralPoController extends Controller
         $payment = new GeneralPoPayment();
         if ( $payment->load( Yii::$app->request->post() ) ) {
             // d(Yii::$app->request->post());exit;
-            $po = PurchaseOrder::find()->where(['id' => $id])->one();
+          //  $po = PurchaseOrder::find()->where(['id' => $id])->one();
+            $po = GeneralPo::find()->where(['id' => $id])->one();
 
             $po->status = 0;
             if ( Yii::$app->request->post()['balanceAmt'] <= $payment->amount ) {
@@ -314,6 +315,25 @@ class GeneralPoController extends Controller
             Yii::$app->getSession()->setFlash('success', 'Customer deleted');
         } else {
             Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Deletes an existing Quotation by changing the delete status to 1
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDeleteColumn($id)
+    {
+        $model = $this->findModel($id);
+        $model->deleted = 1;
+        if ( $model->save() ) {
+            Yii::$app->getSession()->setFlash('success', 'General Order deleted');
+        } else {
+            Yii::$app->getSession()->setFlash('danger', 'Unable to delete General Order');
         }
 
         return $this->redirect(['index']);
@@ -375,9 +395,6 @@ class GeneralPoController extends Controller
     }
 
 
-
-
-
     public function actionAjaxAddress()
     {
         $this->layout = false;
@@ -429,7 +446,8 @@ class GeneralPoController extends Controller
             $unitm = Yii::$app->request->post()['unitm'];
             $subTotal = Yii::$app->request->post()['subTotal'];
 
-            $part = Part::find()->where(['id' => $partId])->one()->part_no;
+            //$part = Part::find()->where(['id' => $partId])->one()->part_no;
+            $part = $partId;
             $unitM = Unit::find()->where(['id' => $unitm])->one();
 
             return $this->render('ajax-part', [
@@ -453,17 +471,21 @@ class GeneralPoController extends Controller
     */
     protected function composeEmail($model){
       $data = Setting::find()->where(['name'=>'GPO Email Notification'])->one();
+      $tmp = explode(',', $data->value);
+      $dataEx = $tmp;
       $poNumber = GeneralPO::getGPONo($model->purchase_order_no,$model->created);
     //  $link = Html::a('Link',['purchase-order/preview','id'=>$model->id]);
     //  $link = 'http://www.aeroindustries3011.firstcomdemolinks.com/system88/backend/web/index.php?r=purchase-order%2Fpreview&id='.$model->id;
       $link = Html::a('Link', Url::to(['general-po/preview','id'=>$model->id], true));
       $message = '';
       $message .= "<p>GPO {$poNumber} has been created</p>";
+      $message .= "<p>Please click on the link below to review the General Purchase Order</p>";
       $message .= $link;
+      $message .= "<p><i>This is a system generated email, please do not reply.</i></p>";
+
       $data = Yii::$app->mailer->compose()
       ->setTo($data->value)
-    //    ->setTo('eumerjoseph.ramos@yahoo.com')
-      ->setFrom(['info@aeriindustriesdemo.com' => 'info@aeriindustriesdemo.com'])
+      ->setFrom(['sender@aeroindustriesasia.com' => 'sender@aeroindustriesasia.com'])
       ->setSubject('General PO Created')
       ->setHtmlBody($message)
       ->send();

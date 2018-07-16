@@ -125,7 +125,7 @@ class CustomerController extends Controller
                 }
 
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index', 'id' => $model->id]);
             }
         } 
         return $this->render('new', [
@@ -165,7 +165,7 @@ class CustomerController extends Controller
                     }
                 }
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index', 'id' => $model->id]);
             }
         } 
         return $this->render('update', [
