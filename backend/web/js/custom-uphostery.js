@@ -14,7 +14,6 @@
 		    $('#uphosterypart-part_no').on('input', function() {
 		        // $('.close-search').removeClass('display-none');
 		        var partNoKeyed = $('#uphosterypart-part_no').val();
-
 		        $.post("?r=uphostery/search-part",{
 		            partNoKeyed:partNoKeyed
 		        },
@@ -39,7 +38,7 @@
 		 *	
 		************************************************************/
 
-			function update_status() {
+			function update_up_status() {
 				var uphosteryids = new Array();
 				var status = $('#update-status-selection').val();
 				var n = 0;
@@ -189,8 +188,11 @@
 		        var m = $('#m').val();
 
 		       	$('.edit-id-'+m).val( $('#uphosterypart-id').val() );
+		       	$('.display-part-no-'+m).html( $('#uphosterypart-part_no').val() );
 		       	$('.edit-part_no-'+m).val( $('#uphosterypart-part_no').val() );
+                $('.display-manufacturer-'+m).html($('#uphosterypart-manufacturer').val());
                 $('.edit-manufacturer-'+m).val($('#uphosterypart-manufacturer').val());
+                $('.display-model-'+m).html($('#uphosterypart-model').val());
                 $('.edit-model-'+m).val($('#uphosterypart-model').val());
                 $('.edit-desc-'+m).val($('#uphosterypart-desc').val());
                 $('.edit-ac_tail_no-'+m).val($('#uphosterypart-ac_tail_no').val());
@@ -200,6 +202,7 @@
                 $('.edit-serial_no-'+m).val($('#uphosterypart-serial_no').val());
                 $('.edit-batch_no-'+m).val($('#uphosterypart-batch_no').val());
                 $('.edit-location_id-'+m).val($('#uphosterypart-location_id').val());
+                $('.display-quantity-'+m).html($('#uphosterypart-quantity').val());
                 $('.edit-quantity-'+m).val($('#uphosterypart-quantity').val());
                 $('.edit-template_id-'+m).val($('#uphosterypart-template_id').val());
 
@@ -217,6 +220,8 @@
 		    	$('#uphosterypart-location_id').val('').change(); 
 		    	$('.no-template').removeClass('hidden');
     			$('.yes-template').addClass('hidden');
+		    	$('.add-button').removeClass('hidden');
+		    	$('.save-button').addClass('hidden');
     			$('.empty-cart').remove();
 		    }
 
@@ -233,7 +238,7 @@
 		 *	UPHOSTERY :: Add Technician Column
 		 *	
 		*********************************************************/
-		    $('.add-tech').on('click', function() { 
+		    $('.add-up-tech').on('click', function() { 
 		    	var n = parseInt($('#n').val());
 		    	n += 1;
 		        $.ajax({url: "?r=uphostery/get-technician", success: function(data){
@@ -250,7 +255,7 @@
 		 *	UPHOSTERY :: Unassign Staff
 		 *	
 		*********************************************************/
-		    function unassignStaff(id){
+		    function unassignUpStaff(id){
 		    	$('.tec-' + id ).empty();
 		    }
 
@@ -326,3 +331,22 @@
 		        });
 		    }
 
+		/*********************************************************
+		 *	UPHOSTERY :: CHECKLIST
+		 *
+		*********************************************************/
+
+		
+			$('#checklistModalUp').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget) ;
+				var uphostery_id = button.data('uphostery_id') ;
+				var uphostery_part_id = button.data('uphostery_part_id') ;
+				// $('#modal-req-id').val(reqid);
+				// get drop down
+				$.post("?r=uphostery/get-checklist",{
+		            uphostery_part_id:uphostery_part_id
+		        },
+		        function(data, status){
+		        	$('#checklistModalUp .modal-body').html(data);
+		        });
+			});

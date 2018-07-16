@@ -129,6 +129,14 @@
 		    e.stopPropagation();
 		});
 
+		$('.checklist-dropdown').click(function(e){
+			var classes = $(this).attr('class').split(' ');
+			var classSe = classes[4];
+
+	    	$('.checklist-dropdown-' + classSe).toggle('fast');
+		    e.stopPropagation();
+		});
+
 		$('.generate-dropdown').click(function(e){
 			var classes = $(this).attr('class').split(' ');
 			var classSe = classes[4];
@@ -465,20 +473,25 @@
 			 $('.po-supplier').change(function(){
 				var supplierId = $('.po-supplier').val();
 				// console.log(supplierId);
-				$.post("?r=purchase-order/ajax-address",{
-			        supplierId:supplierId
-			    },
-			    function(data, status){
-			    	$('.po_pay_addr').empty();
-			    	$('.po_pay_addr').append(data);
-			    });
+				if ($('#isEdit').val() == 0 ) {
+					window.location = '?r=purchase-order/new&supplier_id='+supplierId;
+				} else {
+					window.location = '?r=purchase-order/edit&id='+$('#isEdit').val()+'&supplier_id='+supplierId;
+				}
+				// $.post("?r=purchase-order/ajax-address",{
+			 //        supplierId:supplierId
+			 //    },
+			 //    function(data, status){
+			 //    	$('.po_pay_addr').empty();
+			 //    	$('.po_pay_addr').append(data);
+			 //    });
 
-				$.post("?r=purchase-order/ajax-attention",{
-			        supplierId:supplierId
-			    },
-			    function(data, status){
-			    	$('.po-attention').val(data);
-			    });
+				// $.post("?r=purchase-order/ajax-attention",{
+			 //        supplierId:supplierId
+			 //    },
+			 //    function(data, status){
+			 //    	$('.po-attention').val(data);
+			 //    });
 			 });
 
 
@@ -503,6 +516,43 @@
          function(data, status){
            $('.gpo-attention').val(data);
          });
+      });
+
+       /*********************************************************
+   		 *	GPO PURCHASE ORDER :: GET CUSTOMER ADDRESSES 
+   		 *	EDR
+   		*********************************************************/
+      $('.tpo-supplier').change(function(){
+       	var supplierId = $('.tpo-supplier').val();
+		// console.log(supplierId);
+		if ($('#isEdit').val() == 0 ) {
+			window.location = '?r=tool-po/new&supplier_id='+supplierId;
+		} else {
+			window.location = '?r=tool-po/edit&id='+$('#isEdit').val()+'&supplier_id='+supplierId;
+		}	
+
+  //      $.post("?r=tool-po/ajax-address",{
+  //            supplierId:supplierId
+  //        },
+  //        function(data, status){
+  //          $('.tpo_pay_addr').empty();
+  //          $('.tpo_pay_addr').append(data);
+  //        });
+
+  //      $.post("?r=tool-po/ajax-attention",{
+  //            supplierId:supplierId
+  //        },
+  //        function(data, status){
+  //          $('.tpo-attention').val(data);
+  //        });
+
+  //      	var supplierId = $('.tpo-supplier').val();
+		// // console.log(supplierId);
+		// if ($('#isEdit').val() == 0 ) {
+		// 	window.location = '?r=tool-po/new&supplier_id='+supplierId;
+		// } else {
+		// 	window.location = '?r=tool-po/edit&id='+$('#isEdit').val()+'&supplier_id='+supplierId;
+		// }
       });
 
 
@@ -594,6 +644,59 @@
 
 		 	}
 		 }
+		 /*********************************************************
+		 *	GENERAL PO :: ONCHANGE UPDATE INDIVIDUAL SUBTOTAL
+		 *
+		*********************************************************/
+
+		 function addTPOItem() {
+
+		 	var qty = $('#qty').val();
+		 	var unit = $('#unit').val();
+		 	var converted_unit = $('#converted_unit').val();
+		 	var subTotal = $('#subtotal').val();
+		 	var unitm = $('#unitm').val();
+		 	var part = $('#toolpodetail-part_id').val();
+
+		 	if ( qty == '' && unit == '') {
+		 		alert('Please key in quantity and unit price');
+		 	} else {
+		 		if ( qty == '' ) {
+			 		alert('Please key in quantity');
+			 	} else if ( unit == '' ) {
+			 		alert('Please key in unit price');
+			 	} else {
+
+				 	var n = $('#n').val();
+
+				    n ++ ;
+
+					$.post("?r=tool-po/ajax-part",{
+				        qty:qty,
+				        unit:unit,
+				        converted_unit:converted_unit,
+				        subTotal:subTotal,
+				        part:part,
+				        unitm:unitm,
+				        n:n
+				    },
+				    function(data, status){
+				        $('.selected-item-list').append(data);
+				        // console.log(status);
+				    });
+
+				 	$('#n').val(n);
+				 	$('#qty').val('');
+				 	$('#converted_unit').val('');
+				 	$('#unit').val('');
+				 	$('#subtotal').val('');
+				 	setTimeout(function(){
+				 		getPoTotal();
+					}, 500);
+			 	}
+
+		 	}
+		 }
 
 /*********************************************************
  *
@@ -643,6 +746,68 @@
 		 	$('#subtotal-par').val(subTotal.toFixed(2));
 		 	getQuoTotal();
 		 }
+		
+		/*********************************************************
+		 *	QUOTATION :: CHECK WHETHER WO OR UP
+		 *
+		*********************************************************/
+
+		$('.quotation-type').change(function(){
+			var quotation_type = $('.quotation-type').val();
+			if (quotation_type == "work_order") {
+				var postUrl = "?r=quotation/ajax-workorder";
+			} else {
+				var postUrl = "?r=quotation/ajax-uphostery";
+			}
+
+			$.post(postUrl,{
+		        quotation_type:quotation_type
+		    },
+		    function(data, status){
+		    	$('.work-order-selection').empty();
+		    	$('.work-order-selection').select2();
+		    	$('.work-order-selection').append(data);
+		    });
+		});
+
+		/*********************************************************
+		 *	QUOTATION :: AUTO SELECT CUSTOMER WHEN WO IS SELECTED
+		 *
+		*********************************************************/
+			$('.work-order-selection').change(function(){
+				var woId = $('.work-order-selection').val();
+				var quotation_type = $('.quotation-type').val();
+
+				$.post("?r=quotation/ajax-customer",{
+			        woId:woId,
+			        quotation_type:quotation_type
+			    },
+			    function(data, status){
+			    	$('#quotation-customer_id').val(data).trigger('change');
+			    	quotationGetAddress();
+			    });
+			});
+
+		/*********************************************************
+		 *	QUOTATION :: GET CUSTOMER ADDRESS
+		 *
+		*********************************************************/
+			$('#quotation-customer_id').change(function(){
+		    	quotationGetAddress();
+			});
+
+			function quotationGetAddress(){
+				var customerId = $('#quotation-customer_id').val();
+
+				$.post("?r=quotation/ajax-address",{
+			        customerId:customerId
+			    },
+			    function(data, status){
+			    	$('#quotation-address').empty();
+			    	$('#quotation-address').append(data);
+			    });
+			}
+
 
 		/*********************************************************
 		 *	QUOTATION :: CONFIRM THE ITEM
@@ -776,44 +941,6 @@
 			}
 
 
-		/*********************************************************
-		 *	QUOTATION :: GET CUSTOMER ADDRESS
-		 *
-		*********************************************************/
-			$('#quotation-customer_id').change(function(){
-				var customerId = $('#quotation-customer_id').val();
-
-				$.post("?r=quotation/ajax-address",{
-			        customerId:customerId
-			    },
-			    function(data, status){
-			    	console.log(data);
-			    	$('#quotation-address').empty();
-			    	$('#quotation-address').append(data);
-			    });
-			});
-
-		/*********************************************************
-		 *	QUOTATION :: AUTO SELECT CUSTOMER WHEN WO IS SELECTED
-		 *
-		*********************************************************/
-			$('.work-order-selection').change(function(){
-				var woId = $('.work-order-selection').val();
-
-				$.post("?r=quotation/ajax-customer",{
-			        woId:woId
-			    },
-			    function(data, status){
-			    	$('#quotation-customer_id').val(data).trigger('change');
-			    	$.post("?r=quotation/ajax-address",{
-				        customerId:data
-				    },
-				    function(data, status){
-				    	$('#quotation-address').empty();
-				    	$('#quotation-address').append(data);
-				    });
-			    });
-			});
 
 
 
@@ -986,6 +1113,28 @@
  *
  *
 *********************************************************/
+
+		/*********************************************************
+		 *	WORK ORDER :: CHECKLIST
+		 *
+		*********************************************************/
+
+		
+			$('#checklistModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget) ;
+				var work_order_id = button.data('work_order_id') ;
+				var work_order_part_id = button.data('work_order_part_id') ;
+				// $('#modal-req-id').val(reqid);
+				// get drop down
+				$.post("?r=work-order/get-checklist",{
+		            work_order_part_id:work_order_part_id
+		        },
+		        function(data, status){
+		        	$('#checklistModal .modal-body').empty();
+		        	$('#checklistModal .modal-body').append(data);
+		        });
+			});
+
 
 		/*********************************************************
 		 *	WORK ORDER :: Ajax Search Parts
@@ -1192,8 +1341,11 @@
 		        var m = $('#m').val();
 
 		       	$('.edit-id-'+m).val( $('#workorderpart-id').val() );
+		       	$('.display-part_no-'+m).val( $('#workorderpart-part_no').val() );
 		       	$('.edit-part_no-'+m).val( $('#workorderpart-part_no').val() );
+                $('.display-manufacturer-'+m).val($('#workorderpart-manufacturer').val());
                 $('.edit-manufacturer-'+m).val($('#workorderpart-manufacturer').val());
+                $('.display-model-'+m).val($('#workorderpart-model').val());
                 $('.edit-model-'+m).val($('#workorderpart-model').val());
                 $('.edit-desc-'+m).val($('#workorderpart-desc').val());
                 $('.edit-ac_tail_no-'+m).val($('#workorderpart-ac_tail_no').val());
@@ -1203,6 +1355,7 @@
                 $('.edit-serial_no-'+m).val($('#workorderpart-serial_no').val());
                 $('.edit-batch_no-'+m).val($('#workorderpart-batch_no').val());
                 $('.edit-location_id-'+m).val($('#workorderpart-location_id').val());
+                $('.display-quantity-'+m).val($('#workorderpart-quantity').val());
                 $('.edit-quantity-'+m).val($('#workorderpart-quantity').val());
                 $('.edit-template_id-'+m).val($('#workorderpart-template_id').val());
                 $('.edit-man_hour-'+m).val($('#workorderpart-man_hour').val());
@@ -1558,7 +1711,7 @@
 			$('#deliveryorder-customer_id').change(function(){
 				var customerId = $('#deliveryorder-customer_id').val();
 
-				$.post("?r=quotation/ajax-address",{
+				$.post("?r=delivery-order/ajax-address",{
 			        customerId:customerId
 			    },
 			    function(data, status){
