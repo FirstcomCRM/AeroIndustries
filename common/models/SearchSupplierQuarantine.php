@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\StockHistory;
+use common\models\SupplierQuarantine;
 
 /**
- * SearchStockHistory represents the model behind the search form about `common\models\StockHistory`.
+ * SearchSupplierQuarantine represents the model behind the search form about `common\models\SupplierQuarantine`.
  */
-class SearchStockHistory extends StockHistory
+class SearchSupplierQuarantine extends SupplierQuarantine
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class SearchStockHistory extends StockHistory
     public function rules()
     {
         return [
-            [['id', 'part_id', 'related_user'], 'integer'],
-            [['reference_no', 'datetime'], 'safe'],
+            [['id', 'quantity', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['stock_id', 'reason', 'date', 'created', 'updated'], 'safe'],
         ];
     }
 
@@ -41,14 +41,14 @@ class SearchStockHistory extends StockHistory
      */
     public function search($params)
     {
-        $query = StockHistory::find();
+        $query = SupplierQuarantine::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
         ]);
+        $dataProvider->query->where(['<>','status', 0]);
 
         $this->load($params);
 
@@ -61,12 +61,17 @@ class SearchStockHistory extends StockHistory
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'part_id' => $this->part_id,
-            'related_user' => $this->related_user,
-            'datetime' => $this->datetime,
+            'quantity' => $this->quantity,
+            'date' => $this->date,
+            'status' => $this->status,
+            'created' => $this->created,
+            'created_by' => $this->created_by,
+            'updated' => $this->updated,
+            'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'reference_no', $this->reference_no]);
+        $query->andFilterWhere(['like', 'stock_id', $this->stock_id])
+            ->andFilterWhere(['like', 'reason', $this->reason]);
 
         return $dataProvider;
     }

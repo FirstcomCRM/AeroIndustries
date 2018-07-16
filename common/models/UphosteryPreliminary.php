@@ -45,7 +45,7 @@ class UphosteryPreliminary extends \yii\db\ActiveRecord
             'corrective' => 'Corrective',
         ];
     }
-    /* id = uphostery order id */
+    /* id = uphostery id */
     public static function getUphosteryPreliminary($id=null,$uphostery_part_id) {
         return UphosteryPreliminary::find()->where(['uphostery_id' => $id])->andWhere(['uphostery_part_id' => $uphostery_part_id])->all();
     }

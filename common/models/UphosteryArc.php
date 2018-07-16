@@ -31,7 +31,7 @@ class UphosteryArc extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['uphostery_id', 'uphostery_part_id', 'first_check', 'second_check', 'third_check', 'forth_check', 'form_tracking_no'], 'integer'],
+            [['uphostery_id', 'uphostery_part_id', 'first_check', 'second_check', 'third_check', 'forth_check','is_tracking_no','form_tracking_no'], 'integer'],
             [['date','name','arc_status','arc_remarks'], 'safe'],
             [['type'], 'string'],
             [['date', 'type'], 'required'],
@@ -46,6 +46,7 @@ class UphosteryArc extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'uphostery_id' => 'Uphostery No.',
+            'is_tracking_no' => 'Add Tracking No.',
             'date' => 'Date',
             'type' => 'Type',
             'first_check' => 'Release to Service',
@@ -55,12 +56,12 @@ class UphosteryArc extends \yii\db\ActiveRecord
             'form_tracking_no' => 'Form Tracking No',
         ];
     }
-    /* id = uphostery order id */
-    public static function getUphosteryArc($id=null) {
+    /* id = uphostery id */
+    public static function getUphosteryArc($id=null,$uphostery_part_id) {
         if ( $id === null ) {
             return UphosteryArc::find()->all();
         }
-        return UphosteryArc::find()->where(['uphostery_id' => $id])->all();
+        return UphosteryArc::find()->where(['uphostery_id' => $id])->andWhere(['uphostery_part_id'=>$uphostery_part_id])->all();
     }
     public function getUphostery(){
         return $this->hasOne(Uphostery::className(), ['id' => 'uphostery_id']);

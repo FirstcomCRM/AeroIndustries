@@ -31,7 +31,7 @@ class WorkOrderArc extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['work_order_id', 'work_order_part_id', 'first_check', 'second_check', 'third_check', 'forth_check', 'form_tracking_no'], 'integer'],
+            [['work_order_id', 'work_order_part_id', 'first_check', 'second_check', 'third_check', 'forth_check','is_tracking_no','form_tracking_no'], 'integer'],
             [['date','name','arc_status','arc_remarks'], 'safe'],
             [['type'], 'string'],
             [['date', 'type'], 'required'],
@@ -46,6 +46,7 @@ class WorkOrderArc extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'work_order_id' => 'Work Order No.',
+            'is_tracking_no' => 'Add Tracking No.',
             'date' => 'Date',
             'type' => 'Type',
             'first_check' => 'Release to Service',
@@ -56,11 +57,11 @@ class WorkOrderArc extends \yii\db\ActiveRecord
         ];
     }
     /* id = work order id */
-    public static function getWorkOrderArc($id=null) {
+    public static function getWorkOrderArc($id=null,$work_order_part_id) {
         if ( $id === null ) {
             return WorkOrderArc::find()->all();
         }
-        return WorkOrderArc::find()->where(['work_order_id' => $id])->all();
+        return WorkOrderArc::find()->where(['work_order_id' => $id])->andWhere(['work_order_part_id'=>$work_order_part_id])->all();
     }
     public function getWorkOrder(){
         return $this->hasOne(WorkOrder::className(), ['id' => 'work_order_id']);

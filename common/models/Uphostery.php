@@ -50,7 +50,7 @@ class Uphostery extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['uphostery_no', 'customer_id', 'created_by', 'updated_by', 'deleted'], 'integer'],
+            [['uphostery_no', 'customer_id', 'created_by', 'updated_by', 'deleted','is_do','delivery_order_id'], 'integer'],
             [['date', 'received_date', 'created', 'updated', 'on_dock_date', 'needs_by_date','approval_date'], 'safe'],
             [['uphostery_type', 'status','uphostery_scope', 'qc_notes', 'complaint','remark'], 'string'],
             [['customer_po_no'], 'string', 'max' => 25],
@@ -64,6 +64,11 @@ class Uphostery extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'is_receiving' => 'Receiving Inspection',
+            'is_preliminary' => 'Preliminary Inspection',
+            'is_hidden' => 'Hidden Inspection',
+            'is_traveler' => 'Uphosterysheet',
+            'is_final' => 'Final Inspection',
             'uphostery_no' => 'Uphostery No',
             'customer_id' => 'Customer',
             'customer_po_no' => 'Customer Po No',
@@ -208,8 +213,8 @@ class Uphostery extends \yii\db\ActiveRecord
         $stockIds = $requisition['stock_id'];
         $uphostery = Uphostery::getUphostery($uphostery_id);
         $uphosteryNo = '';
-        if ( $uphostery->work_scope && $uphostery->work_type ) {
-            $uphosteryNo = Setting::getUphosteryNo($uphostery->work_type,$uphostery->work_scope,$uphostery->uphostery_no);
+        if ( $uphostery->uphostery_scope && $uphostery->uphostery_type ) {
+            $uphosteryNo = Setting::getUphosteryNo($uphostery->uphostery_type,$uphostery->uphostery_scope,$uphostery->uphostery_no);
         }
         foreach ( $stockIds as $key => $stock_id ) {
             $partId = $requisition['part_id'][$key];

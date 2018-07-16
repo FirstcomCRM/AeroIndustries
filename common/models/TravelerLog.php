@@ -51,8 +51,12 @@ class TravelerLog extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
         ];
     }
-    public function getTravelerLog($id=null) {
+    public static function getTravelerLog($id=null) {
         $TravelerLog = TravelerLog::find()->where(['traveler_id' => $id])->orderBy('id DESC')->all();
+        return $TravelerLog;
+    }
+    public static function getLatestTravelerLog($id=null) {
+        $TravelerLog = TravelerLog::find()->where(['traveler_id' => $id])->orderBy('id DESC')->one();
         return $TravelerLog;
     }
 }

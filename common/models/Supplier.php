@@ -43,11 +43,11 @@ class Supplier extends \yii\db\ActiveRecord
         return [
             [['p_currency', 'created_by', 'updated_by'], 'integer'],
             [['survey_date', 'status','created', 'updated','approval_status'], 'safe'],
-            [['company_name'], 'string', 'max' => 100],
+            [['company_name', 'scope_of_approval'], 'string', 'max' => 100],
             [['addr', 'p_addr_1', 'p_addr_2', 'p_addr_3'], 'string', 'max' => 500],
             [['contact_person'], 'string', 'max' => 45],
             [['email'], 'string', 'max' => 255],
-            [['contact_no', 'scope_of_approval'], 'string', 'max' => 20],
+            [['contact_no'], 'string', 'max' => 20],
             [['title'], 'string', 'max' => 45],
         ];
     }
@@ -77,7 +77,7 @@ class Supplier extends \yii\db\ActiveRecord
         ];
     }
     public static function dataSupplier($id=null) {
-        return ArrayHelper::map(Supplier::find()->where(['<>','status','inactive'])->all(), 'id', 'company_name');
+        return ArrayHelper::map(Supplier::find()->where(['<>','status','inactive'])->andWhere(['<>','deleted','1'])->andWhere(['approval_status' => 'approved'])->all(), 'id', 'company_name');
     }
 
     public static function getSupplier($id=null) {

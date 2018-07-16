@@ -50,7 +50,7 @@ class WorkOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['work_order_no', 'customer_id', 'created_by', 'updated_by', 'deleted'], 'integer'],
+            [['work_order_no', 'customer_id', 'created_by', 'updated_by', 'deleted','is_do','delivery_order_id'], 'integer'],
             [['date', 'received_date', 'created', 'updated', 'on_dock_date', 'needs_by_date','approval_date'], 'safe'],
             [['work_type', 'status','work_scope', 'qc_notes', 'complaint','remark'], 'string'],
             [['customer_po_no'], 'string', 'max' => 25],
@@ -64,6 +64,11 @@ class WorkOrder extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'is_receiving' => 'Receiving Inspection',
+            'is_preliminary' => 'Preliminary Inspection',
+            'is_hidden' => 'Hidden Inspection',
+            'is_traveler' => 'Worksheet',
+            'is_final' => 'Final Inspection',
             'work_order_no' => 'Work Order No',
             'customer_id' => 'Customer',
             'customer_po_no' => 'Customer Po No',
@@ -239,7 +244,13 @@ class WorkOrder extends \yii\db\ActiveRecord
     } 
     public static function saveStockReturned($requisition,$work_order_id,$work_order_part_id) {
         $partIds = $requisition['part_id'];
+        $workOrder = WorkOrder::getWorkOrder($work_order_id);
+        $workOrderNo = '';
+        if ( $workOrder->work_scope && $workOrder->work_type ) {
+            $workOrderNo = Setting::getWorkNo($workOrder->work_type,$workOrder->work_scope,$workOrder->work_order_no);
+        }
         foreach ( $partIds as $key => $part_id ) {
+            $partId = $requisition['part_id'][$key];
             /* get stock */
             $stock_id = $requisition['stock_id'][$key];
             $qty_returned = $requisition['qty_returned'][$key];
@@ -259,6 +270,9 @@ class WorkOrder extends \yii\db\ActiveRecord
                 $getWSR->qty_stock = $newStockQty;
                 $getWSR->status = 'closed';
                 $getWSR->save();
+                $text = 'Stock return';
+                Stock::updateStockHistory($partId,$workOrderNo,$requisition['return_qty'][$key],$text);
+                Stock::stockReturn($stock_id,$requisition['return_qty'][$key],$hour_used);
             }
         } /* foreach Part id */
     } 

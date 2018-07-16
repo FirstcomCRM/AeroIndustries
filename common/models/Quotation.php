@@ -43,7 +43,7 @@ class Quotation extends \yii\db\ActiveRecord
     {
         return [
             [['quotation_no','customer_id', 'p_currency','created_by', 'updated_by','status','deleted','work_order_id','quotation_no'], 'integer'],
-            [['date', 'created', 'updated','approved','certification'], 'safe'],
+            [['date', 'created', 'updated','approved','certification','quotation_type'], 'safe'],
             [['subtotal', 'grand_total','gst_rate'], 'number'],
             [['reference', 'attention', 'p_term', 'lead_time', 'd_term','customer_po'], 'string', 'max' => 45],
             [['remark'], 'string', 'max' => 500],

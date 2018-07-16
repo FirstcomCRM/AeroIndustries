@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property integer $supplier_id
- * @property integer $general_po_id
+ * @property integer $tool_po_id
  * @property integer $storage_location_id
  * @property integer $receiver_no
  * @property integer $part_id
@@ -36,6 +36,7 @@ use yii\helpers\ArrayHelper;
 class Tool extends \yii\db\ActiveRecord
 {   
     public $qty;
+    public $attachment;
     /**
      * @inheritdoc
      */
@@ -50,11 +51,12 @@ class Tool extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'general_po_id', 'storage_location_id', 'receiver_no', 'part_id', 'unit_id', 'shelf_life', 'hour_used', 'time_used', 'status', 'created_by', 'updated_by', 'deleted','in_used','work_order_id'], 'integer'],
-            [['unit_price', 'quantity'], 'number'],
-            [['expiration_date', 'received', 'created', 'updated','last_cali','next_cali','serial_no'], 'safe'],
+            [['supplier_id', 'tool_po_id', 'storage_location_id', 'receiver_no', 'part_id', 'currency_id', 'unit_id', 'shelf_life', 'hour_used', 'time_used', 'created_by', 'updated_by', 'deleted','in_used','work_order_id'], 'integer'],
+            [['unit_price', 'quantity','usd_price','freight'], 'number'],
+            [['expiration_date', 'received', 'created', 'updated','last_cali','next_cali','serial_no', 'status'], 'safe'],
             [['desc', 'note'], 'string', 'max' => 255],
             [['batch_no'], 'string', 'max' => 10],
+            [['attachment'], 'file', 'maxFiles' => 1],
         ];
     }
 
@@ -66,7 +68,7 @@ class Tool extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'supplier_id' => 'Supplier',
-            'general_po_id' => 'Purchase Order No',
+            'tool_po_id' => 'Purchase Order No',
             'storage_location_id' => 'Storage Location',
             'receiver_no' => 'Receiver No',
             'part_id' => 'Part',

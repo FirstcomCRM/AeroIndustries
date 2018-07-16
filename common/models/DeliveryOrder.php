@@ -21,6 +21,7 @@ use Yii;
  */
 class DeliveryOrder extends \yii\db\ActiveRecord
 {
+    public $attachment;
     /**
      * @inheritdoc
      */
@@ -35,12 +36,13 @@ class DeliveryOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date', 'created','address'], 'safe'],
-            [['customer_id', 'created_by' ,'delivery_order_no','is_attachment'], 'integer'],
+            [['date', 'created','address','sco_no','delivery_order_no','value'], 'safe'],
+            [['customer_id', 'created_by' ,'is_attachment','deleted'], 'integer'],
             [['ship_to'], 'string', 'max' => 500],
             [['contact_no'], 'string', 'max' => 20],
             [['status'], 'string', 'max' => 12],
             [['date'], 'required'],
+            [['attachment'], 'file', 'maxFiles' => 1],
         ];
     }
 
@@ -51,12 +53,13 @@ class DeliveryOrder extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'delivery_order_no' => 'Delivery Order No',
+            'sco_no' => 'SCO No.',
+            'delivery_order_no' => 'Delivery Order No.',
             'date' => 'Date',
             'is_attachment' => 'Attachment',
             'customer_id' => 'Customer',
             'ship_to' => 'Ship To',
-            'contact_no' => 'Contact No',
+            'contact_no' => 'Contact No.',
             'status' => 'Status',
             'created' => 'Created',
             'created_by' => 'Created By',

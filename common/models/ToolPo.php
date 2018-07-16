@@ -6,7 +6,7 @@ use yii\helpers\ArrayHelper;
 use Yii;
 
 /**
- * This is the model class for table "general_po".
+ * This is the model class for table "tool_po".
  *
  * @property integer $id
  * @property integer $purchase_order_no
@@ -35,14 +35,14 @@ use Yii;
  * @property string $approved
  * @property integer $deleted
  */
-class GeneralPo extends \yii\db\ActiveRecord
+class ToolPo extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'general_po';
+        return 'tool_po';
     }
 
     /**
@@ -73,12 +73,13 @@ class GeneralPo extends \yii\db\ActiveRecord
             'purchase_order_no' => 'Purchase Order No',
             'supplier_id' => 'Supplier',
             'attention' => 'Attention',
-            'supplier_ref_no' => 'Supplier Ref No',
-            'payment_addr' => 'Payment Addr',
-            'issue_date' => 'Issue Date',
+            'supplier_ref_no' => 'Ref No',
+            'payment_addr' => 'Supplier Address',
+            'issue_date' => 'PO Date',
             'delivery_date' => 'Delivery Date',
             'p_term' => 'Payment Term',
-            'p_currency' => 'Payment Currency',
+            'p_currency' => 'PO Currency',
+            'q_currency' => 'Quotation Currency',
             'ship_via' => 'Ship Via',
             'ship_to' => 'Ship To',
             'subtotal' => 'Subtotal',
@@ -104,7 +105,7 @@ class GeneralPo extends \yii\db\ActiveRecord
      */
     public function getSupplier()
     {
-        return $this->hasOne(GpoSupplier::className(), ['id' => 'supplier_id']);
+        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
     }
     /**
      * @return \yii\db\ActiveQuery
@@ -113,24 +114,24 @@ class GeneralPo extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Currency::className(), ['id' => 'p_currency']);
     }
-    public static function getGeneralPo($id=null) {
+    public static function getToolPo($id=null) {
         if ( $id === null ) {
-            return GeneralPo::find()->all();
+            return ToolPo::find()->all();
         }
-        return GeneralPo::find()->where(['id' => $id])->one();
+        return ToolPo::find()->where(['id' => $id])->one();
     }
 
-    public static function getGPONo($purchase_order_no,$created) {
+    public static function getTPONo($purchase_order_no,$created) {
         $ymdHis = explode(' ',$created);
         $yyyymmdd = explode('-', $ymdHis[0]);
         $yyyy = $yyyymmdd[0];
         $yy = substr($yyyy, 2, 2);
         $yymm = $yy.$yyyymmdd[1];
-        $poNumber = "AIS-GPO$yymm" . sprintf("%003d", $purchase_order_no);
+        $poNumber = "AIS-TPO$yymm" . sprintf("%003d", $purchase_order_no);
         return $poNumber;
     }
-    public static function getGPONoById($purchase_order_id) {
-        $gasd = GeneralPo::getGeneralPo($purchase_order_id);
+    public static function getTPONoById($purchase_order_id) {
+        $gasd = ToolPo::getToolPo($purchase_order_id);
         $created = $gasd->created;
         $purchase_order_no = $gasd->purchase_order_no;
         $ymdHis = explode(' ',$created);
@@ -138,18 +139,18 @@ class GeneralPo extends \yii\db\ActiveRecord
         $yyyy = $yyyymmdd[0];
         $yy = substr($yyyy, 2, 2);
         $yymm = $yy.$yyyymmdd[1];
-        $poNumber = "AIS-GPO$yymm" . sprintf("%003d", $purchase_order_no);
+        $poNumber = "AIS-TPO$yymm" . sprintf("%003d", $purchase_order_no);
         return $poNumber;
     }
-    public static function dataGPO() {
-        return ArrayHelper::map(GeneralPo::find()->where(['<>','deleted',1])->andWhere(['approved'=>'approved'])->orderBy('id DESC')->all(), 'id', 'purchase_order_no');
+    public static function dataTPO() {
+        return ArrayHelper::map(ToolPo::find()->where(['<>','deleted',1])->andWhere(['approved'=>'approved'])->orderBy('id DESC')->all(), 'id', 'purchase_order_no');
     }
-    public static function dataAllGPO() {
-        return ArrayHelper::map(GeneralPo::find()->where(['<>','deleted',1])->andWhere(['<>','approved','cancelled'])->orderBy('id DESC')->all(), 'id', 'purchase_order_no');
+    public static function dataAllTPO() {
+        return ArrayHelper::map(ToolPo::find()->where(['<>','deleted',1])->andWhere(['<>','approved','cancelled'])->orderBy('id DESC')->all(), 'id', 'purchase_order_no');
     }
-    public static function dataAllGPOCreated() {
-        return ArrayHelper::map(GeneralPo::find()->where(['<>','deleted',1])->andWhere(['<>','approved','cancelled'])->orderBy('id DESC')->all(), 'id', 'created');
+    public static function dataAllTPOCreated() {
+        return ArrayHelper::map(ToolPo::find()->where(['<>','deleted',1])->andWhere(['<>','approved','cancelled'])->orderBy('id DESC')->all(), 'id', 'created');
     }
 
 
-}
+}   

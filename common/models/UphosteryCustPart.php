@@ -81,7 +81,7 @@ class UphosteryCustPart extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
         ];
     }
-    /* id = uphostery order id */
+    /* id = work order id */
     public static function getUphosteryCustPart($id=null) {
         if ( $id === null ) {
             return UphosteryCustPart::find()->all();

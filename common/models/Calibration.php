@@ -23,6 +23,7 @@ use Yii;
  */
 class Calibration extends \yii\db\ActiveRecord
 {
+    public $attachment;
     /**
      * @inheritdoc
      */

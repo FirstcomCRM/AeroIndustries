@@ -90,8 +90,35 @@ class Part extends \yii\db\ActiveRecord
     public static function dataPart($id=null) {
         return ArrayHelper::map(Part::find()->where(['status'=>'active'])->all(), 'id', 'part_no');
     }
-    public static function dataPartStock($id=null) {
-        return ArrayHelper::map(Part::find()->where(['status'=>'active'])->andWhere(['type' => 'part'])->all(), 'id', 'part_no');
+    public static function dataPartStock($supplier_id=null) {
+        if ( !empty( $supplier_id ) ){
+            $parts = Part::find()
+                    ->where(['status'=>'active'])
+                    ->andWhere(['type' => 'part'])
+                    ->andWhere(['supplier_id' => $supplier_id])
+                    ->all();
+                    if($parts){
+                        return ArrayHelper::map($parts, 'id', 'part_no');
+                    }
+            return [];
+
+        }
+        return [];
+    }
+    public static function dataToolStock($supplier_id=null) {
+        if ( !empty( $supplier_id ) ){
+            $parts = Part::find()
+                    ->where(['status'=>'active'])
+                    ->andWhere(['type' => 'tool'])
+                    ->andWhere(['supplier_id' => $supplier_id])
+                    ->all();
+                    if($parts){
+                        return ArrayHelper::map($parts, 'id', 'part_no');
+                    }
+            return [];
+
+        }
+        return [];
     }
     public static function dataPartTool($id=null) {
         return ArrayHelper::map(Part::find()->where(['status'=>'active'])->andWhere(['type' => 'tool'])->all(), 'id', 'part_no');

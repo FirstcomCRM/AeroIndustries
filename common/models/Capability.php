@@ -39,7 +39,7 @@ class Capability extends \yii\db\ActiveRecord
         return [
             [['deleted', 'created_by', 'updated_by'], 'integer'],
             [['created', 'updated'], 'safe'],
-            [['part_no', 'workscope'], 'string', 'max' => 45],
+            [['part_no', 'workscope','ref_document_no'], 'string', 'max' => 45],
             [['description', 'manufacturer'], 'string', 'max' => 100],
             [['ata_chapter'], 'string', 'max' => 14],
             [['rating'], 'string', 'max' => 5],
@@ -58,6 +58,7 @@ class Capability extends \yii\db\ActiveRecord
             'manufacturer' => 'Manufacturer',
             'workscope' => 'Workscope',
             'ata_chapter' => 'Ata Chapter',
+            'ref_document_no' => 'Reference Document No.',
             'rating' => 'Rating',
             'deleted' => 'Deleted',
             'created' => 'Created',

@@ -43,13 +43,13 @@ class Customer extends \yii\db\ActiveRecord
     {
         return [
             [['b_currency','created_by','updated_by','deleted'], 'integer'],
-            [['created', 'updated', 'status'], 'safe'],
+            [['created', 'updated', 'status','account_no'], 'safe'],
             [['name', 'email'], 'string', 'max' => 255],
             [['freight_forwarder', 'company_name'], 'string', 'max' => 100],
             [['addr_1', 'addr_2', 's_addr_1', 's_addr_2', 'b_addr_1', 'b_addr_2'], 'string', 'max' => 500],
-            [['contact_person','contact'], 'string', 'max' => 45],
-            [['contact_no', 'b_term'], 'string', 'max' => 20],
-            [['title'], 'string', 'max' => 50],
+            [['contact_person','contact','contact_person_2','contact_person_3'], 'string', 'max' => 45],
+            [['contact_no', 'b_term','fax'], 'string', 'max' => 20],
+            [['title','code'], 'string', 'max' => 50],
         ];
     }
 
@@ -75,7 +75,7 @@ class Customer extends \yii\db\ActiveRecord
             'b_currency' => 'B Currency',
             'status' => 'Status',
             'created' => 'Created',
-            'updated' => 'Updated',
+            'account_no' => 'Freight Forwarder Account No.',
         ];
     }
 

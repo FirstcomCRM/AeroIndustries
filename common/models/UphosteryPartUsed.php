@@ -68,14 +68,14 @@ class UphosteryPartUsed extends \yii\db\ActiveRecord
     }
 
 
-    /* id = uphostery order id */
+    /* id = uphostery  id */
     public static function getUphosteryPartUsed($id=null) {
         if ( $id === null ) {
             return UphosteryPartUsed::find()->all();
         }
         return UphosteryPartUsed::find()->where(['uphostery_id' => $id])->all();
     }
-    /* id = uphostery order id */
+    /* id = uphostery  id */
     public static function getOneUphosteryPartUsed($id=null) {
         return UphosteryPartUsed::find()->where(['id' => $id])->one();
     }

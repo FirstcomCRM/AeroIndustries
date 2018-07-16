@@ -32,8 +32,8 @@ class DeliveryOrderDetail extends \yii\db\ActiveRecord
     {
         return [
             [['delivery_order_id', 'quantity'], 'integer'],
-            [['desc', 'remark'], 'string', 'max' => 45],
-            [['part_no', 'work_order_no'],'safe'],
+            [['desc'], 'string', 'max' => 45],
+            [['part_no', 'work_order_no', 'remark'],'safe'],
             [['po_no'], 'string', 'max' => 15],
         ];
     }

@@ -48,6 +48,7 @@ class SearchSetting extends Setting
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $dataProvider->query->where(['<>','deleted', 1]);
 
         $this->load($params);
 

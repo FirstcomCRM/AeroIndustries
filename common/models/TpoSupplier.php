@@ -3,7 +3,7 @@
 namespace common\models;
 
 use Yii;
-use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "gpo_supplier".
  *
@@ -28,7 +28,7 @@ use yii\helpers\ArrayHelper;
  * @property string $updated
  * @property integer $deleted
  */
-class GpoSupplier extends \yii\db\ActiveRecord
+class TpoSupplier extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -47,7 +47,7 @@ class GpoSupplier extends \yii\db\ActiveRecord
             [['p_currency', 'created_by', 'updated_by', 'deleted'], 'integer'],
             [['survey_date', 'created', 'updated'], 'safe'],
             [['status'], 'string'],
-            [['company_name'], 'string', 'max' => 100],
+            [['company_name', 'scope_of_approval'], 'string', 'max' => 100],
             [['addr', 'p_addr_1', 'p_addr_2', 'p_addr_3'], 'string', 'max' => 500],
             [['contact_person', 'title', 'approval_status'], 'string', 'max' => 45],
             [['email'], 'string', 'max' => 255],
@@ -82,16 +82,5 @@ class GpoSupplier extends \yii\db\ActiveRecord
             'updated' => 'Updated',
             'deleted' => 'Deleted',
         ];
-    }
-
-    public static function dataSupplier($id=null) {
-        return ArrayHelper::map(GpoSupplier::find()->where(['<>','status','inactive'])->all(), 'id', 'company_name');
-    }
-
-    public static function getSupplier($id=null) {
-        if ( $id === null ) {
-            return GpoSupplier::find()->all();
-        }
-        return GpoSupplier::find()->where(['id' => $id])->one();
     }
 }

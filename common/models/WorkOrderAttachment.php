@@ -48,7 +48,19 @@ class WorkOrderAttachment extends \yii\db\ActiveRecord
         ];
     }
     /* id = work order id */
-    public static function getWorkOrderAttachmentW($id=null,$work_order_part_id) {
+    public static function getWorkOrderAttachmentW($id=null) {
+        if ( $id === null ) {
+            return WorkOrderAttachment::find()
+            ->all();
+        }
+        return WorkOrderAttachment::find()
+        ->where(['work_order_id' => $id])
+        ->andWhere(['work_order_part_id' => 0])
+        ->andWhere(['type' => 'work_order'])
+        ->all();
+    }
+    /* id = work order id */
+    public static function getWorkOrderAttachmentR($id=null,$work_order_part_id) {
         if ( $id === null ) {
             return WorkOrderAttachment::find()
             ->all();
@@ -56,7 +68,7 @@ class WorkOrderAttachment extends \yii\db\ActiveRecord
         return WorkOrderAttachment::find()
         ->where(['work_order_id' => $id])
         ->andWhere(['work_order_part_id' => $work_order_part_id])
-        ->andWhere(['type' => 'work_order'])
+        ->andWhere(['type' => 'receiving'])
         ->all();
     }
     /* id = work order id */

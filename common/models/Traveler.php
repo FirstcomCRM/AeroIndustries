@@ -47,7 +47,7 @@ class Traveler extends \yii\db\ActiveRecord
             [['traveler_no'], 'string', 'max' => 15],
             [['job_type'], 'string', 'max' => 12],
             [['desc'], 'string', 'max' => 100],
-            [['effectivity'], 'string', 'max' => 20],
+            [['effectivity'], 'string', 'max' => 50],
             [['discont_reason'], 'string', 'max' => 500],
             [['attachment'], 'file', 'maxFiles' => 1],
         ];

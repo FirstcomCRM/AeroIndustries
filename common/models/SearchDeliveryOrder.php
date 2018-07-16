@@ -15,6 +15,7 @@ class SearchDeliveryOrder extends DeliveryOrder
     public $from_date;
     public $to_date;
     public $customer_name;
+    public $work_order_no;
     /**
      * @inheritdoc
      */
@@ -22,7 +23,7 @@ class SearchDeliveryOrder extends DeliveryOrder
     {
         return [
             [['id', 'customer_id', 'created_by'], 'integer'],
-            [['delivery_order_no', 'date', 'ship_to', 'contact_no', 'status', 'created','from_date', 'to_date','customer_name'], 'safe'],
+            [['delivery_order_no', 'date', 'ship_to', 'contact_no', 'status', 'created','from_date', 'to_date','customer_name','work_order_no'], 'safe'],
         ];
     }
 
@@ -46,12 +47,15 @@ class SearchDeliveryOrder extends DeliveryOrder
     {
         $query = DeliveryOrder::find();
         $query->joinWith(['customer']);
+        // $query->joinWith(['work_order']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['id'=>SORT_DESC]]
         ]);
+        $dataProvider->query->where(['<>','delivery_order.deleted', 1]);
 
         $this->load($params);
 
@@ -60,10 +64,14 @@ class SearchDeliveryOrder extends DeliveryOrder
             // $query->where('0=1');
             return $dataProvider;
         }
+        $delivery_order_id = '';
+        if (isset($_GET['delivery_order_id']) ) {
+            $delivery_order_id = $_GET['delivery_order_id'];
+        }
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'delivery_order.id' => $delivery_order_id,
             'date' => $this->date,
             'customer_id' => $this->customer_id,
             'created' => $this->created,
@@ -82,6 +90,7 @@ class SearchDeliveryOrder extends DeliveryOrder
             ->andFilterWhere(['like', 'ship_to', $this->ship_to])
             ->andFilterWhere(['like', 'contact_no', $this->contact_no])
             ->andFilterWhere(['like', 'customer.name', $this->customer_name])
+            // ->andFilterWhere(['like', 'work_order.work_order_no', $this->work_order_no])
             ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['>=', 'delivery_order.date', $startDate])
             ->andFilterWhere(['<=', 'delivery_order.date', $endDate]);

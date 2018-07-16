@@ -122,4 +122,16 @@ class UphosteryAttachment extends \yii\db\ActiveRecord
         ->andWhere(['type' => 'traveler'])
         ->all();
     }
+    /* id = uphostery id */
+    public static function getUphosteryAttachmentPI($id=null,$uphostery_part_id) {
+        if ( $id === null ) {
+            return UphosteryAttachment::find()
+            ->all();
+        }
+        return UphosteryAttachment::find()
+        ->where(['uphostery_id' => $id])
+        ->andWhere(['uphostery_part_id' => $uphostery_part_id])
+        ->andWhere(['type' => 'processing_inspection'])
+        ->all();
+    }
 }

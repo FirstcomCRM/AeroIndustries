@@ -18,7 +18,7 @@ class SearchTool extends Tool
     public function rules()
     {
         return [
-            [['id', 'supplier_id', 'general_po_id', 'storage_location_id', 'receiver_no', 'part_id', 'quantity', 'unit_id', 'shelf_life', 'hour_used', 'time_used', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
+            [['id', 'supplier_id', 'tool_po_id', 'storage_location_id', 'receiver_no', 'part_id', 'quantity', 'unit_id', 'shelf_life', 'hour_used', 'time_used', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
             [['desc', 'batch_no', 'note', 'expiration_date', 'received', 'created', 'updated'], 'safe'],
             [['unit_price'], 'number'],
         ];
@@ -64,7 +64,7 @@ class SearchTool extends Tool
         $query->andFilterWhere([
             'id' => $this->id,
             'supplier_id' => $this->supplier_id,
-            'general_po_id' => $this->general_po_id,
+            'tool_po_id' => $this->tool_po_id,
             'storage_location_id' => $this->storage_location_id,
             'receiver_no' => $this->receiver_no,
             'part_id' => $this->part_id,
@@ -117,7 +117,7 @@ class SearchTool extends Tool
         $query->andFilterWhere([
             'id' => $this->id,
             'supplier_id' => $this->supplier_id,
-            'general_po_id' => $this->general_po_id,
+            'tool_po_id' => $this->tool_po_id,
             'storage_location_id' => $this->storage_location_id,
             'receiver_no' => $this->receiver_no,
             'part_id' => $this->part_id,

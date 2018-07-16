@@ -5,10 +5,10 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "general_po_detail".
+ * This is the model class for table "tool_po_detail".
  *
  * @property integer $id
- * @property integer $general_po_id
+ * @property integer $tool_po_id
  * @property integer $part_id
  * @property integer $quantity
  * @property string $unit_price
@@ -17,14 +17,14 @@ use Yii;
  * @property string $subtotal
  * @property integer $received
  */
-class GeneralPoDetail extends \yii\db\ActiveRecord
+class ToolPoDetail extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'general_po_detail';
+        return 'tool_po_detail';
     }
 
     /**
@@ -33,9 +33,8 @@ class GeneralPoDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['general_po_id','quantity', 'unit_id', 'received'], 'integer'],
+            [['tool_po_id', 'part_id', 'quantity', 'unit_id', 'received'], 'integer'],
             [['unit_price', 'freight', 'subtotal'], 'number'],
-            [['part_id'],'string']
         ];
     }
 
@@ -46,7 +45,7 @@ class GeneralPoDetail extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'general_po_id' => 'General Po ID',
+            'tool_po_id' => 'Tool Po ID',
             'part_id' => 'Part ID',
             'quantity' => 'Quantity',
             'unit_price' => 'Unit Price',
@@ -56,10 +55,10 @@ class GeneralPoDetail extends \yii\db\ActiveRecord
             'received' => 'Received',
         ];
     }
-    public static function getGeneralPoDetail($id=null) {
+    public static function getToolPoDetail($id=null) {
         if ( $id === null ) {
-            return GeneralPoDetail::find()->all();
+            return ToolPoDetail::find()->all();
         }
-        return GeneralPoDetail::find()->where(['general_po_id' => $id])->all();
+        return ToolPoDetail::find()->where(['tool_po_id' => $id])->all();
     }
 }

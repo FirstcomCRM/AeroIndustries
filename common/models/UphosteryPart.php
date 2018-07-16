@@ -60,11 +60,11 @@ class UphosteryPart extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['desc', 'arc_remarks', 'corrective', 'remarks'], 'string'],
-            [['traveler_id', 'template_id', 'is_document', 'is_tag', 'is_id', 'is_discrepancy','uphostery_id', 'created_by', 'updated_by', 'deleted','location_id','quantity'], 'integer'],
+            [['desc', 'corrective', 'remarks','man_hour','productive_hour'], 'string'],
+            [['traveler_id', 'template_id', 'is_document', 'is_tag', 'is_id', 'is_discrepancy','uphostery_id', 'created_by', 'updated_by', 'deleted','location_id','quantity','is_processing','is_receiving','is_preliminary','is_hidden','is_traveler','is_final'], 'integer'],
             [['preliminary_date', 'disposition_date', 'hidden_date', 'final_inspection_date', 'repair_supervisor', 'updated', 'created'], 'safe'],
             [['part_no', 'model', 'serial_no', 'batch_no', 'new_part_no'], 'string', 'max' => 50],
-            [['manufacturer', 'arc_status', 'ac_tail_no', 'ac_msn', 'tag_type', 'identify_from', 'part_no_1', 'part_no_2', 'part_no_3', 'status','pma_used'], 'string', 'max' => 45],
+            [['manufacturer', 'ac_tail_no', 'ac_msn', 'tag_type', 'identify_from', 'part_no_1', 'part_no_2', 'part_no_3', 'status','pma_used'], 'string', 'max' => 45],
         ];
     }
 
@@ -76,6 +76,12 @@ class UphosteryPart extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'part_no' => 'Part No',
+            'is_receiving' => 'Receiving Inspection',
+            'is_preliminary' => 'Preliminary Inspection',
+            'is_hidden' => 'Hidden Inspection',
+            'is_traveler' => 'Uphosterysheet',
+            'is_final' => 'Final Inspection',
+            'productive_hour' => 'Prod. Hour',
             'desc' => 'Desc',
             'manufacturer' => 'Manufacturer',
             'model' => 'Model',
@@ -127,6 +133,7 @@ class UphosteryPart extends \yii\db\ActiveRecord
     }
 
     public static function saveWo($uphosteryParts,$uphosteryId) {
+        // dx($uphosteryParts);
         $part_nos = $uphosteryParts['part_no'];
         $postData = Yii::$app->request->post();
         foreach ( $part_nos as $key => $part_no ){
@@ -147,6 +154,9 @@ class UphosteryPart extends \yii\db\ActiveRecord
                     $oldWOP->template_id = isset($uphosteryParts['template_id'][$key-1])?$uphosteryParts['template_id'][$key-1]:0;
                     $oldWOP->quantity = $uphosteryParts['quantity'][$key];
                     $oldWOP->deleted = $uphosteryParts['deleted'][$key];
+                    $oldWOP->man_hour = $uphosteryParts['man_hour'][$key];
+                    $oldWOP->productive_hour = $uphosteryParts['productive_hour'][$key];
+                    $oldWOP->new_part_no = $uphosteryParts['new_part_no'][$key];
                     $oldWOP->save();
                 } else {
                     $newWOP = new UphosteryPart();
@@ -164,10 +174,7 @@ class UphosteryPart extends \yii\db\ActiveRecord
                     $newWOP->template_id = isset($uphosteryParts['template_id'][$key-1])?$uphosteryParts['template_id'][$key-1]:0;
                     $newWOP->quantity = $uphosteryParts['quantity'][$key];
                     $newWOP->save();
-
-
                 }
-
             }
         }
     }

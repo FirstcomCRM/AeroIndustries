@@ -5,6 +5,7 @@ use common\models\Part;
 use common\models\Supplier;
 use common\models\User;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
 
 use Yii;
 
@@ -26,6 +27,7 @@ use Yii;
 class Stock extends \yii\db\ActiveRecord
 {
     public $total_quantity;
+    public $attachment;
     /**
      * @inheritdoc
      */
@@ -46,6 +48,7 @@ class Stock extends \yii\db\ActiveRecord
             [['batch_no'], 'string', 'max' => 10],
             [['part_id', 'quantity', 'storage_location_id','unit_id'], 'required'],
             // [['quantity'], 'each', 'rule' => ['required']],
+            [['attachment'], 'file', 'maxFiles' => 1],
         ];
     }
     /**
@@ -278,11 +281,11 @@ class Stock extends \yii\db\ActiveRecord
                                 "SELECT quantity - received AS bal  FROM `purchase_order_detail` WHERE (`purchase_order_id`= $po_id) "
                                 )->queryAll();
             } else {
-                $purchaseOrder = GeneralPo::find()->where(['id' => $po_id])->one();
-                $purchaseOrderDetail = GeneralPoDetail::find()->where(['general_po_id' => $po_id])->all();
+                $purchaseOrder = ToolPo::find()->where(['id' => $po_id])->one();
+                $purchaseOrderDetail = ToolPoDetail::find()->where(['tool_po_id' => $po_id])->all();
 
                 $checkAllReceived = Yii::$app->db->createCommand(
-                                "SELECT quantity - received AS bal  FROM `general_po_detail` WHERE (`general_po_id`= $po_id) "
+                                "SELECT quantity - received AS bal  FROM `tool_po_detail` WHERE (`tool_po_id`= $po_id) "
                                 )->queryAll();
 
             }
@@ -306,6 +309,8 @@ class Stock extends \yii\db\ActiveRecord
     }
     public static function saveStock($id,$model,$previousNo) {
         $data = array();
+
+      
         foreach ( $model->part_id as $key => $partId ) {
             $podId = Yii::$app->request->post()['podid'][$key];
             $stockType = Yii::$app->request->post()['stock_type'][$key];
@@ -345,7 +350,7 @@ class Stock extends \yii\db\ActiveRecord
 
                         /* update stock history */
                         Stock::updateStockHistory($partId,$poNo,$model->quantity[$key],'IN');
-
+                       
 
                         // } else {
                             /* reusable */
@@ -379,9 +384,11 @@ class Stock extends \yii\db\ActiveRecord
                 } /* if is stock type "part" */
                 /* part stock */
                 else if ($stockType == 'tool') {
+                    
+                    $poNo = ToolPo::getTPONoById($id);
                     /* if quantity received > 0 then only save */
                     $quantityToCheck = $model->quantity[$key];
-                    if(isset(Yii::$app->request->post()['stock_in'][$key])){
+                    // if(isset(Yii::$app->request->post()['stock_in'][$key])){
 
                         if ( $model->quantity[$key] > 0 ) { 
                             $toolQty = 1;
@@ -390,7 +397,7 @@ class Stock extends \yii\db\ActiveRecord
                                 $eachStock = new Tool();
                                 $eachStock->receiver_no = $previousNo;
 
-                                $eachStock->general_po_id = $id;
+                                $eachStock->tool_po_id = $id;
                                 $eachStock->supplier_id = $model->supplier_id;
                                 $eachStock->received = $model->received;
                                 $eachStock->part_id = $partId;
@@ -398,6 +405,7 @@ class Stock extends \yii\db\ActiveRecord
                                 $eachStock->batch_no = $model->batch_no[$key];
                                 $eachStock->quantity = 1;
                                 $eachStock->unit_id = $model->unit_id[$key];
+                                $eachStock->currency_id = $model->currency_id[$key];
                                 $eachStock->unit_price = $model->unit_price[$key];
                                 $eachStock->expiration_date = $model->expiration_date[$key];
                                 $eachStock->note = $model->note[$key];
@@ -413,11 +421,13 @@ class Stock extends \yii\db\ActiveRecord
 
                                 $quantityToCheck = $toolQty;
                                 $toolQty ++ ;
-                             } /* for loop */
+                            } /* for loop */
+
+                            Stock::updateStockHistory($partId,$poNo,$toolQty,'IN');
 
                         }/* if quantity received > 0 */
 
-                    }/* if need to update stock */
+                    // }/* if need to update stock */
 
                 } /* if is stock type "tool" */
 
@@ -430,7 +440,7 @@ class Stock extends \yii\db\ActiveRecord
 
                 $pod->save();
             } else {
-                $pod = GeneralPoDetail::find()->where(['id' => $podId])->one();
+                $pod = ToolPoDetail::find()->where(['id' => $podId])->one();
                 $podReceived = $pod->received;
                 $podReceived += $quantityToCheck;
                 $pod->received = $podReceived;
@@ -443,6 +453,39 @@ class Stock extends \yii\db\ActiveRecord
             $checkPOItemReceived[$podId] = $pod->received;
 
         }  /*  foreach part */
+        
+        $poAttachment = new PurchaseOrderAttachment();
+        if ($stockType == 'part') {
+            if ( $poAttachment->load(Yii::$app->request->post()) ) {
+                $poAttachment->attachment = UploadedFile::getInstances($poAttachment, 'attachment');
+                foreach ($poAttachment->attachment as $file) {
+                    $fileName = md5(date("YmdHis")).'-'.$file->name;
+                    $qAttachmentClass = explode('\\', get_class($poAttachment))[2];
+                    $file->saveAs('uploads/PurchaseOrderAttachment/'.$fileName);
+                    /* image upload */
+                    $poA = new PurchaseOrderAttachment();
+                    $poA->type = 'stock_in_attachment';
+                    $poA->purchase_order_id = $id;
+                    $poA->value = $fileName;
+                    $poA->save();
+                }
+            }
+        } else {
+            if ( $poAttachment->load(Yii::$app->request->post()) ) {
+                $poAttachment->attachment = UploadedFile::getInstances($poAttachment, 'attachment');
+                foreach ($poAttachment->attachment as $file) {
+                    $fileName = md5(date("YmdHis")).'-'.$file->name;
+                    $qAttachmentClass = explode('\\', get_class($poAttachment))[2];
+                    $file->saveAs('uploads/TpoAttachment/'.$fileName);
+                    /* image upload */
+                    $poA = new TpoAttachment();
+                    $poA->type = 'stock_in_attachment';
+                    $poA->tool_po_id = $id;
+                    $poA->value = $fileName;
+                    $poA->save();
+                }
+            } 
+        }
 
         $data['checkPOItemQuantity'] = $checkPOItemQuantity;
         $data['checkPOItemReceived'] = $checkPOItemReceived;

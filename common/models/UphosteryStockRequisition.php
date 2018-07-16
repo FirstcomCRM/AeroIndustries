@@ -90,16 +90,16 @@ class UphosteryStockRequisition extends \yii\db\ActiveRecord
         return $this->hasOne(Stock::className(), ['id' => 'stock_id']);
     }
 
-    public static function getWSRByUphosteryId($workOrderId) {
-        return UphosteryStockRequisition::find()->where(['uphostery_id' => $workOrderId])->all();
+    public static function getWSRByUphosteryId($uphosteryId) {
+        return UphosteryStockRequisition::find()->where(['uphostery_id' => $uphosteryId])->all();
     }
 
-    public static function getWSRByUphosteryPartId($workOrderPartId) {
-        return UphosteryStockRequisition::find()->where(['uphostery_part_id' => $workOrderPartId])->all();
+    public static function getWSRByUphosteryPartId($uphosteryPartId) {
+        return UphosteryStockRequisition::find()->where(['uphostery_part_id' => $uphosteryPartId])->all();
     }
 
-    public static function getWSR($stockId, $workOrderId,$workOrderPartId) {
-        return UphosteryStockRequisition::find()->where(['uphostery_id' => $workOrderId,'stock_id' => $stockId,'uphostery_part_id' => $workOrderPartId])->one();
+    public static function getWSR($stockId, $uphosteryId,$uphosteryPartId) {
+        return UphosteryStockRequisition::find()->where(['uphostery_id' => $uphosteryId,'stock_id' => $stockId,'uphostery_part_id' => $uphosteryPartId])->one();
     }
     public static function getWSRbyId($WSRID) {
         return UphosteryStockRequisition::find()->where(['id' => $WSRID])->one();

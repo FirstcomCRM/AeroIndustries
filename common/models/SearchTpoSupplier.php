@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\GpoSupplier;
+use common\models\TpoSupplier;
 
 /**
- * SearchGpoSupplier represents the model behind the search form about `common\models\GpoSupplier`.
+ * SearchTpoSupplier represents the model behind the search form about `common\models\TpoSupplier`.
  */
-class SearchGpoSupplier extends GpoSupplier
+class SearchTpoSupplier extends TpoSupplier
 {
     /**
      * @inheritdoc
@@ -41,7 +41,7 @@ class SearchGpoSupplier extends GpoSupplier
      */
     public function search($params)
     {
-        $query = GpoSupplier::find();
+        $query = TpoSupplier::find();
 
         // add conditions that should always apply here
 
