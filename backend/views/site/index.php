@@ -1,4 +1,4 @@
-<?php 
+<?php
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
@@ -36,7 +36,7 @@ $gridColumns =
             ]);
         },
         'restock' => function ($url, $model) {
-            if ( $model['restock'] >= $model['sumsQ'] ) { 
+            if ( $model['restock'] >= $model['sumsQ'] ) {
                 return Html::a(' <span class="glyphicon glyphicon-warning-sign" style="color: red"></span> ', $url, [
                             'title' => Yii::t('app', 'Low Stock'),
                 ]);
@@ -137,7 +137,7 @@ $gridColumns =
         <div class="inner">
           <h3><?=$totalUphostery?></h3>
 
-          <p>Uphostery</p>
+          <p>Upholstery</p>
         </div>
         <div class="icon">
           <i class="ion ion-pie-graph"></i>
@@ -152,7 +152,7 @@ $gridColumns =
         <div class="inner">
           <h3><?=$totalUphosteryInProgress?></h3>
 
-          <p>Uphostery in progress</p>
+          <p>Upholstery in progress</p>
         </div>
         <div class="icon">
           <i class="ion ion-stats-bars"></i>
@@ -167,7 +167,7 @@ $gridColumns =
         <div class="inner">
           <h3><?=$totalUphosteryCompleted?></h3>
 
-          <p>Uphostery Completed</p>
+          <p>Upholstery Completed</p>
         </div>
         <div class="icon">
           <i class="ion ion-checkmark-round"></i>
@@ -177,7 +177,7 @@ $gridColumns =
     </div>
   </div>
   <!-- /.row -->
-  
+
 
 <div class="stock-index">
 
@@ -196,7 +196,7 @@ $gridColumns =
                           <h3 class="box-title">Low Stock Parts</h3>
                         </div>
 
-                        <div class="col-sm-12 text-right export-menu">  
+                        <div class="col-sm-12 text-right export-menu">
                         <br>
                         <?php
                             /*Renders a export dropdown menu*/
@@ -227,12 +227,12 @@ $gridColumns =
                         <!-- /.box-header -->
 
                         <div class="box-body table-responsive">
-                            <?= 
+                            <?=
                                 GridView::widget([
                                     'dataProvider' => $dataProvider,
                                     'columns' => $gridColumns,
                                     'showFooter'=>true,
-                                ]); 
+                                ]);
                             ?>
 
                         </div>
