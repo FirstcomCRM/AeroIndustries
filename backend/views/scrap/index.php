@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 use kartik\export\ExportMenu;
 use common\models\WorkOrder;
 use common\models\Setting;
-
+use common\models\Uphostery;
 
 
 $gridColumns =
@@ -26,11 +26,20 @@ $gridColumns =
     [
         'attribute' => 'work_order_id',
         'format' => 'text',
-        'value' => function($model, $index, $column) {
-            $getWorkOrder = WorkOrder::getWorkOrder($model->work_order_id);
-            $woNumber = '';
-            if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
-                $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
+        'value' => function($model, $index, $column) {  
+            if ($model->work_type == 'work_order') {
+              $getWorkOrder = WorkOrder::find()->where(['id' => $model->work_order_id])->one();
+              $woNumber = 'Work Order No Missing';
+              if($getWorkOrder) {
+                  if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
+                      $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
+                  }
+                  return $woNumber;
+              }
+            }else{
+              $data = Uphostery::find()->where(['id'=>$model->work_order_id])->one();
+              $woNumber = Setting::getWorkNo($data->uphostery_type,$data->uphostery_scope,$data->uphostery_no);
+              return $woNumber;
             }
 
 

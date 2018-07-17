@@ -13,13 +13,29 @@ use common\models\Customer;
 use common\models\User;
 use common\models\Setting;
 use common\models\WorkOrder;
+use common\models\Uphostery;
 
-$getWorkOrder = WorkOrder::find()->where(['id' => $model->work_order_id])->one();
+//$getWorkOrder = WorkOrder::find()->where(['id' => $model->work_order_id])->one();
 
-$woNumber = 'Work Order No Missing';
-if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
-    $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
+//$woNumber = 'Work Order No Missing';
+//if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
+  //  $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
+//}
+if ($model->work_type == 'work_order') {
+  $getWorkOrder = WorkOrder::find()->where(['id' => $model->work_order_id])->one();
+  $woNumber = 'Work Order No Missing';
+  if($getWorkOrder) {
+      if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
+          $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
+      }
+    //  return $woNumber;
+  }
+}else{
+  $data = Uphostery::find()->where(['id'=>$model->work_order_id])->one();
+  $woNumber = Setting::getWorkNo($data->uphostery_type,$data->uphostery_scope,$data->uphostery_no);
+  //return $woNumber;
 }
+
 
 
 $id = $model->id;
@@ -34,7 +50,7 @@ $dataCustomerAddr = ArrayHelper::map(Customer::find()->all(), 'id', 'addr_1');
     <!-- Content Header (Page header) -->
 <div class="print-area">
     <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-bottom:1rem">
-        
+
         <tr>
             <td colspan="2">
             <br>
@@ -169,10 +185,10 @@ $dataCustomerAddr = ArrayHelper::map(Customer::find()->all(), 'id', 'addr_1');
             </td>
             <td width="20%" class="capitalize">
                 <?php if ( $model->date ) { ?>
-                    <?php 
+                    <?php
                         $exIssue = explode(' ',$model->date);
                         $is = $exIssue[0];
-                        
+
                         $time = explode('-', $is);
                         $monthNum = $time[1];
                         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -203,7 +219,7 @@ $dataCustomerAddr = ArrayHelper::map(Customer::find()->all(), 'id', 'addr_1');
 
 <div class="row text-center">
     <div class="col-sm-5">
-        
+
     </div>
     <div class="col-sm-2"><br>
         <button class="btn btn-danger form-control print-button">Print</button>
