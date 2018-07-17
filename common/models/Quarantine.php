@@ -41,6 +41,7 @@ class Quarantine extends \yii\db\ActiveRecord
             [['date', 'created', 'updated'], 'safe'],
             [['part_no','serial_no', 'batch_no', 'lot_no'], 'string', 'max' => 45],
             [['desc', 'reason'], 'string', 'max' => 1000],
+            [['work_type'], 'string', 'max' => 15],
         ];
     }
 
@@ -54,6 +55,7 @@ class Quarantine extends \yii\db\ActiveRecord
             'part_no' => 'Part No',
             'work_order_id' => 'Work Order No',
             'work_order_part_id'=>'Work Part ID',
+            'work_type'=>'Work Type',
             'serial_no' => 'Serial No',
             'batch_no' => 'Batch No',
             'lot_no' => 'Lot No',
