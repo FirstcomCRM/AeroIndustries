@@ -45,7 +45,7 @@ class UphosteryArc extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uphostery_id' => 'Uphostery No.',
+            'uphostery_id' => 'Upholstery No.',
             'is_tracking_no' => 'Add Tracking No.',
             'date' => 'Date',
             'type' => 'Type',

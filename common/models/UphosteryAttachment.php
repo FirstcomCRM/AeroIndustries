@@ -43,7 +43,7 @@ class UphosteryAttachment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uphostery_id' => 'Uphostery ID',
+            'uphostery_id' => 'Upholstery ID',
             'value' => 'Value',
         ];
     }
@@ -101,7 +101,7 @@ class UphosteryAttachment extends \yii\db\ActiveRecord
         ->where(['uphostery_id'=>$id])
         ->andWhere(['uphostery_part_id' => $uphostery_part_id])
         ->one();
-        if ( $hidden_damage )  { 
+        if ( $hidden_damage )  {
             $hidden_damage_id = $hidden_damage
             ->id;
 
@@ -115,7 +115,7 @@ class UphosteryAttachment extends \yii\db\ActiveRecord
     }
     /* id = uphostery id */
     public static function getUphosteryAttachmentS($id=null,$uphostery_part_id) {
-        return 
+        return
         UphosteryAttachment::find()
         ->where(['uphostery_id' => $id])
         ->andWhere(['uphostery_part_id' => $uphostery_part_id])

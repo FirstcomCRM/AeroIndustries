@@ -79,7 +79,7 @@ class UphosteryPart extends \yii\db\ActiveRecord
             'is_receiving' => 'Receiving Inspection',
             'is_preliminary' => 'Preliminary Inspection',
             'is_hidden' => 'Hidden Inspection',
-            'is_traveler' => 'Uphosterysheet',
+            'is_traveler' => 'Upholsterysheet',
             'is_final' => 'Final Inspection',
             'productive_hour' => 'Prod. Hour',
             'desc' => 'Desc',
@@ -100,7 +100,7 @@ class UphosteryPart extends \yii\db\ActiveRecord
             'ac_tail_no' => 'AC Tail No',
             'ac_msn' => 'AC MSN',
             'location_id' => 'Location',
-            
+
             'updated' => 'Updated',
             'created' => 'Created',
             'created_by' => 'Created By',

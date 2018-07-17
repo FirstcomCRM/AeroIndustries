@@ -63,8 +63,8 @@ class UphosteryStockRequisition extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uphostery_id' => 'Uphostery',
-            'uphostery_part_id' => 'Uphostery Part',
+            'uphostery_id' => 'Upholstery',
+            'uphostery_part_id' => 'Upholstery Part',
             'remark' => 'Remark',
             'part_id' => 'Part ID',
             'stock_id' => 'Stock ID',

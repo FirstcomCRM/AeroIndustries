@@ -45,7 +45,7 @@ class UphosteryStaff extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uphostery_id' => 'Uphostery ID',
+            'uphostery_id' => 'Upholstery ID',
             'staff_type' => 'Staff Type',
             'staff_name' => 'Staff Name',
             'created' => 'Created',

@@ -49,7 +49,7 @@ class UphosteryPartUsed extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uphostery_id' => 'Uphostery',
+            'uphostery_id' => 'Upholstery',
             'remark' => 'Remark',
             'stock_id' => 'Stock',
             'part_id' => 'Part',

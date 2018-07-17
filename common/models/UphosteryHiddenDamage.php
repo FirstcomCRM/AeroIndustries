@@ -46,7 +46,7 @@ class UphosteryHiddenDamage extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uphostery_id' => 'Uphostery ID',
+            'uphostery_id' => 'Upholstery ID',
             'discrepancy' => 'Discrepancy',
             'corrective' => 'Corrective',
             'created' => 'Created',

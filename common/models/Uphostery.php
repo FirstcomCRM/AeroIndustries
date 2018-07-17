@@ -67,15 +67,15 @@ class Uphostery extends \yii\db\ActiveRecord
             'is_receiving' => 'Receiving Inspection',
             'is_preliminary' => 'Preliminary Inspection',
             'is_hidden' => 'Hidden Inspection',
-            'is_traveler' => 'Uphosterysheet',
+            'is_traveler' => 'Upholsterysheet',
             'is_final' => 'Final Inspection',
-            'uphostery_no' => 'Uphostery No',
+            'uphostery_no' => 'Upholstery No',
             'customer_id' => 'Customer',
             'customer_po_no' => 'Customer Po No',
-            'date' => 'Uphostery Creation Date',
+            'date' => 'Upholstery Creation Date',
             'received_date' => 'Received Date',
             'on_dock_date' => 'TAT Date',
-            
+
             'new_part_no' => 'Part No Changed',
             'batch_no' => 'Batch No',
             'uphostery_type' => 'Product Type',
@@ -183,7 +183,7 @@ class Uphostery extends \yii\db\ActiveRecord
         $mo->save();
         $uphosteryId = $mo->id;
         return $uphosteryId;
-    }   
+    }
     public static function saveStockUsed($requisition,$uphostery_id,$uphostery_part_id) {
         $partIds = Yii::$app->request->post()['PartId'];
         foreach ( $partIds as $key => $partId ) {
@@ -241,7 +241,7 @@ class Uphostery extends \yii\db\ActiveRecord
 
             }
         } /* foreach Part id */
-    } 
+    }
     public static function saveStockReturned($requisition,$uphostery_id,$uphostery_part_id) {
         $partIds = $requisition['part_id'];
         foreach ( $partIds as $key => $part_id ) {
@@ -266,5 +266,5 @@ class Uphostery extends \yii\db\ActiveRecord
                 $getWSR->save();
             }
         } /* foreach Part id */
-    } 
+    }
 }
