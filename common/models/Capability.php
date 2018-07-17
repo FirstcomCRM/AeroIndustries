@@ -43,6 +43,7 @@ class Capability extends \yii\db\ActiveRecord
             [['description', 'manufacturer'], 'string', 'max' => 100],
             [['ata_chapter'], 'string', 'max' => 14],
             [['rating'], 'string', 'max' => 5],
+            [['capability_type'], 'string', 'max' => 10],
         ];
     }
 
@@ -58,6 +59,7 @@ class Capability extends \yii\db\ActiveRecord
             'manufacturer' => 'Manufacturer',
             'workscope' => 'Workscope',
             'ata_chapter' => 'Ata Chapter',
+            'capability_type'=>'Capability Type',
             'ref_document_no' => 'Reference Document No.',
             'rating' => 'Rating',
             'deleted' => 'Deleted',
