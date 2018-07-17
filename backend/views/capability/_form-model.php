@@ -15,6 +15,15 @@ $backUrl = $exBackUrlFull[1];
 /* @var $this yii\web\View */
 /* @var $model common\models\Capability */
 /* @var $form yii\widgets\ActiveForm */
+$ctype = [
+	'EASA'=>'EASA',
+	'FAA'=>'FAA',
+	'CAAS'=>'CAAS',
+	'COC'=>'COC',
+	'CAAV'=>'CAAV',
+	'DCAM'=>'DCAM',
+];
+
 ?>
 
 <div class="capability-form">
@@ -29,67 +38,75 @@ $backUrl = $exBackUrlFull[1];
 
                     <div class="box-body ">
 				    <?php $form = ActiveForm::begin(); ?>
-							    <div class="col-sm-12 col-xs-12">    
+							    <div class="col-sm-12 col-xs-12">
 
                                     <?= $form->field($model, 'part_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>    
+    </div>
 
-    <div class="col-sm-12 col-xs-12">    
+		 <div class="col-sm-12 col-xs-12">
+				 <?= $form->field($model, 'capability_type', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+						<div class="col-sm-9 col-xs-12">{input}</div>
+						{hint}
+						{error}'])->dropDownList($ctype) ?>
+		 </div>
+
+
+    <div class="col-sm-12 col-xs-12">
 
         <?= $form->field($model, 'description', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>    
+    </div>
 
-    <div class="col-sm-12 col-xs-12">    
+    <div class="col-sm-12 col-xs-12">
 
         <?= $form->field($model, 'manufacturer', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>      
+    </div>
 
-    <div class="col-sm-12 col-xs-12">    
+    <div class="col-sm-12 col-xs-12">
 
         <?= $form->field($model, 'ata_chapter', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>    
+    </div>
 
-    <div class="col-sm-12 col-xs-12">    
+    <div class="col-sm-12 col-xs-12">
 
         <?= $form->field($model, 'workscope', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>  
+    </div>
 
-    <div class="col-sm-12 col-xs-12">    
+    <div class="col-sm-12 col-xs-12">
 
         <?= $form->field($model, 'rating', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>     
-    <div class="col-sm-12 col-xs-12">    
+    </div>
+    <div class="col-sm-12 col-xs-12">
 
         <?= $form->field($model, 'ref_document_no', ['template' => '<div class="col-sm-3 text-right">{label}</div>
 <div class="col-sm-9 col-xs-12">{input}</div>
 {hint}
 {error}'])->textInput(['maxlength' => true]) ?>
 
-    </div>             
+    </div>
 
     <div class="col-sm-12 text-right">
 		            <br>
