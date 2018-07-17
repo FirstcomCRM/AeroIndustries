@@ -623,6 +623,7 @@ class WorkOrderController extends Controller
         // $currFinalAtt = WorkOrderAttachment::getWorkOrderAttachmentF($id);
         $WorkStockRequisition = WorkStockRequisition::getWSRByWorkOrderId($id);
         $workOrderParts = WorkOrderPart::getWorkOrderPart($id);
+        //var_dump($workOrderParts);die();
         foreach($workOrderParts as $workOrderPart):
             $workOrderArc[$workOrderPart->id] = WorkOrderArc::getWorkOrderArc($id,$workOrderPart->id);
         endforeach;
@@ -1293,7 +1294,8 @@ class WorkOrderController extends Controller
         $part = WorkOrderPart::find()->where(['id'=>$work_order_part_id])->one();
         $part->status = 'pending';
         $part->save(false);
-        $qua =Quarantine::find()->where(['work_order_part_id'=>$work_order_part_id])->one();
+        //$qua =Quarantine::find()->where(['work_order_part_id'=>$work_order_part_id])->one();
+        $qua =Quarantine::find()->where(['work_order_part_id'=>$work_order_part_id,'work_type'=>'work_order'])->one();
         $qua->delete();
       //  $qua->save(false);
         Yii::$app->getSession()->setFlash('success', 'Part removed from quarantined!');
