@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
 use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\WorkOrderPart;
+use common\models\UphosteryPart;
 
 /**
  * QuarantineController implements the CRUD actions for Quarantine model.
@@ -122,6 +123,7 @@ class QuarantineController extends Controller
      */
     public function actionNew($work_order_part_id)
     {
+
         $model = new Quarantine();
         $part = WorkOrderPart::find()->where(['id'=>$work_order_part_id])->one();
         $model->work_order_id = $part->work_order_id;
@@ -130,6 +132,7 @@ class QuarantineController extends Controller
         $model->desc = $part->desc;
         $model->quantity = $part->quantity;
         $model->serial_no = $part->serial_no;
+        $model->work_type = 'work_order';
         $model->batch_no = $part->batch_no;
         $model->created = date('Y-m-d H:i:s');
         $model->created_by = Yii::$app->user->id;
@@ -150,6 +153,46 @@ class QuarantineController extends Controller
         ]);
 
     }
+
+    public function actionNewUp($uphostery_part_id)
+    {
+
+        $model = new Quarantine();
+        $part = UphosteryPart::find()->where(['id'=>$uphostery_part_id])->one();
+        $model->work_order_id = $part->uphostery_id;
+        $model->work_order_part_id = $uphostery_part_id;
+        $model->part_no = $part->part_no;
+        $model->desc = $part->desc;
+        $model->work_type = 'upholstery';
+        $model->quantity = $part->quantity;
+        $model->serial_no = $part->serial_no;
+        $model->batch_no = $part->batch_no;
+        $model->created = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->id;
+      // echo '<pre>';
+      //  print_r($model);
+      //  echo '</pre>';
+        //die();
+        if ($model->load(Yii::$app->request->post()) ) {
+            $part->status='quarantined';
+            $part->save(false);
+            $model->created_by = Yii::$app->user->identity->id;
+            $currentDateTime = date("Y-m-d H:i:s");
+            $model->created = $currentDateTime;
+
+
+            if ($model->save()) {
+                return $this->redirect(['preview', 'id' => $model->id]);
+            }
+        }
+        return $this->render('new-up', [
+            'model' => $model,
+        ]);
+
+    }
+
+
+
 
     /**
      * Edit an existing Quarantine .
