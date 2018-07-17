@@ -18,6 +18,10 @@ use common\models\WorkOrder;
 /* @var $this yii\web\View */
 /* @var $model common\models\Scrap */
 /* @var $form yii\widgets\ActiveForm */
+$wtype = [
+  'work_order'=>'work_order',
+  'upholstery'=>'upholstery',
+];
 
 $dataWorkOrder = WorkOrder::dataWorkOrder();
 $dataWorkO = [];
@@ -70,6 +74,15 @@ $work_array = [
                                 <div class="col-sm-9 col-xs-12">{input}</div>
                                 {hint}
                                 {error}'])->dropDownList($work_array, ['options' => [$workOrderId => ['Selected'=>'selected']],'class' => 'select2']) ?>
+
+                        </div>
+
+                        <div class="col-sm-12 col-xs-12">
+                            <?php //old variable in dropdownList is $dataWorkO ?>
+                            <?= $form->field($model, 'work_type', ['template' => '<div class="col-sm-3 text-right">{label}</div>
+                                <div class="col-sm-9 col-xs-12">{input}</div>
+                                {hint}
+                                {error}'])->dropDownList($wtype) ?>
 
                         </div>
 
