@@ -41,6 +41,7 @@ class Scrap extends \yii\db\ActiveRecord
             [['part_no', 'serial_no','batch_no'], 'string', 'max' => 45],
             [['description'], 'string', 'max' => 255],
             [['remark'], 'string', 'max' => 500],
+            [['work_type'], 'string', 'max' => 15],
         ];
     }
 
@@ -53,6 +54,7 @@ class Scrap extends \yii\db\ActiveRecord
             'id' => 'ID',
             'work_order_id' => 'Work Order',
             'work_order_part_id'=>'Work Part ID',
+            'work_type'=>'Work Type',
             'part_no' => 'Part No',
             'description' => 'Description',
             'serial_no' => 'Serial No',
