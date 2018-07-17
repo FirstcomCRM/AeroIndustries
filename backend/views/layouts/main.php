@@ -672,7 +672,7 @@ AppAsset::register($this);
 
         <li class="<?php if ( $isDashboard ) { echo 'active'; }?>"><a href="?"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
         <li class="<?php if ( $isWO ) { echo 'active'; }?>"><a href="?r=work-order"><i class="fa fa-wrench"></i> <span>Work Order</span></a></li>
-        <li class="<?php if ( $isUP ) { echo 'active'; }?>"><a href="?r=uphostery"><i class="fa fa-wrench"></i> <span>Uphostery</span></a></li>
+        <li class="<?php if ( $isUP ) { echo 'active'; }?>"><a href="?r=uphostery"><i class="fa fa-wrench"></i> <span>Upholstery</span></a></li>
         <li class="<?php if ( $isQuotation ) { echo 'active'; }?>"><a href="?r=quotation"><i class="fa fa-quote-right"></i> <span>Quotation</span></a></li>
         <li class="<?php if ( $isDO ) { echo 'active'; }?>"><a href="?r=delivery-order"><i class="fa fa-truck"></i> <span>Delivery Order</span></a></li>
 
@@ -692,13 +692,13 @@ AppAsset::register($this);
           <a href="#">
             <i class="fa fa-plane"></i> <span>Stock Room</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
-          <ul class="treeview-menu">
-            <li class="<?php if ( $isStock ) { echo 'active'; }?>"><a href="?r=stock/stock"><i class="fa fa-circle-o"></i> Aviation Parts</a></li>
+          <ul class="treeview-menu">    
             <li class="<?php if ( $isTool ) { echo 'active'; }?>"><a href="?r=tool/tool"><i class="fa fa-circle-o"></i> Aviation Tools</a></li>
+            <li class="<?php if ( $isStock ) { echo 'active'; }?>"><a href="?r=stock/stock"><i class="fa fa-circle-o"></i> Part</a></li>
             <li class="<?php if ( $isStockHistory ) { echo 'active'; }?>"><a href="?r=stock-history"><i class="fa fa-circle-o"></i> Stock history</a></li>
             <li class="<?php if ( $isInventoryReport ) { echo 'active'; }?>"><a href="?r=stock/inventory-report"><i class="fa fa-circle-o"></i> Inventory Report</a></li>
             <li class="<?php if ( $isPartCat ) { echo 'active'; }?>"><a href="?r=part-category"><i class="fa fa-circle-o"></i> Category</a></li>
-            <li class="<?php if ( $isPart ) { echo 'active'; }?>"><a href="?r=part"><i class="fa fa-circle-o"></i> Part</a></li>
+            <li class="<?php if ( $isPart ) { echo 'active'; }?>"><a href="?r=part"><i class="fa fa-circle-o"></i> Aviation Parts</a></li>
             <li class="<?php if ( $isPartImport ) { echo 'active'; }?>"><a href="?r=part/import-excel"><i class="fa fa-circle-o"></i> Import Part Settings</a></li>
             <li class="<?php if ( $isStockImport ) { echo 'active'; }?>"><a href="?r=stock/import-excel"><i class="fa fa-circle-o"></i> Import Aviation Parts</a></li>
             <li class="<?php if ( $isToolImport ) { echo 'active'; }?>"><a href="?r=tool/import-excel"><i class="fa fa-circle-o"></i> Import Aviation Tools</a></li>
