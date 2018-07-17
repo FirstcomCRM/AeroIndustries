@@ -18,7 +18,16 @@ use common\models\WorkOrder;
 use common\models\Setting;
 
 
-$quoNumber = "QUO-" . sprintf("%008d", $model->quotation_no);
+if ($model->quotation_type == 'work_order') {
+  $x = '-w';
+}elseif($model->quotation_type == 'uphostery'){
+  $x = '-u';
+}else{
+  $x = '';
+}
+
+
+$quoNumber = "QUO-" . sprintf("%008d", $model->quotation_no).$x;
 $id = $model->id;
 $this->title = "QUO-" . sprintf("%008d", $model->quotation_no);
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
@@ -74,7 +83,7 @@ use kartik\file\FileInput;
                             'confirm' => 'Are you sure you want to approve this PO?',
                         ],
                     ]) ?>
-                <?php } ?> 
+                <?php } ?>
 
                 <?php if ( $model->approved != 'cancelled' ) { ?>
                     <?php Html::a('<i class="fa fa-ban"></i> Cancel', ['cancel', 'id' => $model->id], [
@@ -83,7 +92,7 @@ use kartik\file\FileInput;
                             'confirm' => 'Are you sure you want to cancel this PO?',
                         ],
                     ]) ?>
-                <?php } ?> 
+                <?php } ?>
         </div>
         <div class="col-sm-6 text-right">
 
@@ -96,7 +105,7 @@ use kartik\file\FileInput;
                             'confirm' => 'Are you sure you want to delete this quotation?',
                         ],
                     ]) ?>
-                <?php } ?> 
+                <?php } ?>
                 <?= Html::a( 'Back', Url::to(['index']), array('class' => 'btn btn-default')) ?>
             <br>
             <br>
@@ -110,7 +119,7 @@ use kartik\file\FileInput;
                       <h3 class="box-title"><?= Html::encode($quoNumber) ?></h3>
                     </div>
 
-                    
+
 
                     <div class="box-body preview-po">
                         <div class="row">
@@ -145,10 +154,10 @@ use kartik\file\FileInput;
                                     <label>Date Issued:</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <?php 
+                                    <?php
                                         $exIssue = explode(' ',$model->date);
                                         $is = $exIssue[0];
-                                        
+
                                         $time = explode('-', $is);
                                         $monthNum = $time[1];
                                         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -224,13 +233,13 @@ use kartik\file\FileInput;
                     <?php $total = 0 ; foreach ( $detail as $d ) { $total += $d->subtotal; ?>
                         <div class="row">
                             <div class="col-sm-1 text-center">
-                                <?= $d->group ?> 
+                                <?= $d->group ?>
                             </div>
                             <div class="col-sm-1 text-center">
                                 <?= $d->quantity ?>
                             </div>
                             <div class="col-sm-3">
-                                <?=nl2br(trim($d->service_details)) ?> 
+                                <?=nl2br(trim($d->service_details)) ?>
                             </div>
                             <div class="col-sm-2">
                                 <?= $d->work_type ?>
@@ -260,7 +269,7 @@ use kartik\file\FileInput;
                                 <strong>GST (<?= $model->gst_rate ?> %)</strong>
                             </div>
                             <div class="col-sm-3">
-                            <?php 
+                            <?php
                                 $gstCharges = $total * $model->gst_rate / 100;
                             ?>
                                 <strong><?= $dataCurrencyISO[$currencyId] ?> <?= number_format((float)$gstCharges, 2, '.', '')?></strong>
@@ -276,7 +285,7 @@ use kartik\file\FileInput;
                                 <strong><?= $dataCurrencyISO[$currencyId] ?> <?= number_format((float)$total+$gstCharges, 2, '.', '')?></strong>
                             </div>
                         </div>
-                        
+
                     </div>
 
 
@@ -291,31 +300,31 @@ use kartik\file\FileInput;
                           <h3 class="box-title">Attachments</h3>
                         </div>
 
-                        
+
 
                         <div class="box-body preview-po">
                             <div class="row">
-                                <?php if ( !empty ( $attachment ) ) { ?> 
-                                    <?php foreach ( $attachment as $at ) { 
+                                <?php if ( !empty ( $attachment ) ) { ?>
+                                    <?php foreach ( $attachment as $at ) {
                                         $attachmentClass = explode('\\', get_class($at))[2]; ?>
-                                        <?php 
+                                        <?php
                                             $fileNameOnlyEx = explode('-', $at->value);
 
                                         ?>
                                         <div class="col-sm-3 col-xs-12">
                                             <a href="<?= 'uploads/'.$attachmentClass . '/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
                                         </div>
-                                    <?php } ?> 
-                                <?php } else { ?> 
+                                    <?php } ?>
+                                <?php } else { ?>
                                         <div class="col-sm-12 col-xs-12">
                                             No attachment found!
                                         </div>
-                                <?php } ?> 
+                                <?php } ?>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6 col-xs-12">
                                 <?php $form = ActiveForm::begin(); ?>
-                                   
+
                                    <?= $form->field($newAttachment, 'attachment[]')->widget(FileInput::classname(), [
                                         'options' => ['accept' => 'image/*'],
                                     ])->fileInput(['multiple' => true,])->label('Select Attachment(s)') ?>

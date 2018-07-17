@@ -16,7 +16,17 @@ use common\models\User;
 use common\models\Address;
 
 
-$quoNumber = "QUO-" . sprintf("%008d", $model->quotation_no);
+if ($model->quotation_type == 'work_order') {
+  $x = '-w';
+}elseif($model->quotation_type == 'uphostery'){
+  $x = '-u';
+}else{
+  $x = '';
+}
+
+
+
+$quoNumber = "QUO-" . sprintf("%008d", $model->quotation_no).$x;
 $id = $model->id;
 $this->title = "QUO-" . sprintf("%008d", $model->quotation_no);
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Orders', 'url' => ['index']];
@@ -34,7 +44,7 @@ $currencyId = $model->p_currency;
     <!-- Content Header (Page header) -->
 <div class="print-area">
     <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="" style="background:white;border-radius:0.5rem;margin-bottom:1rem">
-        
+
         <tr>
             <td width="50%">
                 <img src="images/logo.png">
@@ -83,10 +93,10 @@ $currencyId = $model->p_currency;
                                 <label>Date Issued:</label>
                             </td>
                             <td width="25%">
-                                <?php 
+                                <?php
                                     $exIssue = explode(' ',$model->date);
                                     $is = $exIssue[0];
-                                    
+
                                     $time = explode('-', $is);
                                     $monthNum = $time[1];
                                     $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -238,7 +248,7 @@ $currencyId = $model->p_currency;
                                     <strong>GST (<?= $model->gst_rate ?> %)</strong>
                                 </td>
                                 <td align="right">
-                                <?php 
+                                <?php
                                   $gstCharges = $total * $model->gst_rate / 100;
                                 ?>
                                     <strong><?= $dataCurrencyISO[$currencyId] ?> <?= number_format((float)$gstCharges, 2, '.', '')?></strong>
@@ -255,7 +265,7 @@ $currencyId = $model->p_currency;
                                 </td>
                             </tr>
                         </tbody>
-                        
+
                     </table>
 
 
@@ -273,7 +283,7 @@ $currencyId = $model->p_currency;
             <td class="border-all" colspan="3">
                 Please expedite approval by signing below.<br>
                 <br>
-                In Our continuing effort to meet customer needs and to maintain compliance with federal regulations, please notify us of all applicable Airworthiness Directives. Service Bullets and Engineering Orders that you wish to have implemented. 
+                In Our continuing effort to meet customer needs and to maintain compliance with federal regulations, please notify us of all applicable Airworthiness Directives. Service Bullets and Engineering Orders that you wish to have implemented.
             </td>
         </tr>
         <tr>
@@ -285,20 +295,20 @@ $currencyId = $model->p_currency;
                 PLEASE NOTE: Prices quoted are estimated costs based upon teardown inspection of the unit. Additional charges may be incurred should other parts fail or require replacement during final assembly and test. Aero Industries will provide the quickest possible turn time. Prompt reply and return of this customer Approval will accelerate the repair process and avoid unnecessary delay. In the event the customer does not reply with specific written instructions to either withhold repairs or to BER the unit, within seven days off the date of this quote, then Aero Industries shall assume that tacit approval has been granted as quoted and repairs shall proceed. In the event of a BER or an order to withhold repairs within the seven days, the customer shall be responsible for charges for initial inspection, evaluation and testing. <br>
                 All data and pricing information provided herein is Confidential and Proprietary to Aero Industries (Singapore) Pte Ltd. It is provided to the Customer for their sole use in determing an estimate approval and may not be otherwise used or distributed for any other purpose <br>
                 <br>
-                <br> 
+                <br>
 
 
             </td>
         </tr>
         <tr>
             <td class="border-bottom border-left">
-                Approved By: 
+                Approved By:
                 <hr>
             </td>
             <td width="250px" class="border-bottom">
-            </td>            
+            </td>
             <td class="border-bottom border-right">
-                Date: 
+                Date:
                 <hr>
             </td>
         </tr>

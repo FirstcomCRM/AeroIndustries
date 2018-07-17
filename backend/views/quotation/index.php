@@ -20,9 +20,17 @@ $gridColumns =
         'attribute' => 'quotation_no',
         'format' => 'text',
         'value' => function($model, $index, $column) {
-            return $model->quotation_no ? "QUO-" . sprintf("%008d", $model->quotation_no) : '' ;
+          if ($model->quotation_type == 'work_order') {
+            $x = '-w';
+          }elseif($model->quotation_type == 'uphostery'){
+            $x = '-u';
+          }else{
+            $x = '';
+          }
+            //var_dump($model);die();
+            return $model->quotation_no ? "QUO-" . sprintf("%008d", $model->quotation_no).$x : '' ;
         },
-        
+
         'label' => 'Quotation No.',
     ],
     [
@@ -85,7 +93,7 @@ $gridColumns =
                                     'confirm' => 'Are you sure you want to cancel this quotation?',
                                 ],
                     ]);
-                }   
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
@@ -100,7 +108,7 @@ $gridColumns =
             if ($action === 'preview') {
                 $url ='?r=quotation/preview&id='.$model->id;
                 return $url;
-            }   
+            }
             if ($action === 'approve' && $model->approved != 'approved') {
                 $url ='?r=quotation/approve&id='.$model->id;
                 return $url;
@@ -170,12 +178,12 @@ $gridColumns =
                         <!-- /.box-header -->
 
                         <div class="box-body">
-                        <?= 
+                        <?=
                             GridView::widget([
                                 'dataProvider' => $dataProvider,
                                 'columns' => $gridColumns,
                                 'showFooter'=>true,
-                            ]); 
+                            ]);
                         ?>
 
                         </div>
