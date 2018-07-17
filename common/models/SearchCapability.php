@@ -19,7 +19,7 @@ class SearchCapability extends Capability
     {
         return [
             [['id', 'deleted', 'created_by', 'updated_by'], 'integer'],
-            [['part_no', 'description', 'manufacturer', 'workscope', 'ata_chapter', 'rating', 'created', 'updated'], 'safe'],
+            [['part_no', 'description', 'manufacturer', 'workscope', 'ata_chapter', 'rating', 'created', 'updated','capability_type'], 'safe'],
         ];
     }
 
@@ -73,7 +73,8 @@ class SearchCapability extends Capability
             ->andFilterWhere(['like', 'manufacturer', $this->manufacturer])
             ->andFilterWhere(['like', 'workscope', $this->workscope])
             ->andFilterWhere(['like', 'ata_chapter', $this->ata_chapter])
-            ->andFilterWhere(['like', 'rating', $this->rating]);
+            ->andFilterWhere(['like', 'rating', $this->rating])
+            ->andFilterWhere(['like', 'capability_type', $this->capability_type]);
 
         return $dataProvider;
     }
