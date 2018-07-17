@@ -1271,10 +1271,12 @@ class UphosteryController extends Controller
      * Parts created at quarantined table is deleted
      */
     public function actionRemoveQuarantined($uphostery_part_id){
+    
         $part = UphosteryPart::find()->where(['id'=>$uphostery_part_id])->one();
         $part->status = 'pending';
         $part->save(false);
-        $qua =Quarantine::find()->where(['uphostery_part_id'=>$uphostery_part_id])->one();
+      //  $qua =Quarantine::find()->where(['uphostery_part_id'=>$uphostery_part_id])->one();
+        $qua =Quarantine::find()->where(['work_order_part_id'=>$uphostery_part_id, 'work_type'=>'upholstery'])->one();
         $qua->delete();
       //  $qua->save(false);
         Yii::$app->getSession()->setFlash('success', 'Part removed from quarantined!');
