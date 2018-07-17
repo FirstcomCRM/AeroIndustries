@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
 use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\WorkOrderPart;
+use common\models\UphosteryPart;
 
 /**
  * ScrapController implements the CRUD actions for Scrap model.
@@ -130,6 +131,7 @@ class ScrapController extends Controller
         $model->part_no = $part->part_no;
         $model->description = $part->desc;
         $model->serial_no = $part->serial_no;
+        $model->work_type = 'work_order';
         $model->batch_no = $part->batch_no;
         $model->created = date('Y-m-d H:i:s');
         $model->created_by = Yii::$app->user->id;
@@ -143,6 +145,38 @@ class ScrapController extends Controller
         return $this->render('new', [
             'model' => $model,
             'part'=>$part
+        ]);
+
+    }
+
+    public function actionNewUp($uphostery_part_id)
+    {
+    //  die();
+        $model = new Scrap();
+        $part = UphosteryPart::find()->where(['id'=>$uphostery_part_id])->one();
+        $model->work_order_id = $part->uphostery_id;
+        $model->work_order_part_id = $uphostery_part_id;
+        $model->part_no = $part->part_no;
+        $model->description  = $part->desc;
+        $model->work_type = 'upholstery';
+        //$model->quantity = $part->quantity;
+        $model->serial_no = $part->serial_no;
+        $model->batch_no = $part->batch_no;
+        $model->created = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->id;
+      // echo '<pre>';
+      //  print_r($model);
+      //  echo '</pre>';
+        //die();
+        if ($model->load(Yii::$app->request->post()) ) {
+            $part->status='scrapped';
+            $part->save(false);
+            if ($model->save()) {
+                return $this->redirect(['index']);
+            }
+        }
+        return $this->render('new-up', [
+            'model' => $model,
         ]);
 
     }
