@@ -16,9 +16,17 @@ $subTitle = 'Update ' . $model->id;
 		    <h1><?= Html::encode($this->title) ?></h1>
 	    </section>
 
-		    <?= $this->render('_form-model', [
-		        'model' => $model,
-		        'subTitle' => $subTitle,
-		    ]) ?>
+      <?php if ($model->work_type == 'work_order'): ?>
+        <?= $this->render('_form-model', [
+           'model' => $model,
+           'subTitle' => $subTitle,
+       ]) ?>
+      <?php else: ?>
+        <?= $this->render('_form-model-up', [
+            'model' => $model,
+            'subTitle' => $subTitle,
+        ]) ?>
+      <?php endif; ?>
+
 
 </div>

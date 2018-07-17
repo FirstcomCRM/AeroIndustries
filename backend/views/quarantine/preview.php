@@ -14,14 +14,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
 use common\models\Setting;
 use common\models\WorkOrder;
+use common\models\Uphostery;
 
- $getWorkOrder = WorkOrder::find()->where(['id' => $model->work_order_id])->one();
-$woNumber = 'Work Order No Missing';
-if($getWorkOrder) {
-    if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
-        $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
-    }
+if ($model->work_type == 'work_order') {
+
+  $getWorkOrder = WorkOrder::find()->where(['id' => $model->work_order_id])->one();
+  $woNumber = 'Work Order No Missing';
+  if($getWorkOrder) {
+      if ( $getWorkOrder->work_scope && $getWorkOrder->work_type ) {
+          $woNumber = Setting::getWorkNo($getWorkOrder->work_type,$getWorkOrder->work_scope,$getWorkOrder->work_order_no);
+      }
+  }
+}else{
+  $data = Uphostery::find()->where(['id'=>$model->work_order_id])->one();
+  $woNumber = Setting::getWorkNo($data->uphostery_type,$data->uphostery_scope,$data->uphostery_no);
 }
+
 
 
 ?>
@@ -65,7 +73,7 @@ if($getWorkOrder) {
                                 'model' => $model,
                                 'attributes' => [
             'part_no',
-                                    
+
                                     [
                                         'label' => 'Work Order',
                                         'value'=> $woNumber,
