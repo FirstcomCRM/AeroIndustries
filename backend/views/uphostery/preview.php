@@ -27,7 +27,7 @@ if ( $model->uphostery_scope && $model->uphostery_type ) {
 
 $id = $model->id;
 $this->title = $woNumber;
-$this->params['breadcrumbs'][] = ['label' => 'Uphosteries', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Upholsteries', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $dataLocation= StorageLocation::dataLocation();
 $dataCustomer = Customer::dataCustomer();
@@ -55,12 +55,12 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
             <h5>Status: <?= $model->deleted == '1' ? 'uphostery order deleted' : '' ?><strong class="uppercase"><?= $model->status ?></strong></h5>
         </h1>
         <?php if ( $model->status === 'cancelled' ) { ?>
-            This uphostery order has been cancelled
+            This Upholstery order has been cancelled
         <?php } ?>
     </section>
         <div class="col-sm-12 text-right">
                 <?php if ( $model->status == 'Completed' ) { ?>
-                    
+
                     <?php if ( $model->is_do ) { ?>
                         <?php echo Html::a('<i class="fa fa-eye"></i> Preview DO', ['delivery-order/index','delivery_order_id' => $model->delivery_order_id], ['class' => 'btn btn-success']) ?>
                     <?php } else { ?>
@@ -83,7 +83,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                     <?php Html::a('<i class="fa fa-trash"></i> Delete', ['delete-column', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
-                            'confirm' => 'Are you sure you want to delete this uphostery order?',
+                            'confirm' => 'Are you sure you want to delete this Upholstery order?',
                         ],
                     ]) ?>
                 <?php } ?>
@@ -148,7 +148,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
 
                     <div class="box">
                         <div class="box-header with-border">
-                          <h3 class="box-title">Uphostery Details</h3>
+                          <h3 class="box-title">Upholstery Details</h3>
                         </div>
 
 
@@ -174,7 +174,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                             <div class="row">
                                 <div class="col-sm-6 col-xs-12">
                                     <div class="col-sm-5">
-                                        <label>Uphostery Creation Date</label>
+                                        <label>Upholstery Creation Date</label>
                                     </div>
                                     <div class="col-sm-7">
                                         <?php
@@ -314,7 +314,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                             <tbody>
                                 <?php if (!empty($uphosteryParts) ) { ?>
                                     <?php foreach ( $uphosteryParts as $wop ) : ?>
-                                        <?php 
+                                        <?php
                                             $isAllChecked = false;
                                             if ( $wop->is_processing == 1 && $wop->is_receiving == 1 && $wop->is_preliminary == 1 && $wop->is_hidden == 1 && $wop->is_traveler == 1 && $wop->is_final == 1 ) {
                                                 $isAllChecked = true;
@@ -344,17 +344,17 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                                                         <li><?= Html::a( 'Receiving Inspection', Url::to(['receiving-inspection', 'id' => $model->id,'uphostery_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Preliminary Inspection', Url::to(['preliminary-inspection', 'id' => $model->id,'uphostery_part_id' => $wop->id])) ?></li>
                                                         <li><?= Html::a( 'Hidden Damage Inspection', Url::to(['hidden-damage', 'id' => $model->id,'uphostery_part_id' => $wop->id])) ?></li>
-                                                        <li><?= Html::a( 'Uphosterysheet', Url::to(['uphostery-sheet', 'id' => $model->id,'uphostery_part_id' => $wop->id])) ?></li>
+                                                        <li><?= Html::a( 'Upholsterysheet', Url::to(['uphostery-sheet', 'id' => $model->id,'uphostery_part_id' => $wop->id])) ?></li>
                                                         <li><hr></li>
                                                         <?php if ($wop->status!= 'scrapped' && $wop->status!='returned'): ?>
                                                           <?php if ($wop->status =='quarantined'): ?>
                                                             <li><?= Html::a( 'Move out of Quarantine', Url::to(['uphostery/remove-quarantined','uphostery_part_id' => $wop->id])) ?></li>
                                                           <?php else: ?>
-                                                            <li><?= Html::a( 'Move to Quarantine', Url::to(['quarantine/new','uphostery_part_id' => $wop->id])) ?></li>
+                                                            <li><?= Html::a( 'Move to Quarantine', Url::to(['quarantine/new-up','uphostery_part_id' => $wop->id])) ?></li>
                                                           <?php endif; ?>
 
                                                           <li><?= Html::a( 'Return Back to Customer', Url::to(['uphostery/return-back','uphostery_part_id' => $wop->id])) ?></li>
-                                                          <li><?= Html::a( 'Scrap Parts', Url::to(['scrap/new', 'uphostery_part_id' => $wop->id])) ?></li>
+                                                          <li><?= Html::a( 'Scrap Parts', Url::to(['scrap/new-up', 'uphostery_part_id' => $wop->id])) ?></li>
                                                         <?php endif; ?>
                                                         <li><hr></li>
                                                         <li><?= Html::a( 'Set Requisition', Url::to(['uphostery/requisition', 'id' => $model->id,'uphostery_part_id' => $wop->id])) ?></li>
@@ -378,7 +378,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                                                     <li><?= Html::a( 'Receiving Inspection', Url::to(['print-receiving', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <li><?= Html::a( 'Detailed Inspection', Url::to(['print', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <li><?= Html::a( 'Disposition Report', Url::to(['print-disposition', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                    <li><?= Html::a( 'Uphosterysheet', Url::to(['print-traveler', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
+                                                    <li><?= Html::a( 'Upholsterysheet', Url::to(['print-traveler', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <li><?= Html::a( 'Repairable Sticker', Url::to(['repairable-sticker', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                     <?php if ( $model->status == 'Completed') { ?>
                                                         <li class="divider"></li>
@@ -386,7 +386,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                                                         <li><?= Html::a( 'BOM', Url::to(['print-bom', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                         <li><?= Html::a( 'Release Sticker', Url::to(['final-sticker', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
                                                         <li><?= Html::a( 'Final Inspection', Url::to(['print-final', 'id' => $model->id,'uphostery_part_id' => $wop->id]), array('target' => '_blank')) ?></li>
-                                                        
+
                                                         <?php //if ( $wop->is_processing == 1 && $wop->is_receiving == 1 && $wop->is_preliminary == 1 && $wop->is_hidden == 1 && $wop->is_traveler == 1 && $wop->is_final == 1 ) { ?>
                                                             <?php foreach ( $uphosteryArc[$wop->id] as $woa ) {  ?>
                                                                 <?php if ( $woa->type == 'CAAS' ) { ?>
@@ -416,7 +416,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                                                 </div>
                                                 <?php if ($files->user_group_id == 1 || $wop->status != 'Completed'){ ?>
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal" 
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal"
                                                         data-target="#checklistModalUp"
                                                         data-uphostery_id="<?=$model->id?>"
                                                         data-uphostery_part_id="<?=$wop->id?>">
@@ -444,7 +444,7 @@ $files = User::find()->where(['id'=>Yii::$app->user->id])->one();
                             <div class="modal-content">
                                 <form method="POST">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Uphostery Checklist</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Upholstery Checklist</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>

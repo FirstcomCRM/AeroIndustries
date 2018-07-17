@@ -72,10 +72,10 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_rece">
-                        <div class="box-body arc-box">  
+                        <div class="box-body arc-box">
                             <div class="row">
                                 <div class="col-sm-3 col-xs-6">
-                                    <label>Uphostery No.</label>
+                                    <label>Upholstery No.</label>
                                 </div>
                                 <div class="col-sm-3 col-xs-6">
                                     <?= $woNumber ?>
@@ -108,48 +108,48 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                     <div class="box-header with-border">
                                       <h3 class="box-title">Receiving Inspection</h3>
                                     </div>
-                                    <div class="box-body arc-box">  
-                                        
-                                        <div class="col-sm-12 col-xs-12">    
+                                    <div class="box-body arc-box">
+
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'traveler_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->dropDownList($dataTraveler,['class' => 'select2 form-control'])
                                             ?>
-                                        </div>  
+                                        </div>
 
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                            <?= $form->field($data['woAttachment'], 'attachment[traveler][]', [
                                                   'template' => "<div class='col-sm-3 text-right'>{label}{hint}</div>\n<div class='col-sm-9 col-xs-12'>{input}{error}</div>\n\n"
                                                 ])
                                                 ->widget(FileInput::classname(), [
                                                 'options' => ['accept' => 'image/*'],
                                             ])->fileInput(['multiple' => true,])->label('Upload Attachment(s)') ?>
-                                        </div>  
+                                        </div>
 
 
-                                        <div class="col-sm-12 col-xs-12">    
-                                            <?php if ( !empty ( $data['currWSAtt'] ) ) { ?> 
-                                                <?php foreach ( $data['currWSAtt'] as $at ) { 
+                                        <div class="col-sm-12 col-xs-12">
+                                            <?php if ( !empty ( $data['currWSAtt'] ) ) { ?>
+                                                <?php foreach ( $data['currWSAtt'] as $at ) {
                                                     $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
-                                                    <?php 
+                                                    <?php
                                                         $fileNameOnlyEx = explode('-', $at->value);
 
                                                     ?>
-                                                        <a href="<?= 'uploads/traveler/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
+                                                        <a href="<?= 'uploads/traveler/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
                                                         <?= Html::a(' <i class="fa fa-close"></i> ', ['uphostery/remove-woa', 'id' => $at->id], [
                                                             'data' => [
                                                                 'confirm' => 'Are you sure you want to remove this attachment?',
                                                             ],
                                                         ]) ?>
                                                         <i>(<?= $at->created ?>)</i>
-                                                <?php } ?> 
-                                            <?php } else { ?> 
+                                                <?php } ?>
+                                            <?php } else { ?>
                                                         No attachment found!
-                                            <?php } ?> 
-                                        </div>  
+                                            <?php } ?>
+                                        </div>
 
-                                    </div>  
+                                    </div>
 
                                 </div>
                             </div>

@@ -59,7 +59,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
-        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Uphostery</a>
+        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Upholstery</a>
         <br>
         <br>
         <!-- /.box-header -->
@@ -74,7 +74,7 @@ use kartik\file\FileInput;
                             <div class="box-header with-border">
                               <h3 class="box-title">Parts Return</h3>
                             </div>
-                            <div class="box-body"> 
+                            <div class="box-body">
                             <?php if ( $requisition ) { ?>
                                 <input id="gt" type="hidden" value="1">
                                 <table class="table stock-requisition-table stock-return-table">
@@ -124,11 +124,11 @@ use kartik\file\FileInput;
                                                     <input type="text" id="datepicker" name="UphosteryStockRequisition[returned_date][]" class="form-control so-returned_date" value="<?=date('Y-m-d')?>">
                                                 </td>
                                                 <td>
-                                                <?php 
+                                                <?php
                                                     // usage without model
                                                     echo TimePicker::widget([
                                                         'name' => 'UphosteryStockRequisition[returned_time][]',
-                                                        'class' => 'return_time form-control', 
+                                                        'class' => 'return_time form-control',
                                                         'pluginOptions' => [
                                                             'minuteStep' => 1,
                                                             'showMeridian' => false,
@@ -164,10 +164,10 @@ use kartik\file\FileInput;
                                 </table>
                                 <table class="table stock-requisition-table stock-return-table">
                                     <tbody class=" added-issue">
-                                        
+
                                     </tbody>
                                 </table>
-                                <div class="row"> 
+                                <div class="row">
                                     <div class="col-sm-12 text-right">
                                        <a class="btn btn-primary submit-btn-return" href="javascript:;"><i class="fa fa-mail-reply"></i> Return</a>
                                     </div>

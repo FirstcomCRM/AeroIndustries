@@ -33,12 +33,12 @@ $dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
 $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
 $serial = false;
 $batch = false;
-if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) { 
+if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) {
     $serial = true;
-} 
-if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) { 
+}
+if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
     $batch = true;
-} 
+}
 
 
 ?>
@@ -46,9 +46,9 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
 <div class="print-area">
 
 
-<?php /*page 1*/ ?> 
+<?php /*page 1*/ ?>
     <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem; height: ">
-        
+
         <?php include ('print-header.php');?>
 
         <tr class="">
@@ -70,9 +70,9 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                 <?php } ?>
             </td>
         </tr>
-    </table> 
+    </table>
 
-<?php /*page 2*/ ?>    
+<?php /*page 2*/ ?>
 
 
     <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;font-size: 11px;">
@@ -180,7 +180,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                                 <br>
                                 <br>
                                 <br>
-                                
+
                             </td>
                         </tr>
 
@@ -189,10 +189,10 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
             </td>
         </tr>
     </table>
-    
+
     <div class="print-footer">
         <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem">
-            <tr>   
+            <tr>
                 <td>
                 </td>
                 <td align="right">

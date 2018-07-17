@@ -70,10 +70,10 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_rece">
-                        <div class="box-body arc-box">  
+                        <div class="box-body arc-box">
                             <div class="row">
                                 <div class="col-sm-3 col-xs-6">
-                                    <label>Uphostery No.</label>
+                                    <label>Upholstery No.</label>
                                 </div>
                                 <div class="col-sm-3 col-xs-6">
                                     <?= $woNumber ?>
@@ -106,7 +106,7 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                     <div class="box-header with-border">
                                       <h3 class="box-title">Processing Inspection</h3>
                                     </div>
-                                    <div class="box-body arc-box">  
+                                    <div class="box-body arc-box">
 
                                         <div class="col-sm-12 col-xs-12">
                                            <?= $form->field($data['woAttachment'], 'attachment[processing_inspection][]', [
@@ -115,35 +115,35 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                                 ->widget(FileInput::classname(), [
                                                 'options' => ['accept' => 'image/*'],
                                             ])->fileInput(['multiple' => true,])->label('Upload Attachment(s)') ?>
-                                        </div>      
+                                        </div>
                                         <div class='col-sm-3 text-right'>
                                             <label>Processing Inspection Attachment</label>
                                         </div>
                                         <div class="col-sm-9 col-xs-12">
-                                        <?php if ( !empty ( $data['currPoAtt'] ) ) { ?> 
-                                            <?php foreach ( $data['currPoAtt'] as $at ) { 
+                                        <?php if ( !empty ( $data['currPoAtt'] ) ) { ?>
+                                            <?php foreach ( $data['currPoAtt'] as $at ) {
                                                 $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
-                                                <?php 
+                                                <?php
                                                     $fileNameOnlyEx = explode('-', $at->value);
 
                                                 ?>
                                                 <div class="col-sm-3 col-xs-12">
-                                                    <a href="<?= 'uploads/processing_inspection/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
+                                                    <a href="<?= 'uploads/processing_inspection/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
                                                     <?= Html::a(' <i class="fa fa-close"></i> ', ['uphostery/remove-woa', 'id' => $at->id], [
                                                         'data' => [
                                                             'confirm' => 'Are you sure you want to remove this attachment?',
                                                         ],
                                                     ]) ?>
                                                 </div>
-                                            <?php } ?> 
-                                        <?php } else { ?> 
+                                            <?php } ?>
+                                        <?php } else { ?>
                                                 <div class="col-sm-12 col-xs-12">
                                                     No attachment found!
                                                 </div>
-                                        <?php } ?> 
-                                        </div>  
+                                        <?php } ?>
+                                        </div>
 
-                                    </div>  
+                                    </div>
 
                                 </div>
                             </div>

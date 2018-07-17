@@ -58,7 +58,7 @@ use kartik\file\FileInput;
         </h2>
     </section>
     <div class="col-sm-12 text-right">
-        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Uphostery</a>
+        <a class="btn btn-default" href="?r=uphostery/preview&id=<?php echo $_GET['id']; ?> ">Back to Upholstery</a>
         <br>
         <br>
         <!-- /.box-header -->
@@ -72,7 +72,7 @@ use kartik\file\FileInput;
                             <div class="box-header with-border">
                               <h3 class="box-title">Parts Required</h3>
                             </div>
-                            <div class="box-body"> 
+                            <div class="box-body">
                                 <table class="table stock-requisition-table stock-required-table">
                                     <thead>
                                         <tr>
@@ -118,7 +118,7 @@ use kartik\file\FileInput;
                                 <table class="table added-required stock-requisition-table">
                                 </table>
 
-                                <div class="row"> 
+                                <div class="row">
                                     <div class="col-sm-12 text-right">
                                        <a class="btn btn-primary submit-btn" href="javascript:;"><i class="fa fa-save"></i> Save</a>
                                     </div>
@@ -130,7 +130,7 @@ use kartik\file\FileInput;
                             <div class="box-header with-border">
                               <h3 class="box-title">Parts Required (History)</h3>
                             </div>
-                            <div class="box-body"> 
+                            <div class="box-body">
                                 <table class="table stock-requisition-table stock-required-table">
                                     <thead>
                                         <tr>

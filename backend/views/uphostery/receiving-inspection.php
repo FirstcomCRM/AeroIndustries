@@ -68,14 +68,14 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
             </div>
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab">Uphostery <?= $woNumber ?></a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Upholstery <?= $woNumber ?></a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_rece">
-                        <div class="box-body arc-box">  
+                        <div class="box-body arc-box">
                             <div class="row">
                                 <div class="col-sm-3 col-xs-6">
-                                    <label>Uphostery No.</label>
+                                    <label>Upholstery No.</label>
                                 </div>
                                 <div class="col-sm-3 col-xs-6">
                                     <?= $woNumber ?>
@@ -108,84 +108,84 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                     <div class="box-header with-border">
                                       <h3 class="box-title">Receiving Inspection</h3>
                                     </div>
-                                    <div class="box-body arc-box">  
+                                    <div class="box-body arc-box">
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'is_document', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->checkbox()
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'is_tag', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->checkbox()
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'is_id', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->checkbox()
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'tag_type', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->dropDownList($dataIDType)
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'identify_from', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->dropDownList($dataIdentifyFrom)
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'part_no_1', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->textInput()
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'part_no_2', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->textInput()
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'part_no_3', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->textInput()
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'is_discrepancy', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->checkbox()
                                             ?>
-                                        </div>    
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'corrective', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->textArea(['rows' => 3])
                                             ?>
-                                        </div>  
+                                        </div>
 
-                                        <div class="col-sm-12 col-xs-12">    
+                                        <div class="col-sm-12 col-xs-12">
                                             <?= $form->field($data['euphosteryPart'], 'remarks', ['template' => '<div class="col-sm-3 text-right">{label}</div>
                                                 <div class="col-sm-9 col-xs-12">{input}{error}{hint}</div>
                                                 '])->textArea(['rows' => 3])
                                             ?>
-                                        </div>  
+                                        </div>
 
                                         <div class="col-sm-12 col-xs-12">
                                            <?= $form->field($data['woAttachment'], 'attachment[uphostery][]', [
@@ -194,35 +194,35 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
                                                 ->widget(FileInput::classname(), [
                                                 'options' => ['accept' => 'image/*'],
                                             ])->fileInput(['multiple' => true,])->label('Upload Attachment(s)') ?>
-                                        </div>      
+                                        </div>
                                         <div class='col-sm-3 text-right'>
-                                            <label>Uphostery Attachment</label>
+                                            <label>Upholstery Attachment</label>
                                         </div>
                                         <div class="col-sm-9 col-xs-12">
-                                        <?php if ( !empty ( $data['currWoAtt'] ) ) { ?> 
-                                            <?php foreach ( $data['currWoAtt'] as $at ) { 
+                                        <?php if ( !empty ( $data['currWoAtt'] ) ) { ?>
+                                            <?php foreach ( $data['currWoAtt'] as $at ) {
                                                 $currentAttachmentClass = explode('\\', get_class($at))[2]; ?>
-                                                <?php 
+                                                <?php
                                                     $fileNameOnlyEx = explode('-', $at->value);
 
                                                 ?>
                                                 <div class="col-sm-3 col-xs-12">
-                                                    <a href="<?= 'uploads/uphostery/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a> 
+                                                    <a href="<?= 'uploads/uphostery/' .$at->value ?>" target="_blank"><?= $fileNameOnlyEx[1] ?></a>
                                                     <?= Html::a(' <i class="fa fa-close"></i> ', ['uphostery/remove-woa', 'id' => $at->id], [
                                                         'data' => [
                                                             'confirm' => 'Are you sure you want to remove this attachment?',
                                                         ],
                                                     ]) ?>
                                                 </div>
-                                            <?php } ?> 
-                                        <?php } else { ?> 
+                                            <?php } ?>
+                                        <?php } else { ?>
                                                 <div class="col-sm-12 col-xs-12">
                                                     No attachment found!
                                                 </div>
-                                        <?php } ?> 
-                                        </div>  
+                                        <?php } ?>
+                                        </div>
 
-                                    </div>  
+                                    </div>
 
                                 </div>
                             </div>

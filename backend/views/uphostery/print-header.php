@@ -30,7 +30,7 @@ use common\models\Setting;
             Singapore 498813<br>
             Phone: (65) 6542 6288 &nbsp; &nbsp;
             Email: sales@aeroindustries.sg
-            
+
         </div>
     </td>
     <td width="20%">
@@ -38,7 +38,7 @@ use common\models\Setting;
 </tr>
 <tr>
     <td colspan="3">
-    
+
             <table class="box-body preview-po receiving-table" width="100%">
                 <tr style="display: none">
                     <td width="15%">
@@ -66,7 +66,7 @@ use common\models\Setting;
                 </tr>
                 <tr>
                     <td class="" valign="top">
-                        <label>Uphostery:</label><br>
+                        <label>Upholstery:</label><br>
                         &nbsp;&nbsp;<?=$woNumber?>
                     </td>
                     <td class="" colspan="2" valign="top">

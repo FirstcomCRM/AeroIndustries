@@ -71,7 +71,7 @@ use kartik\file\FileInput;
             </div>
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab">Uphostery</a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Upholstery</a></li>
                     <li><a href="#tab_2" data-toggle="tab">Part</a></li>
                     <li><a href="#tab_3" data-toggle="tab">Employee</a></li>
                 </ul>
@@ -82,7 +82,7 @@ use kartik\file\FileInput;
                                 <div class="col-xs-12">
                                     <div class="">
                                         <div class="box-header with-border">
-                                          <h3 class="box-title">Uphostery Details</h3>
+                                          <h3 class="box-title">Upholstery Details</h3>
                                         </div>
                                         <!-- /.box-header -->
                                         <div class="box-body ">

@@ -34,12 +34,12 @@ $dataUser = ArrayHelper::map(User::find()->all(), 'id', 'username');
 $dataStaffId = Staff::dataStaffId();
 $serial = false;
 $batch = false;
-if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) { 
+if ( !empty($model->serial_no) && $model->serial_no != 'N/A' ) {
     $serial = true;
-} 
-if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) { 
+}
+if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
     $batch = true;
-} 
+}
 
 
 ?>
@@ -83,7 +83,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
                     <?php } ?>
                 </table>
 
-              
+
             </td>
         </tr>
         <tr>
@@ -98,7 +98,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
         </tr>
         <tr>
             <td colspan="3">
-                
+
                 <table class="box-body preview-po uphostery-print-table" width="100%" style="font-size: 11px;" border="1">
                     <?php if ( $hiddenDamage ) { ?>
                         <?php $loop = 1; ?>
@@ -175,10 +175,10 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
             </tr>
             <tr>
                 <td colspan="2">
-                    The Signature above Certifies that the uphostery identified above was carried out in accordance with Regulations and in respect to that uphostery the items are considered ready for release to service.
+                    The Signature above Certifies that the upholstery identified above was carried out in accordance with Regulations and in respect to that upholstery the items are considered ready for release to service.
                 </td>
             </tr>
-            <tr>   
+            <tr>
                 <td>
                 </td>
                 <td align="right">
@@ -192,7 +192,7 @@ if ( !empty($model->batch_no) && $model->batch_no != 'N/A' ) {
     <div class="page-break"></div>
 
         <table width="646" cellpadding="32" cellspacing="0" border="0" align="center" class="devicewidth" style="background:white;border-radius:0.5rem;margin-top:40px">
-            
+
             <tr>
                 <td class="td-label">
                     Attachment(s):

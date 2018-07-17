@@ -10,7 +10,7 @@ use common\models\Scrap;
 /* @var $searchModel common\models\SearchWorkOrder */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Uphostery';
+$this->title = 'Upholstery';
 $this->params['breadcrumbs'][] = $this->title;
 
 use common\models\Setting;
@@ -318,7 +318,7 @@ $exportColumns =
 
                         <div class="col-sm-12 text-right export-menu">
                         <br>
-                        <?= Html::a('<i class=\'fa fa-plus\'></i> New Uphostery', ['new'], ['class' => 'btn btn-default']) ?>
+                        <?= Html::a('<i class=\'fa fa-plus\'></i> New Upholstery', ['new'], ['class' => 'btn btn-default']) ?>
                         <?= Html::dropDownList('update-status-selection', null, $dataWorkStatus,['id' => 'update-status-selection', 'class' => 'select2'] ) ?>
                         <a class="btn btn-primary" href="javascript:update_up_status()"><i class="fa fa-save"></i> Update Status</a>
                         <?php

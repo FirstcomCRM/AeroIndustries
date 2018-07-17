@@ -6,10 +6,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\WorkOrder */
 
-$this->title = 'Uphostery';
-$this->params['breadcrumbs'][] = ['label' => 'Uphosteries', 'url' => ['index']];
+$this->title = 'Upholstery';
+$this->params['breadcrumbs'][] = ['label' => 'Upholsteries', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$subTitle = 'Create Uphostery';
+$subTitle = 'Create Upholstery';
 $data['isEdit'] = false;
 $data['subTitle'] = $subTitle;
 ?>

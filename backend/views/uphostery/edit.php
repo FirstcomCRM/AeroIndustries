@@ -13,7 +13,7 @@ if ( $data['model']->uphostery_scope && $data['model']->uphostery_type ) {
 }
 
 $this->title = 'Update ' . $woNumber;
-$this->params['breadcrumbs'][] = ['label' => 'Uphosteries', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Upholsteries', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $woNumber, 'url' => ['preview', 'id' => $data['model']->id]];
 $this->params['breadcrumbs'][] = 'Update';
 

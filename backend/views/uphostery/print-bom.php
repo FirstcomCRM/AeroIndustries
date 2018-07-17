@@ -41,62 +41,62 @@ $dataUnit = Unit::dataUnit();
                     <img src="images/logo.png" class="bom-logo">
                 </td>
                 <td width="10%" align="right">
-                    Part Number: 
+                    Part Number:
                 </td>
-                <td class="border-bottom" align="center"> 
+                <td class="border-bottom" align="center">
                     <?=$uphosteryOrderPart->part_no?>
                 </td>
                 <td width="5%">
-                  
+
                 </td>
                 <td width="10%" align="right">
-                    Uphostery: 
+                    Upholstery:
                 </td>
-                <td class="border-bottom" align="center"> 
+                <td class="border-bottom" align="center">
                     <?=$woNumber?>
                 </td>
                 <td width="5%">
-                  
+
                 </td>
             </tr>
             <tr>
                 <td width="10%" align="right">
                     Description:
                 </td>
-                <td class="border-bottom" align="center"> 
+                <td class="border-bottom" align="center">
                     <?=$uphosteryOrderPart->desc?>
                 </td>
                 <td width="5%">
-                  
+
                 </td>
                 <td width="10%" align="right">
                     Customer:
                 </td>
-                <td class="border-bottom" align="center"> 
-                    <?=$model->customer->name?> 
+                <td class="border-bottom" align="center">
+                    <?=$model->customer->name?>
                 </td>
                 <td width="5%">
-                  
+
                 </td>
             </tr>
             <tr>
                 <td width="10%" align="right">
                     Quantity:
                 </td>
-                <td class="border-bottom" align="center"> 
+                <td class="border-bottom" align="center">
                     <?=$uphosteryOrderPart->quantity?>
                 </td>
                 <td width="5%">
-                  
+
                 </td>
                 <td width="10%" align="right">
                     Job Type:
                 </td>
-                <td class="border-bottom" align="center"> 
-                    <?=$model->uphostery_scope?> 
+                <td class="border-bottom" align="center">
+                    <?=$model->uphostery_scope?>
                 </td>
                 <td width="5%">
-                  
+
                 </td>
             </tr>
             <tr>

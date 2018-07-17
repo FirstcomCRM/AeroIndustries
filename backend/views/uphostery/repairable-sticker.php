@@ -21,7 +21,7 @@ if ( $model->uphostery_scope && $model->uphostery_type ) {
 
 $id = $model->id;
 $this->title = $woNumber . ' (Sticker) ' ;
-$this->params['breadcrumbs'][] = ['label' => 'Uphosterys', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Upholsterys', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 
@@ -44,7 +44,7 @@ use kartik\file\FileInput;
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
                         <div class="box-body">
-                            
+
                                 <div class="print-area">
                                     <table align="center" style="font-size: 15px;">
                                         <tr>
@@ -63,7 +63,7 @@ use kartik\file\FileInput;
                                                    INSPECTOR: _____________________<br>
                                                    Form AI - 018 Rev: Dated 9/1/2008<br>
                                                 </div>
-                                            </td>   
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
@@ -81,7 +81,7 @@ use kartik\file\FileInput;
 </div>
 
 
-<?php 
+<?php
 
 
         /*    'type',
