@@ -10,7 +10,7 @@ use yii\grid\GridView;
 
 use common\models\Uphostery;
 use common\models\Setting;
-$this->title = 'Uphostery Arcs';
+$this->title = 'Upholstery Arcs';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="uphostery-arc-index">
@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <section class="content">
                     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-        
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Html::a(Html::encode($woNumber),'?r=uphostery/preview&id='.$uphostery_id, ['target'=>'_blank']);
             },
         ],
-            
+
     [
         'attribute' => 'date',
         'format' => 'text',
@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, [
                                     'title' => Yii::t('app', 'Delete'),
                                     'data' => [
-                                        'confirm' => 'Are you sure you want to delete this uphostery?',
+                                        'confirm' => 'Are you sure you want to delete this Upholstery?',
                                     ],
                         ]);
                     },
@@ -121,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $url ='?r=uphostery-arc/print-dcam&id='.$uphostery_id;
                         }
                         return $url;
-                    }  
+                    }
                     if ($action === 'delete') {
                         $url ='?r=uphostery/delete-column&id='.$model->id;
                         return $url;
